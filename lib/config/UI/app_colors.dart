@@ -86,4 +86,28 @@ class AppColors {
   static const Color textMuted700 = Color(0xFF475263);
   static const Color textMuted800 = Color(0xFF37404C);
   static const Color textMuted900 = Color(0xFF2A313A);
+  
+  // 8.CTA cam-> nâu
+  static const Color cta50 = Color(0xFFFEF1E8);
+  static const Color cta100 = Color(0xFFFDD4B7);
+  static const Color cta200 = Color(0xFFFCBF94);
+  static const Color cta300 = Color(0xFFFBA163);
+  static const Color cta400 = Color(0xFFFA8F45);
+  static const Color cta500 = Color(0xFFF97316);
+  static const Color cta600 = Color(0xFFE36914);
+  static const Color cta700 = Color(0xFFB15210);
+  static const Color cta800 = Color(0xFF893F0C);
+  static const Color cta900 = Color(0xFF693009);
+
+// 9.ACCENT xanh dương 
+  static const Color accent50 = Color(0xFFE9EFFD);
+  static const Color accent100 = Color(0xFFBBCFF9);
+  static const Color accent200 = Color(0xFF9BB7F6);
+  static const Color accent300 = Color(0xFF6D96F2);
+  static const Color accent400 = Color(0xFF5182EF);
+  static const Color accent500 = Color(0xFF2563EB);
+  static const Color accent600 = Color(0xFF225AD6);
+  static const Color accent700 = Color(0xFF1A46A7);
+  static const Color accent800 = Color(0xFF143681);
+  static const Color accent900 = Color(0xFF102A63);
 }
