@@ -44,7 +44,7 @@ class _FakeAssetBundle extends Fake implements AssetBundle {
   @override
   Future<T> loadStructuredBinaryData<T>(
     String key,
-    Future<T> Function(ByteData data) parser,
+    FutureOr<T> Function(ByteData data) parser,
   ) async {
     return parser(ByteData.sublistView(_kTransparentImage));
   }
