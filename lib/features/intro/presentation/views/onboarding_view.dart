@@ -31,7 +31,7 @@ const List<OnboardingData> _pages = [
     description:
         'When the feeling is mutual, a conversation starts. Break the ice and chat with your new connections.',
     topImagePath: 'assets/images/matching_onboarding_2.webp',
-    bottomImagePath: 'assets/images/matching_onboarding_2.webp',
+    bottomImagePath: 'assets/images/matching2_onboarding_2.webp',
   ),
   OnboardingData(
     title: 'CONNECTING',
