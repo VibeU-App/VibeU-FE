@@ -29,7 +29,8 @@ class _FakeAssetBundle extends Fake implements AssetBundle {
 
   @override
   Future<String> loadString(String key, {bool cache = true}) async {
-    return '';
+    // Trả về asset manifest rỗng hợp lệ
+    return '{}';
   }
 
   @override
@@ -37,7 +38,15 @@ class _FakeAssetBundle extends Fake implements AssetBundle {
     String key,
     Future<T> Function(String value) parser,
   ) async {
-    return parser('');
+    return parser('{}');
+  }
+
+  @override
+  Future<T> loadStructuredBinaryData<T>(
+    String key,
+    Future<T> Function(ByteData data) parser,
+  ) async {
+    return parser(ByteData.sublistView(_kTransparentImage));
   }
 
   @override
@@ -48,11 +57,18 @@ class _FakeAssetBundle extends Fake implements AssetBundle {
 }
 
 /// Wrap widget với MaterialApp + FakeAssetBundle
+/// Dùng MediaQuery để set màn hình lớn hơn, tránh overflow
 Widget _wrap(Widget child) {
   return MaterialApp(
-    home: DefaultAssetBundle(
-      bundle: _FakeAssetBundle(),
-      child: child,
+    home: MediaQuery(
+      data: const MediaQueryData(
+        size: Size(390, 844), // iPhone 14 size
+        devicePixelRatio: 1.0,
+      ),
+      child: DefaultAssetBundle(
+        bundle: _FakeAssetBundle(),
+        child: child,
+      ),
     ),
   );
 }
