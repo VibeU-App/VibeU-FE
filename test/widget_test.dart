@@ -1,41 +1,84 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vibeu_fe/features/intro/presentation/views/splash_screen.dart';
 import 'package:vibeu_fe/features/intro/presentation/views/onboarding_view.dart';
 import 'package:vibeu_fe/features/intro/presentation/widgets/pagination_dots.dart';
 import 'package:vibeu_fe/features/intro/presentation/widgets/onboarding_bottom_bar.dart';
 
-/// Helper: wrap widget với MaterialApp để test
+/// Tạo 1x1 pixel PNG giả để mock Image.asset không bị lỗi
+final Uint8List _kTransparentImage = Uint8List.fromList([
+  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+  0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+  0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
+  0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
+  0x54, 0x78, 0x9C, 0x62, 0x00, 0x01, 0x00, 0x00,
+  0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00,
+  0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE,
+  0x42, 0x60, 0x82,
+]);
+
+/// Mock AssetBundle trả về ảnh giả cho mọi asset
+class _FakeAssetBundle extends Fake implements AssetBundle {
+  @override
+  Future<ByteData> load(String key) async {
+    return ByteData.sublistView(_kTransparentImage);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async {
+    return '';
+  }
+
+  @override
+  Future<T> loadStructuredData<T>(
+    String key,
+    Future<T> Function(String value) parser,
+  ) async {
+    return parser('');
+  }
+
+  @override
+  void evict(String key) {}
+
+  @override
+  void clear() {}
+}
+
+/// Wrap widget với MaterialApp + FakeAssetBundle
 Widget _wrap(Widget child) {
   return MaterialApp(
-    home: child,
+    home: DefaultAssetBundle(
+      bundle: _FakeAssetBundle(),
+      child: child,
+    ),
   );
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   // ─────────────────────────────────────────
   // GROUP 1: SplashScreen
   // ─────────────────────────────────────────
   group('SplashScreen', () {
     testWidgets('renders VibeU text', (tester) async {
       await tester.pumpWidget(_wrap(const SplashScreen()));
-      // Chỉ pump 1 frame, không chờ timer navigate
       await tester.pump();
-
       expect(find.text('VibeU'), findsOneWidget);
     });
 
     testWidgets('renders slogan Match Your Vibe', (tester) async {
       await tester.pumpWidget(_wrap(const SplashScreen()));
       await tester.pump();
-
       expect(find.text('Match Your Vibe'), findsOneWidget);
     });
 
     testWidgets('renders logo V', (tester) async {
       await tester.pumpWidget(_wrap(const SplashScreen()));
       await tester.pump();
-
       expect(find.text('V'), findsOneWidget);
     });
   });
@@ -47,21 +90,18 @@ void main() {
     testWidgets('shows first page title SWIPING on start', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
       expect(find.text('SWIPING'), findsOneWidget);
     });
 
     testWidgets('shows SKIP button on first page', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
       expect(find.text('SKIP'), findsOneWidget);
     });
 
     testWidgets('shows next circle button (arrow) on first page', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
       expect(find.byIcon(Icons.arrow_forward_rounded), findsOneWidget);
       expect(find.text('Get Started!'), findsNothing);
     });
@@ -69,40 +109,28 @@ void main() {
     testWidgets('swipe to page 2 shows MATCHING', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
-      await tester.drag(
-        find.byType(PageView),
-        const Offset(-400, 0),
-      );
+      await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
-
       expect(find.text('MATCHING'), findsOneWidget);
     });
 
     testWidgets('swipe to page 3 shows CONNECTING', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
-      // Swipe tới trang 2
       await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
-
-      // Swipe tới trang 3
       await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
-
       expect(find.text('CONNECTING'), findsOneWidget);
     });
 
     testWidgets('last page shows Get Started! button', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
       await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
       await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
-
       expect(find.text('Get Started!'), findsOneWidget);
       expect(find.byIcon(Icons.arrow_forward_rounded), findsNothing);
     });
@@ -110,13 +138,11 @@ void main() {
     testWidgets('SKIP button is hidden (opacity 0) on last page', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
       await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
       await tester.drag(find.byType(PageView), const Offset(-400, 0));
       await tester.pumpAndSettle();
 
-      // SKIP vẫn trong widget tree nhưng opacity = 0
       final animatedOpacity = tester.widget<AnimatedOpacity>(
         find.ancestor(
           of: find.text('SKIP'),
@@ -129,10 +155,8 @@ void main() {
     testWidgets('tapping next arrow advances to page 2', (tester) async {
       await tester.pumpWidget(_wrap(const OnboardingView()));
       await tester.pump();
-
       await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
       await tester.pumpAndSettle();
-
       expect(find.text('MATCHING'), findsOneWidget);
     });
   });
@@ -146,30 +170,23 @@ void main() {
         _wrap(const PaginationDots(totalPages: 3, currentPage: 0)),
       );
       await tester.pump();
-
-      // 3 AnimatedContainer = 3 dots
       expect(find.byType(AnimatedContainer), findsNWidgets(3));
     });
 
-    testWidgets('active dot has wider width (pill shape)', (tester) async {
+    testWidgets('active dot is wider than inactive dots', (tester) async {
       await tester.pumpWidget(
         _wrap(const PaginationDots(totalPages: 3, currentPage: 0)),
       );
       await tester.pump();
 
-      final containers = tester
-          .widgetList<AnimatedContainer>(find.byType(AnimatedContainer))
+      final boxes = tester
+          .renderObjectList<RenderBox>(
+            find.byType(AnimatedContainer),
+          )
           .toList();
 
-      // Dot đầu tiên (active) phải rộng hơn các dot còn lại
-      final activeBox =
-          containers[0].constraints as BoxConstraints?;
-      final inactiveBox =
-          containers[1].constraints as BoxConstraints?;
-
-      // Kiểm tra width qua decoration thông qua render
-      // Dùng cách đơn giản: rebuild với currentPage=1 và kiểm tra thay đổi
-      expect(containers.length, 3);
+      // Active dot (index 0) phải rộng hơn inactive dot (index 1)
+      expect(boxes[0].size.width, greaterThan(boxes[1].size.width));
     });
   });
 
@@ -179,16 +196,13 @@ void main() {
   group('OnboardingBottomBar', () {
     testWidgets('shows SKIP and arrow on non-last page', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          OnboardingBottomBar(
-            isLastPage: false,
-            onSkip: () {},
-            onNext: () {},
-          ),
-        ),
+        _wrap(OnboardingBottomBar(
+          isLastPage: false,
+          onSkip: () {},
+          onNext: () {},
+        )),
       );
       await tester.pump();
-
       expect(find.text('SKIP'), findsOneWidget);
       expect(find.byIcon(Icons.arrow_forward_rounded), findsOneWidget);
       expect(find.text('Get Started!'), findsNothing);
@@ -196,16 +210,13 @@ void main() {
 
     testWidgets('shows Get Started! on last page', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          OnboardingBottomBar(
-            isLastPage: true,
-            onSkip: () {},
-            onNext: () {},
-          ),
-        ),
+        _wrap(OnboardingBottomBar(
+          isLastPage: true,
+          onSkip: () {},
+          onNext: () {},
+        )),
       );
       await tester.pumpAndSettle();
-
       expect(find.text('Get Started!'), findsOneWidget);
       expect(find.byIcon(Icons.arrow_forward_rounded), findsNothing);
     });
@@ -213,57 +224,45 @@ void main() {
     testWidgets('onSkip callback fires when SKIP tapped', (tester) async {
       bool skipped = false;
       await tester.pumpWidget(
-        _wrap(
-          OnboardingBottomBar(
-            isLastPage: false,
-            onSkip: () => skipped = true,
-            onNext: () {},
-          ),
-        ),
+        _wrap(OnboardingBottomBar(
+          isLastPage: false,
+          onSkip: () => skipped = true,
+          onNext: () {},
+        )),
       );
       await tester.pump();
-
       await tester.tap(find.text('SKIP'));
       await tester.pump();
-
       expect(skipped, isTrue);
     });
 
     testWidgets('onNext callback fires when arrow tapped', (tester) async {
       bool nextCalled = false;
       await tester.pumpWidget(
-        _wrap(
-          OnboardingBottomBar(
-            isLastPage: false,
-            onSkip: () {},
-            onNext: () => nextCalled = true,
-          ),
-        ),
+        _wrap(OnboardingBottomBar(
+          isLastPage: false,
+          onSkip: () {},
+          onNext: () => nextCalled = true,
+        )),
       );
       await tester.pump();
-
       await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
       await tester.pump();
-
       expect(nextCalled, isTrue);
     });
 
     testWidgets('onNext callback fires when Get Started! tapped', (tester) async {
       bool nextCalled = false;
       await tester.pumpWidget(
-        _wrap(
-          OnboardingBottomBar(
-            isLastPage: true,
-            onSkip: () {},
-            onNext: () => nextCalled = true,
-          ),
-        ),
+        _wrap(OnboardingBottomBar(
+          isLastPage: true,
+          onSkip: () {},
+          onNext: () => nextCalled = true,
+        )),
       );
       await tester.pumpAndSettle();
-
       await tester.tap(find.text('Get Started!'));
       await tester.pump();
-
       expect(nextCalled, isTrue);
     });
   });
