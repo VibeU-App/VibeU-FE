@@ -1,3 +1,0 @@
-Khả năng sẽ bị dính lỗi google-fornts trong typography.Nếu dính
-1/Bật terminal trong vscode -> gõ "flutter pub add google_fonts"
-2/Nếu ko được -> Vào pubspec.yaml -> kiếm "dependencies:" rồi thêm google_fonts: ^6.2.1 thẳng cột với flutter:
