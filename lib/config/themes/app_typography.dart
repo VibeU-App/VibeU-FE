@@ -51,9 +51,9 @@ class AppTypography {
 
   // --- COMPONENTS ---
   static TextStyle  button = GoogleFonts.plusJakartaSans(
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
-    height: 16 / 15,
+    height: 16 / 16,
   );
   static TextStyle  caption = GoogleFonts.plusJakartaSans(
     fontSize: 12,
