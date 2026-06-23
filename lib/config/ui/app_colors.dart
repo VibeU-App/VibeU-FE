@@ -7,9 +7,7 @@ class AppColors {
   static const Color primary200 = Color(0xFFF197AB);
   static const Color primary300 = Color(0xFFEB6884);
   static const Color primary400 = Color(0xFFE74A6D);
-  static const Color primary500 = Color(
-    0xFFE11D48,
-  ); // Màu gốc dùng cho các nút bấm chính
+  static const Color primary500 = Color(0xFFE11D48);
   static const Color primary600 = Color(0xFFCD1A42);
   static const Color primary700 = Color(0xFFA01533);
   static const Color primary800 = Color(0xFF7C1028);
@@ -26,6 +24,30 @@ class AppColors {
   static const Color secondary700 = Color(0xFFB2505E);
   static const Color secondary800 = Color(0xFF8A3E49);
   static const Color secondary900 = Color(0xFF692F38);
+
+  // CTA
+  static const Color cta50 = Color(0xFFFEF1E8);
+  static const Color cta100 = Color(0xFFFDD4B7);
+  static const Color cta200 = Color(0xFFFCBF94);
+  static const Color cta300 = Color(0xFFFBA163);
+  static const Color cta400 = Color(0xFFFA8F45);
+  static const Color cta500 = Color(0xFFF97316);
+  static const Color cta600 = Color(0xFFE36914);
+  static const Color cta700 = Color(0xFFB15210);
+  static const Color cta800 = Color(0xFF893F0C);
+  static const Color cta900 = Color(0xFF693009);
+
+  //ACCENT
+  static const Color accent50 = Color(0xFFE9EFFD);
+  static const Color accent100 = Color(0xFFBBCFF9);
+  static const Color accent200 = Color(0xFF9BB7F6);
+  static const Color accent300 = Color(0xFF6D96F2);
+  static const Color accent400 = Color(0xFF5182EF);
+  static const Color accent500 = Color(0xFF2563EB);
+  static const Color accent600 = Color(0xFF225AD6);
+  static const Color accent700 = Color(0xFF1A46A7);
+  static const Color accent800 = Color(0xFF143681);
+  static const Color accent900 = Color(0xFF102A63);
 
   // 3. BACKGROUND COLORS (Màu Nền Toàn App)
   static const Color background50 = Color(0xFFFFFEFE);
@@ -69,7 +91,7 @@ class AppColors {
   static const Color textBody200 = Color(0xFF989DA5);
   static const Color textBody300 = Color(0xFF68707C);
   static const Color textBody400 = Color(0xFF4B5462);
-  static const Color textBody500 = Color(0xFF1E293B); // Đen ánh xanh navy nhạt
+  static const Color textBody500 = Color(0xFF1E293B);
   static const Color textBody600 = Color(0xFF1B2536);
   static const Color textBody700 = Color(0xFF151D2A);
   static const Color textBody800 = Color(0xFF111720);
@@ -81,7 +103,7 @@ class AppColors {
   static const Color textMuted200 = Color(0xFFB8BFCA);
   static const Color textMuted300 = Color(0xFF97A2B1);
   static const Color textMuted400 = Color(0xFF8390A2);
-  static const Color textMuted500 = Color(0xFF64748B); // Xám ánh xanh
+  static const Color textMuted500 = Color(0xFF64748B);
   static const Color textMuted600 = Color(0xFF5B6A7E);
   static const Color textMuted700 = Color(0xFF475263);
   static const Color textMuted800 = Color(0xFF37404C);
