@@ -17,7 +17,7 @@ class CreatePasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BackgroundGradient.gradient,
+      decoration: backgroundGradient(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(

@@ -4,7 +4,10 @@ import 'package:vibeu_fe/config/ui/design_system.dart';
 
 import 'package:vibeu_fe/config/widgets/vibe_text_field.dart';
 import 'package:vibeu_fe/config/widgets/vibe_primary_button.dart';
+import 'package:vibeu_fe/features/auth/presentation/forgot_password_screen.dart';
+import 'package:vibeu_fe/features/auth/presentation/register_screen.dart';
 
+import 'widgets/transition_animation.dart';
 import 'widgets/vibe_text_span.dart';
 import 'widgets/header.dart';
 import 'widgets/background_gradient.dart';
@@ -18,10 +21,10 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BackgroundGradient.gradient,
+      decoration: backgroundGradient(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(child: SingleChildScrollView(
+        body: SingleChildScrollView(child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 412),
             child: Column(
@@ -61,7 +64,11 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(height: 12.0),
 
                 ForgotPasswordButton(
-                  onPressed: () { Navigator.pushNamed(context, '/forgot_password'); },
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      createRoute(const ForgotPasswordScreen())
+                    );
+                  }
                 ),
 
                 SizedBox(height: 27.0),
@@ -89,9 +96,11 @@ class LoginScreen extends StatelessWidget {
                   ),
                   inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
                   textSpan: [
-                    (text: 'Dont\'t have an account?', onTap: null),
+                    (text: 'Don\'t have an account? ', onTap: null),
                     (text: 'Sign Up', onTap: () {
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.of(context).push(
+                        createRoute(const RegisterScreen())
+                      );
                     }),
                   ]
                 )

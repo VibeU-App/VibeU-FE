@@ -4,7 +4,9 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:vibeu_fe/config/ui/design_system.dart';
 import 'package:vibeu_fe/config/widgets/vibe_primary_button.dart';
+import 'package:vibeu_fe/features/auth/presentation/create_password_screen.dart';
 
+import 'widgets/transition_animation.dart';
 import 'widgets/header.dart';
 import 'widgets/otp_input_section.dart';
 import 'widgets/prev_screen_button.dart';
@@ -17,7 +19,7 @@ class VerifyOtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BackgroundGradient.gradient,
+      decoration: backgroundGradient(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
@@ -86,7 +88,7 @@ class VerifyOtpScreen extends StatelessWidget {
 
                     VibePrimaryButton(
                       text: 'Sign Up', // fr?
-                      onPressed: () { Navigator.pushNamed(context, '/create_password'); },
+                      onPressed: () { Navigator.of(context).push(createRoute(const CreatePasswordScreen())); },
                       icon: Icon(AntDesign.arrowright, color: AppColors.surface500),
                       iconAlignment: .end,
                     )

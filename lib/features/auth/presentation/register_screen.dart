@@ -15,7 +15,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BackgroundGradient.gradient,
+      decoration: backgroundGradient(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Align(
@@ -70,7 +70,7 @@ class RegisterScreen extends StatelessWidget {
                         ),
                         (
                           text: 'Sign in',
-                          onTap: () { Navigator.pop(context); },
+                          onTap: () { Navigator.of(context).pop(); },
                         )
                       ]
                     ),
