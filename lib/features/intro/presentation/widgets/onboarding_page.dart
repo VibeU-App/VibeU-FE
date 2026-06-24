@@ -56,16 +56,6 @@ class OnboardingPage extends StatelessWidget {
                   ),
                 ),
               ),
-              // Bottom image (overlapping the curve)
-              Positioned(
-                bottom: -36,
-                right: Spacing.s24,
-                child: Image.asset(
-                  data.bottomImagePath,
-                  height: 80,
-                  fit: BoxFit.contain,
-                ),
-              ),
             ],
           ),
         ),

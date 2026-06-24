@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
 import '../widgets/onboarding_page.dart';
-import '../widgets/pagination_dots.dart';
 import '../widgets/onboarding_bottom_bar.dart';
 
 class OnboardingData {
@@ -77,9 +76,9 @@ class _OnboardingViewState extends State<OnboardingView> {
   void _navigateToAuth() {
     // TODO: Replace with actual auth route when partner's feature is ready
     // Navigator.of(context).pushReplacementNamed('/login');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Navigating to Login...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Navigating to Login...')));
   }
 
   @override
@@ -88,32 +87,34 @@ class _OnboardingViewState extends State<OnboardingView> {
 
     return Scaffold(
       backgroundColor: AppColors.surface50,
-      body: Column(
-        children: [
-          // PageView takes most of the screen
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              physics: const BouncingScrollPhysics(),
-              itemCount: _pages.length,
-              itemBuilder: (context, index) {
-                return OnboardingPage(
-                  data: _pages[index],
-                  currentPage: _currentPage,
-                  totalPages: _pages.length,
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            // PageView takes most of the screen
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                physics: const BouncingScrollPhysics(),
+                itemCount: _pages.length,
+                itemBuilder: (context, index) {
+                  return OnboardingPage(
+                    data: _pages[index],
+                    currentPage: _currentPage,
+                    totalPages: _pages.length,
+                  );
+                },
+              ),
             ),
-          ),
-
-          // Bottom bar: Skip + Next/GetStarted
-          OnboardingBottomBar(
-            isLastPage: isLastPage,
-            onSkip: _navigateToAuth,
-            onNext: _goToNext,
-          ),
-        ],
+  
+            // Bottom bar: Skip + Next/GetStarted
+            OnboardingBottomBar(
+              isLastPage: isLastPage,
+              onSkip: _navigateToAuth,
+              onNext: _goToNext,
+            ),
+          ],
+        ),
       ),
     );
   }

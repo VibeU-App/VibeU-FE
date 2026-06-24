@@ -1,7 +1,7 @@
 import 'auth_state.dart';
 
 class AuthNotifier {
-  AuthState _state = const AuthInitial();
+  final AuthState _state = const AuthInitial();
 
   AuthState get state => _state;
 
