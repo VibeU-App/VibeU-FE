@@ -20,22 +20,22 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    // 🎬 NHỊP 1: Giữ Native Splash 1 giây cho app ổn định background
-    Future.delayed(const Duration(milliseconds: 2000), () {
+    // Native flutter: Giữ Native Splash 1 giây cho app ổn định background
+    Future.delayed(const Duration(milliseconds: 1000), () {
       if (!mounted) return;
 
-      // 🎬 NHỊP 2: Gỡ Native Splash ra, lộ ra Logo trơn của Flutter
+      // Splash screen: Gỡ Native Splash ra, lộ ra Logo trơn của Flutter
       FlutterNativeSplash.remove();
 
-      // 🎬 NHỊP 3: Đợi 200ms rồi bắt đầu chạy hiệu ứng Cross-Fade (Fade chéo) biến hình logo
-      Future.delayed(const Duration(milliseconds: 900), () {
+      //  Đợi 500ms rồi bắt đầu chạy hiệu ứng Cross-Fade (Fade chéo) biến hình logo
+      Future.delayed(const Duration(milliseconds: 500), () {
         if (!mounted) return;
         setState(() {
           _showFullCombo = true; // Kích hoạt đổi ảnh sang cụm đầy đủ
         });
       });
 
-      // 🎬 NHỊP 4: Đợi hiện combo đầy đủ xong xuôi (khoảng 2.5 giây), rồi nhảy sang Onboarding liền
+      // 🎬 NHỊP 4: Đợi hiện combo đầy đủ xong xuôi (khoảng 3.5 giây), rồi nhảy sang Onboarding liền
       Future.delayed(const Duration(milliseconds: 3500), () {
         if (!mounted) return;
 
