@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
 class Header extends StatelessWidget {
   final String title;
@@ -31,7 +31,7 @@ class Header extends StatelessWidget {
           textAlign: alignCenter ? .center : null,
         ),
 
-        SizedBox(height: 6.0),
+        const SizedBox(height: 6.0),
 
         Text(
           subTitle,

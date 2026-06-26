@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
-import 'package:vibeu_fe/config/widgets/vibe_primary_button.dart';
-import 'package:vibeu_fe/config/widgets/vibe_text_field.dart';
+import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
+import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 
 import 'widgets/background_gradient.dart';
 import 'widgets/header.dart';
@@ -14,71 +14,60 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: backgroundGradient(),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Align(
-          alignment: .topCenter,
-          child: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 412),
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Header(
-                    title: 'Register Now!',
-                    subTitle: 'Fill in your email to create a new account',
+    return BackgroundGradient(
+      child: Center(
+        child: Column(
+          children: [
+            const Header(
+              title: 'Register Now!',
+              subTitle: 'Fill in your email to create a new account',
+            ),
+
+            const SizedBox(height: 17.0),
+
+            const VibeTextField(
+              label: 'Email Address',
+              prefixIcon: Icon(
+                Icons.mail_outline,
+                color: AppColors.textMuted500,
+                size: 32
+              ),
+            ),
+
+            const SizedBox(height: 14.0),
+
+            TermsAndPolicySection(
+              termsButton: () async {},
+              policyButton: () async {},
+            ),
+
+            const SizedBox(height: 16.0),
+
+            VibePrimaryButton(
+              text: 'Sign Up',
+              onPressed: () async {}
+            ),
+
+            const SizedBox(height: 16.0),
+
+            Align(
+              alignment: Alignment.center,
+              child: VibeTextSpan(
+                defaultStyle: AppTypography.button,
+                inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
+                textSpan: [
+                  (
+                    text: 'Already have an account? ',
+                    onTap: null,
                   ),
-
-                  SizedBox(height: 17.0),
-
-                  VibeTextField(
-                    label: 'Email Address',
-                    prefixIcon: Icon(
-                      Icons.mail_outline,
-                      color: AppColors.textMuted500,
-                      size: 32
-                    ),
-                  ),
-
-                  SizedBox(height: 14.0),
-
-                  TermsAndPolicySection(
-                    termsButton: () {},
-                    policyButton: () {},
-                  ),
-
-                  SizedBox(height: 16.0),
-
-                  VibePrimaryButton(
-                    text: 'Sign Up',
-                    onPressed: () {}
-                  ),
-
-                  SizedBox(height: 16.0),
-
-                  Align(
-                    alignment: Alignment.center,
-                    child: VibeTextSpan(
-                      defaultStyle: AppTypography.button,
-                      inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
-                      textSpan: [
-                        (
-                          text: 'Already have an account? ',
-                          onTap: null,
-                        ),
-                        (
-                          text: 'Sign in',
-                          onTap: () { Navigator.of(context).pop(); },
-                        )
-                      ]
-                    ),
+                  (
+                    text: 'Sign in',
+                    onTap: () async { Navigator.of(context).pop(); },
                   )
                 ]
-              )
+              ),
             )
-          )
+          ]
         )
       )
     );

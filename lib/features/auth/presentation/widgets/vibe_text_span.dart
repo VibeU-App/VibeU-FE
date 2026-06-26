@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class VibeTextSpan extends StatelessWidget {
   final TextStyle defaultStyle;
   final TextStyle inlineActionStyle;
-  final List<({String text, VoidCallback? onTap})> textSpan;
+  final List<({String text, Future<void> Function()? onTap})> textSpan;
 
   const VibeTextSpan({
     super.key,
@@ -26,9 +26,11 @@ class VibeTextSpan extends StatelessWidget {
         ));
       }
 
-      return Text.rich(TextSpan(
-        style: defaultStyle,
-        children: list,
+      return Center(
+        child: Text.rich(TextSpan(
+          style: defaultStyle,
+          children: list,
+        )
       ));
     }
 }

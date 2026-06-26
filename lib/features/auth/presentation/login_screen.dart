@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hicons/flutter_hicons.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
-import 'package:vibeu_fe/config/widgets/vibe_text_field.dart';
-import 'package:vibeu_fe/config/widgets/vibe_primary_button.dart';
+import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
+import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/features/auth/presentation/forgot_password_screen.dart';
 import 'package:vibeu_fe/features/auth/presentation/register_screen.dart';
 
@@ -20,94 +21,86 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: backgroundGradient(),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 412),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return BackgroundGradient(
+      child: Center(child: ListView(
+        children: [
+          const Header(
+            title: 'Welcome Back!',
+            subTitle: 'Log in your VibeU account to experience a wonderful app',
+            showBrand: true,
+            alignCenter: true,
+          ),
 
-              children: [
-                Header(
-                  title: 'Welcome Back!',
-                  subTitle: 'Log in your VibeU account to experience a wonderful app',
-                  showBrand: true,
-                  alignCenter: true,
-                ),
+          const SizedBox(height: 28.0),
 
-                SizedBox(height: 28.0),
+          const VibeTextField(
+            label: 'Email Address',
+            prefixIcon: Icon(
+              Icons.mail_outline,
+              color: AppColors.textMuted500,
+              size: 32,
+            ),
+          ),
 
-                VibeTextField(
-                  label: 'Email Address',
-                  prefixIcon: Icon(
-                    Icons.mail_outline,
-                    color: AppColors.textMuted500,
-                    size: 32,
-                  ),
-                ),
+          const SizedBox(height: 12.0),
 
-                SizedBox(height: 12.0),
+          const VibeTextField(
+            label: 'Password',
+            prefixIcon: Icon(
+              Hicons.lock1LightOutline,
+              color: AppColors.textMuted500,
+              size: 40,
+            ),
+            isPassword: true,
+          ),
 
-                VibeTextField(
-                  label: 'Password',
-                  prefixIcon: ImageIcon(
-                    AssetImage('assets/images/lock1.webp'),
-                    color: AppColors.textMuted500,
-                    size: 32,
-                  ),
-                  isPassword: true,
-                ),
+          const SizedBox(height: 12.0),
 
-                SizedBox(height: 12.0),
+          ForgotPasswordButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                createRoute(const ForgotPasswordScreen())
+              );
+            }
+          ),
 
-                ForgotPasswordButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      createRoute(const ForgotPasswordScreen())
-                    );
-                  }
-                ),
+          const SizedBox(height: 27.0),
 
-                SizedBox(height: 27.0),
+          VibePrimaryButton(
+            text: 'Sign In',
+            onPressed: () async {}
+          ),
 
-                VibePrimaryButton(
-                  text: 'Sign In',
-                  onPressed: () {}
-                ),
+          const SizedBox(height: 21.0),
 
-                SizedBox(height: 21.0),
+          SocialLoginSection(socialLoginButtonList: [
+            SocialLoginButton(
+              onPressed: () {},
+              icon: Image.asset(
+                'assets/images/google.webp',
+                height: 24.47,
+              ),
+              label: 'Continue with Google',
+            ),
+          ]),
 
-                SocialLoginSection(socialLoginButtonList: [
-                  SocialLoginButton(
-                    onPressed: () {},
-                    icon: Image.asset('assets/images/google.webp'),
-                    label: 'Continue with Google',
-                  ),
-                ]),
+          const SizedBox(height: 16.0),
 
-                SizedBox(height: 16.0),
-
-                VibeTextSpan(
-                  defaultStyle: AppTypography.button.copyWith(
-                    color: AppColors.textMuted500,
-                  ),
-                  inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
-                  textSpan: [
-                    (text: 'Don\'t have an account? ', onTap: null),
-                    (text: 'Sign Up', onTap: () {
-                      Navigator.of(context).push(
-                        createRoute(const RegisterScreen())
-                      );
-                    }),
-                  ]
-                )
-              ]
-            )
+          VibeTextSpan(
+            defaultStyle: AppTypography.button.copyWith(
+              color: AppColors.textMuted500,
+            ),
+            inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
+            textSpan: [
+              (text: 'Don\'t have an account? ', onTap: null),
+              (text: 'Sign Up', onTap: () async {
+                Navigator.of(context).push(
+                  createRoute(const RegisterScreen())
+                );
+              }),
+            ]
           )
-        )
+        ]
       ))
     );
   }

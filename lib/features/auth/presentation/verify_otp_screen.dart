@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
-import 'package:vibeu_fe/config/widgets/vibe_primary_button.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
+import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/features/auth/presentation/create_password_screen.dart';
 
 import 'widgets/transition_animation.dart';
@@ -18,85 +18,80 @@ class VerifyOtpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: backgroundGradient(),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 412),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+    return BackgroundGradient(
+      child: Align(
+        alignment: .topCenter,
+        child: ListView(
+          children: [
+            const Align(
+              alignment: .centerLeft,
+              child: PrevScreenButton(),
+            ),
 
-                    Align(
-                      alignment: .centerLeft,
-                      child: PrevScreenButton(),
-                    ),
+            const SizedBox(height: 20.8),
 
-                    SizedBox(height: 20.8),
+            const SizedBox(
+              width: .infinity,
+              child: Header(
+                title: 'Verification',
+                subTitle: 'Verify the OTP sent to your entered email',
+              ),
+            ),
 
-                    Align(
-                      alignment: .centerLeft,
-                      child: Header(
-                        title: 'Verification',
-                        subTitle: 'Verify the OTP sent to your entered email',
-                      ),
-                    ),
+            const SizedBox(height: 37.0),
 
-                    SizedBox(height: 37.0),
+            const Image(
+              image: AssetImage('assets/images/otp.webp'),
+              height: 204.0
+            ),
 
-                    Image.asset('assets/images/otp.webp', height: 204.0),
+            const SizedBox(height: 21.0),
 
-                    SizedBox(height: 21.0),
+            Column(
+              crossAxisAlignment: .center,
+              children: [
+                Text(
+                  'The OTP code has been sent to',
+                  style: AppTypography.bodyStd,
+                ),
 
-                    Text(
-                      'The OTP code has been sent to',
-                      style: AppTypography.bodyStd,
-                    ),
+                Text(
+                  'abc@gmail.com',
+                  style: AppTypography.h3.copyWith(color: AppColors.accent500),
+                ),
+              ]
+            ),
 
-                    Text(
-                      'abc@gmail.com',
-                      style: AppTypography.h3.copyWith(color: AppColors.accent500),
-                    ),
+            const SizedBox(height: 22.0),
 
-                    SizedBox(height: 22.0),
+            const SizedBox(height: 40, child: OtpInputSection()),
 
-                    OtpInputSection(),
+            const SizedBox(height: 20.0),
 
-                    SizedBox(height: 20.0),
+            VibeTextSpan(
+              defaultStyle: AppTypography.bodyStd,
+              inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
+              textSpan: [
+                (
+                  text: 'Haven\'t received OTP code? ',
+                  onTap: null,
+                ),
+                (
+                  text: 'Resend',
+                  onTap: () async {},
+                ),
+              ]
+            ),
 
-                    VibeTextSpan(
-                      defaultStyle: AppTypography.bodyStd,
-                      inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
-                      textSpan: [
-                        (
-                          text: 'Haven\'t received OTP code? ',
-                          onTap: null,
-                        ),
-                        (
-                          text: 'Resend',
-                          onTap: () {},
-                        ),
-                      ]
-                    ),
+            const SizedBox(height: 20.0),
 
-                    SizedBox(height: 20.0),
-
-                    VibePrimaryButton(
-                      text: 'Sign Up', // fr?
-                      onPressed: () { Navigator.of(context).push(createRoute(const CreatePasswordScreen())); },
-                      icon: Icon(AntDesign.arrowright, color: AppColors.surface500),
-                      iconAlignment: .end,
-                    )
-                  ],
-                )
-              )
+            VibePrimaryButton(
+              text: 'Sign Up', // fr?
+              onPressed: () async { Navigator.of(context).push(createRoute(const CreatePasswordScreen())); },
+              icon: Icon(AntDesign.arrowright, color: AppColors.surface500),
+              iconAlignment: .end,
             )
-          )
+          ],
         )
       )
     );

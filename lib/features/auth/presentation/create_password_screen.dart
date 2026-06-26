@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hicons/flutter_hicons.dart';
 
-import 'package:vibeu_fe/config/widgets/vibe_text_field.dart';
-import 'package:vibeu_fe/config/widgets/vibe_primary_button.dart';
+import 'package:vibeu_fe/config/themes/app_colors.dart';
+import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
+import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 
 import 'widgets/background_gradient.dart';
 import 'widgets/prev_screen_button.dart';
@@ -16,76 +18,63 @@ class CreatePasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: backgroundGradient(),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Align(
-            alignment: .topCenter,
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 412),
-                child: Column(
-                  crossAxisAlignment: .center,
-                  children: [
-                    
-                    Align(
-                      alignment: .centerLeft,
-                      child: PrevScreenButton(),
-                    ),
+    return BackgroundGradient(
+      child: Align(
+        alignment: .topCenter,
+        child: ListView(
+          children: [
+            
+            const Align(
+              alignment: .centerLeft,
+              child: PrevScreenButton(),
+            ),
 
-                    SizedBox(height: 14.6),
+            const SizedBox(height: 14.6),
 
-                    Align(
-                      alignment: .centerLeft,
-                      child: Header(
-                        title: 'Create New Password',
-                        subTitle: 'Your new password must be different from previously used password'
-                      ),
-                    ),
+            const Header(
+              title: 'Create New Password',
+              subTitle: 'Your new password must be different from previously used password'
+            ),
 
-                    SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
 
-                    VibeTextField(
-                      label: 'New Password',
-                      prefixIcon: ImageIcon(
-                        AssetImage('assets/images/lock1.webp'),
-                        size: 32.0,
-                      ),
-                      isPassword: true,
-                    ),
+            const VibeTextField(
+              label: 'New Password',
+              prefixIcon: Icon(
+                Hicons.lock1LightOutline,
+                size: 40.0,
+                color: AppColors.textMuted500,
+              ),
+              isPassword: true,
+            ),
 
-                    SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
 
-                    PasswordStrengthIndicator(),
+            const PasswordStrengthIndicator(),
 
-                    SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
 
-                    VibeTextField(
-                      label: 'Confirm New Password',
-                      prefixIcon: ImageIcon(
-                        AssetImage('assets/images/lock1.webp'),
-                        size: 32.0,
-                      ),
-                      isPassword: true,
-                    ),
+            const VibeTextField(
+              label: 'Confirm New Password',
+              prefixIcon: Icon(
+                Hicons.lock1LightOutline,
+                size: 40.0,
+                color: AppColors.textMuted500,
+              ),
+              isPassword: true,
+            ),
 
-                    SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
 
-                    PasswordRequirementsBox(),
+            const PasswordRequirementsBox(),
 
-                    SizedBox(height: 28.0),
+            const SizedBox(height: 28.0),
 
-                    VibePrimaryButton(
-                      text: 'Reset Password',
-                      onPressed: () {},
-                    )
-                  ]
-                )
-              )
+            VibePrimaryButton(
+              text: 'Reset Password',
+              onPressed: () async {},
             )
-          )
+          ]
         )
       )
     );

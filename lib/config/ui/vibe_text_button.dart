@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
 class VibeTextButton extends StatelessWidget {
   final String text;

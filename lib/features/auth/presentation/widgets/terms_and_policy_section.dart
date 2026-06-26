@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/app_typography.dart';
-import 'package:vibeu_fe/config/ui/app_colors.dart';
+import 'package:vibeu_fe/config/themes/app_typography.dart';
+import 'package:vibeu_fe/config/themes/app_colors.dart';
 import 'package:vibeu_fe/features/auth/presentation/widgets/vibe_text_span.dart';
 
 class TermsAndPolicySection extends StatefulWidget {
-  final VoidCallback termsButton;
-  final VoidCallback policyButton;
+  final Future<void> Function() termsButton;
+  final Future<void> Function() policyButton;
 
   const TermsAndPolicySection({
     super.key,

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
 class VibePrimaryButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final Future<void> Function() onPressed;
   final Widget? icon;
   final IconAlignment? iconAlignment;
-
-  // configurations specified in the Figma documentation
-  final double primaryButtonHeight = 49.0;
 
   const VibePrimaryButton({
     super.key,
@@ -23,9 +20,9 @@ class VibePrimaryButton extends StatelessWidget {
     Widget build(BuildContext context) {
       return Container(
         width: double.infinity,
-        height: primaryButtonHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSizes.r8),
+        height: 49.0,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(AppSizes.r8)),
         ),
         child: FilledButton.icon(
           onPressed: onPressed,
@@ -40,7 +37,7 @@ class VibePrimaryButton extends StatelessWidget {
           ),
           label: Text(
             text,
-            style: AppTypography.bodyLead.copyWith(
+            style: AppTypography.h2.copyWith(
               color: AppColors.textBody50,
             )
           ),

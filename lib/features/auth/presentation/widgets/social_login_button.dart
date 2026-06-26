@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
 class SocialLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget icon;
   final String label;
-
-  // configurations specified in Figma documentation
-  final double loginButtonHeight = 48.0;
 
   const SocialLoginButton({
     super.key,
@@ -21,9 +18,9 @@ class SocialLoginButton extends StatelessWidget {
     Widget build(BuildContext context) {
       return Container(
         width: double.infinity,
-        height: loginButtonHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSizes.r8),
+        height: 48.0,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(AppSizes.r8)),
         ),
         child: OutlinedButton.icon(
           label: Text(label, style: AppTypography.bodyStd.copyWith(
@@ -33,9 +30,9 @@ class SocialLoginButton extends StatelessWidget {
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
             backgroundColor: AppColors.surface500,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               side: BorderSide(color: AppColors.surface700),
-              borderRadius: BorderRadius.circular(AppSizes.r8),
+              borderRadius: BorderRadius.all(Radius.circular(AppSizes.r8)),
             ),
           ),
         )

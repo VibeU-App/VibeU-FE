@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 
 class PasswordStrengthIndicator extends StatelessWidget {
   final int strengthLevel;
@@ -13,7 +13,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String strengthText = 'weak';
-    Color strengthColor = Colors.red;
+    Color strengthColor = AppColors.primary500;
 
     
     if (strengthLevel == 2) {

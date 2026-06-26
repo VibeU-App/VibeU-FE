@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:vibeu_fe/features/auth/presentation/login_screen.dart';
 import 'package:vibeu_fe/features/auth/presentation/create_password_screen.dart';
 import 'package:vibeu_fe/features/auth/presentation/forgot_password_screen.dart';
@@ -6,6 +7,8 @@ import 'package:vibeu_fe/features/auth/presentation/register_screen.dart';
 import 'package:vibeu_fe/features/auth/presentation/verify_otp_screen.dart';
 
 void main() {
+  // debugRepaintRainbowEnabled = true;
+
   runApp(MaterialApp(
     home: LoginScreen(),
     routes: <String, WidgetBuilder> {

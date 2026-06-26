@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/design_system.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
+import 'package:vibeu_fe/config/ui/surface_low_shadow_container.dart';
 
 class PasswordRequirementsBox extends StatelessWidget {
   final bool hasMinLength;
@@ -16,15 +17,10 @@ class PasswordRequirementsBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.s4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppSizes.s8),
-        border: Border.all(color: AppColors.surface600),
-      ),
+    return SurfaceLowShadowContainer(
+      padding: const EdgeInsets.all(15.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Text('Password requirements:', style: AppTypography.bodyStd.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: AppSizes.s8),
@@ -44,10 +40,10 @@ class PasswordRequirementsBox extends StatelessWidget {
         Icon(
           isMet ? Icons.check_circle : Icons.circle_outlined,
           size: 16,
-          color: isMet ? Colors.green : AppColors.secondary400,
+          color: isMet ? Colors.green : AppColors.primary500,
         ),
         const SizedBox(width: AppSizes.s4),
-        Text(text, style: AppTypography.button.copyWith(color: AppColors.secondary400)),
+        Text(text, style: AppTypography.caption),
       ],
     );
   }

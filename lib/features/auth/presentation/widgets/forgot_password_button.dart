@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/ui/app_colors.dart';
-import 'package:vibeu_fe/config/ui/app_typography.dart';
+import 'package:vibeu_fe/config/themes/app_colors.dart';
+import 'package:vibeu_fe/config/themes/app_typography.dart';
 
 class ForgotPasswordButton extends StatelessWidget {
   final VoidCallback onPressed;

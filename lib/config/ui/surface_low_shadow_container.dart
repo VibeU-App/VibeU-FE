@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 
-import '../../ui/design_system.dart';
+import '../themes/design_system.dart';
 
 class SurfaceLowShadowContainer extends StatelessWidget {
   final Widget child;
 
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final Alignment? alignment;
+  final double? height;
+
   const SurfaceLowShadowContainer({
     super.key,
     required this.child,
+    this.padding,
+    this.margin,
+    this.alignment,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: alignment,
+      padding: padding,
+      margin: margin,
       decoration: BoxDecoration(
         color: AppColors.surface500,
         boxShadow: [AppShadows.low],
