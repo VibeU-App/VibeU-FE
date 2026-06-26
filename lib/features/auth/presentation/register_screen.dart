@@ -15,8 +15,9 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundGradient(
-      child: Center(
-        child: Column(
+      child: Align(
+        alignment: .topCenter,
+        child: ListView(
           children: [
             const Header(
               title: 'Register Now!',
