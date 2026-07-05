@@ -7,11 +7,13 @@ import 'package:vibeu_fe/features/auth/presentation/widgets/vibe_text_span.dart'
 class TermsAndPolicySection extends StatefulWidget {
   final Future<void> Function() termsButton;
   final Future<void> Function() policyButton;
+  final void Function(bool) onChanged;
 
   const TermsAndPolicySection({
     super.key,
     required this.termsButton,
     required this.policyButton,
+    required this.onChanged,
   });
 
   @override
@@ -24,39 +26,27 @@ class _TermsAndPolicyState extends State<TermsAndPolicySection> {
   @override
     Widget build(BuildContext context) {
       return Align(
-        alignment: Alignment.centerLeft,
+        alignment: .centerLeft,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Checkbox(
+              activeColor: AppColors.textPrimary500,
               value: isChecked,
               onChanged: (bool? value) {
                 setState(() { isChecked = !isChecked; });
+                widget.onChanged(value!);
               },
             ),
 
             VibeTextSpan(
               defaultStyle: AppTypography.overline,
               inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
-              textSpan: [
-                (
-                  text: 'I agree with the ',
-                  onTap: null,
-                ),
-                (
-                  text: 'Terms of Service',
-                  onTap: widget.termsButton,
-                ),
-                (
-                  text: ' and ',
-                  onTap: null,
-                ),
-                (
-                  text: 'Privacy Policy',
-                  onTap: widget.policyButton,
-                ),
-              ],
-            ),
+            )
+            ..text('I agree with the ')
+            ..link('Terms of Service', widget.termsButton)
+            ..text(' and ')
+            ..link('Privacy Policy', widget.policyButton),
           ]
         )
       );

@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:vibeu_fe/features/auth/presentation/login_screen.dart';
-import 'package:vibeu_fe/features/auth/presentation/create_password_screen.dart';
-import 'package:vibeu_fe/features/auth/presentation/forgot_password_screen.dart';
-import 'package:vibeu_fe/features/auth/presentation/register_screen.dart';
-import 'package:vibeu_fe/features/auth/presentation/verify_otp_screen.dart';
+import 'package:vibeu_fe/features/auth/presentation/views/login_view.dart';
+import 'package:vibeu_fe/features/auth/presentation/controllers/login_controller.dart';
+import 'package:vibeu_fe/features/auth/presentation/widgets/otp_image_container.dart';
 
 void main() {
   // debugRepaintRainbowEnabled = true;
 
   runApp(MaterialApp(
-    home: LoginScreen(),
-    routes: <String, WidgetBuilder> {
-      '/login': (context) => const LoginScreen(),
-      '/register': (context) => const RegisterScreen(),
-      '/verification': (context) => const VerifyOtpScreen(),
-      '/forgot_password': (context) => const ForgotPasswordScreen(),
-      '/create_password': (context) => const CreatePasswordScreen(),
-    },
+    home: LoginView(controller: LoginController()),
   ));
 }

@@ -3,17 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
-import 'package:vibeu_fe/features/auth/presentation/verify_otp_screen.dart';
 
-import 'widgets/transition_animation.dart';
-import 'widgets/email_button.dart';
-import 'widgets/prev_screen_button.dart';
-import 'widgets/background_gradient.dart';
-import 'widgets/header.dart';
+import 'verify_otp_view.dart';
+import '../controllers/otp_controller.dart';
+import '../controllers/forgot_password_controller.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+import '../widgets/transition_animation.dart';
+import '../widgets/email_button.dart';
+import '../widgets/prev_view_button.dart';
+import '../widgets/background_gradient.dart';
+import '../widgets/header.dart';
 
+class ForgotPasswordView extends StatefulWidget {
+  const ForgotPasswordView({
+    super.key,
+    required this.controller,
+  });
+
+  final ForgotPasswordController controller;
+
+  @override
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
+}
+
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
+  late final TextEditingController _email;
+
+  @override
+  void initState() {
+    _email = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return BackgroundGradient(
@@ -22,7 +49,7 @@ class ForgotPasswordScreen extends StatelessWidget {
         child: ListView(
           children: [
 
-            const Align(alignment: .centerLeft, child: PrevScreenButton()),
+            const Align(alignment: .centerLeft, child: PrevViewButton()),
 
             const SizedBox(height: 22.0),
 
@@ -33,7 +60,8 @@ class ForgotPasswordScreen extends StatelessWidget {
 
             const SizedBox(height: 17.0),
 
-            const VibeTextField(
+            VibeTextField(
+              controller: _email,
               prefixIcon: Icon(
                 Icons.mail_outline,
                 color: AppColors.textMuted500,
@@ -49,11 +77,11 @@ class ForgotPasswordScreen extends StatelessWidget {
               children: [
                 EmailButton(
                   text: 'Primary Email',
-                  onPressed: () {},
+                  onPressed: () { widget.controller.getPrimaryEmail(); },
                 ),
                 EmailButton(
                   text: 'Recovery Email',
-                  onPressed: () {},
+                  onPressed: () { widget.controller.getRecoveryEmail(); },
                 )
               ]
             ),
@@ -63,8 +91,14 @@ class ForgotPasswordScreen extends StatelessWidget {
             VibePrimaryButton(
               text: 'Send OTP Code',
               onPressed: () async {
+                widget.controller.getEmail(
+                  _email.value.text
+                );
+
                 Navigator.of(context).push(
-                  createRoute(const VerifyOtpScreen())
+                  createRoute(VerifyOtpView(
+                    controller: OtpController(email: _email.value.text) // demo purpose only
+                  ))
                 );
               }
             )

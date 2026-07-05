@@ -1,36 +1,50 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class VibeTextSpan extends StatelessWidget {
+class VibeTextSpan extends StatefulWidget {
   final TextStyle defaultStyle;
   final TextStyle inlineActionStyle;
-  final List<({String text, Future<void> Function()? onTap})> textSpan;
+  final List<TextSpan> spans;
 
-  const VibeTextSpan({
+  VibeTextSpan({
     super.key,
     required this.defaultStyle,
     required this.inlineActionStyle,
-    required this.textSpan,
-  });
+  }) : spans = [];
 
   @override
-    Widget build(BuildContext context) {
-      List<TextSpan> list = [];
-      for (var span in textSpan) {
-        list.add(TextSpan(
-          text: span.text,
-          recognizer: span.onTap == null ?
-            null : (TapGestureRecognizer()..onTap = span.onTap),
-          style: span.onTap != null ?
-            inlineActionStyle : null,
-        ));
-      }
+  State<VibeTextSpan> createState() => _VibeTextSpanState();
 
-      return Center(
-        child: Text.rich(TextSpan(
-          style: defaultStyle,
-          children: list,
-        )
-      ));
+  void text(String text) {
+    spans.add(TextSpan(
+      text: text,
+      style: defaultStyle,
+    ));
+  }
+
+  void link(String text, Future<void> Function() onTap) {
+    spans.add(TextSpan(
+      text: text,
+      style: inlineActionStyle,
+      recognizer: TapGestureRecognizer()..onTap = onTap,
+    ));
+  }
+}
+
+class _VibeTextSpanState extends State<VibeTextSpan> {
+  @override
+  void dispose() {
+    for (var s in widget.spans) {
+      s.recognizer?.dispose();
     }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text.rich(TextSpan(
+      style: widget.defaultStyle,
+      children: widget.spans,
+    )));
+  }
 }

@@ -21,7 +21,7 @@ class Header extends StatelessWidget {
       crossAxisAlignment: alignCenter ? .center : .start,
       children: [
         if (showBrand)...[
-          Image.asset('assets/images/vibeu.webp', height: 96.0),
+          Image.asset(AppAssets.vibeU, height: 96.0),
         ],
         Text(
           title,

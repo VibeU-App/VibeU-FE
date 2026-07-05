@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PrevScreenButton extends StatelessWidget {
-  const PrevScreenButton({super.key});
+class PrevViewButton extends StatelessWidget {
+  const PrevViewButton({super.key});
 
   @override
   Widget build(BuildContext context) {

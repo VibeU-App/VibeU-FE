@@ -7,12 +7,18 @@ class VibeTextField extends StatefulWidget {
   final String label;
   final Widget prefixIcon;
   final bool isPassword;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final TextInputType? keyboardType;
 
   const VibeTextField({
     super.key,
     required this.label,
     required this.prefixIcon,
     this.isPassword = false,
+    this.controller,
+    this.onChanged,
+    this.keyboardType,
   });
 
   @override
@@ -20,7 +26,12 @@ class VibeTextField extends StatefulWidget {
 }
 
 class _VibeTextFieldState extends State<VibeTextField> {
-  bool _obscureText = false;
+  late bool _obscureText;
+
+  @override initState() {
+    super.initState();
+    _obscureText = widget.isPassword;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +45,9 @@ class _VibeTextFieldState extends State<VibeTextField> {
 
           Expanded(
             child: TextField(
+              keyboardType: widget.keyboardType,
+              controller: widget.controller,
+              onChanged: widget.onChanged,
               style: AppTypography.button,
               obscureText: _obscureText,
               decoration: InputDecoration(

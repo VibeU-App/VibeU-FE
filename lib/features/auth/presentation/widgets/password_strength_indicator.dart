@@ -3,61 +3,66 @@ import 'package:flutter/material.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 
 class PasswordStrengthIndicator extends StatelessWidget {
+  final String _text;
+  final Color _color;
   final int strengthLevel;
 
-  const PasswordStrengthIndicator({
-    super.key,
-    this.strengthLevel = 1, 
-  });
+  const PasswordStrengthIndicator._(this.strengthLevel, String text, Color color)
+  : _text = text, _color = color;
+
+  factory PasswordStrengthIndicator({required int strengthLevel}) {
+    switch(strengthLevel) {
+      case 0:
+        return PasswordStrengthIndicator._(strengthLevel, '', AppColors.surface600);
+      case 1:
+        return PasswordStrengthIndicator._(strengthLevel, 'weak', AppColors.primary500);
+      case 2:
+        return PasswordStrengthIndicator._(strengthLevel, 'fair', Colors.orange);
+      case 3:
+        return PasswordStrengthIndicator._(strengthLevel, 'strong', Colors.green);
+      case 4:
+        return PasswordStrengthIndicator._(strengthLevel, 'very strong', Color(0xff02590f));
+      default:
+        throw Exception('bad strength value specified');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    String strengthText = 'weak';
-    Color strengthColor = AppColors.primary500;
-
-    
-    if (strengthLevel == 2) {
-      strengthText = 'fair';
-      strengthColor = Colors.orange;
-    } else if (strengthLevel >= 3) {
-      strengthText = 'strong';
-      strengthColor = Colors.green;
-    }
-
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Password Strength', style: AppTypography.bodyStd.copyWith(color: AppColors.textMuted300)),
-            Text(strengthText, style: AppTypography.bodyStd.copyWith(color: strengthColor))
-          ],
-        ),
-        const SizedBox(height: 8.0),
-        Row(
-          children: [
-            _buildStrengthBar(isActive: strengthLevel >= 1, color: strengthColor),
-            const SizedBox(width: 8),
-            _buildStrengthBar(isActive: strengthLevel >= 2, color: strengthColor),
-            const SizedBox(width: 8),
-            _buildStrengthBar(isActive: strengthLevel >= 3, color: strengthColor),
-            const SizedBox(width: 8),
-            _buildStrengthBar(isActive: strengthLevel >= 4, color: strengthColor),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStrengthBar({required bool isActive, required Color color}) {
-    return Expanded(
-      child: Container(
-        height: 4,
-        decoration: BoxDecoration(
-          color: isActive ? color : AppColors.surface600,
-          borderRadius: BorderRadius.circular(2),
-        ),
-      ),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 100),
+      transitionBuilder: (child, animation) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      child: Column(
+        key: ValueKey(strengthLevel),
+        children: [
+          Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              Text('Password Strength', style: AppTypography.bodyStd.copyWith(color: AppColors.textMuted300)),
+              Text(_text, style: AppTypography.bodyStd.copyWith(color: _color))
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            key: ValueKey('bars_$strengthLevel'),
+            children: List.generate(4, (int index) => Expanded(
+              child: Container(
+                height: 4.0,
+                decoration: BoxDecoration(
+                  borderRadius: const .all(.circular(AppSizes.r999)),
+                  color: strengthLevel > index ? _color : AppColors.surface600,
+                ),
+                margin: .only(
+                  left: index > 0 ? 4 : 0,
+                  right: index < 3 ? 4 : 0,
+                )
+              )
+            ))
+          )
+        ]
+      )
     );
   }
 }

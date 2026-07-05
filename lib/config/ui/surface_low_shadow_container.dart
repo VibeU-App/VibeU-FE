@@ -8,7 +8,6 @@ class SurfaceLowShadowContainer extends StatelessWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final Alignment? alignment;
-  final double? height;
 
   const SurfaceLowShadowContainer({
     super.key,
@@ -16,7 +15,6 @@ class SurfaceLowShadowContainer extends StatelessWidget {
     this.padding,
     this.margin,
     this.alignment,
-    this.height,
   });
 
   @override

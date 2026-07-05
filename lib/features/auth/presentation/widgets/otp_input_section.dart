@@ -4,7 +4,12 @@ import 'package:flutter/services.dart';
 import 'otp_box.dart';
 
 class OtpInputSection extends StatefulWidget {
-  const OtpInputSection({ super.key, });
+  final TextEditingController controller;
+
+  const OtpInputSection({
+    super.key,
+    required this.controller,
+  });
 
   @override
   State<OtpInputSection> createState() => _OtpInputState();
@@ -21,12 +26,11 @@ class _OtpInputState extends State<OtpInputSection>{
   void initState() {
     super.initState();
     _node = FocusNode();
-    _controller = TextEditingController();
+    _controller = widget.controller;
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     _node.dispose();
     super.dispose();
   }
@@ -40,7 +44,8 @@ class _OtpInputState extends State<OtpInputSection>{
             maxLength: _otpLength,
             focusNode: _node,
             controller: _controller,
-            keyboardType: TextInputType.number,
+            keyboardType: .number,
+            enableInteractiveSelection: false,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(_otpLength),
@@ -50,16 +55,17 @@ class _OtpInputState extends State<OtpInputSection>{
         GestureDetector(
           onTap: () {
             _node.requestFocus();
+            // _moveCursorToEnd();
           },
-          child: ValueListenableBuilder(
-            valueListenable: _controller,
-            builder: (context, value, w) {
+          child: ListenableBuilder(
+            listenable: Listenable.merge([ _controller, _node ]),
+            builder: (context, w) {
               return Row(
                 mainAxisAlignment: .spaceBetween,
                 children: List.generate(_otpLength, growable: false,
                   (index) => OtpBox(
-                    num: value.text.length > index ? value.text[index] : null,
-                    focused: value.text.length == index && _node.hasFocus,
+                    num: _controller.text.length > index ? _controller.text[index] : null,
+                    focused: _controller.text.length == index && _node.hasFocus,
                   )
                 )
               );
@@ -70,4 +76,3 @@ class _OtpInputState extends State<OtpInputSection>{
     );
   }
 }
-
