@@ -1,41 +1,38 @@
-import 'dart:async';
+import '../../../../utils/command.dart';
+import '../../../../utils/result.dart';
 
-import 'package:flutter/material.dart';
+class LoginController {
+  LoginController() {
+    signIn = Command1<void, (String, String)>(_signIn);
+    googleSignIn = Command0(_googleSignIn);
+  }
 
-class LoginController extends ChangeNotifier {
-  LoginController();
+  late Command1 signIn;
+  late Command0 googleSignIn;
 
-  bool _running = false;
-  bool get isRunning => _running;
-
-  bool _googleRunning = false;
-  bool get isGoogleRunning => _googleRunning;
-
-  Future<void> signIn((String, String) user) async {
-    if (_running) return;
-
+  Future<Result<void>> _signIn((String, String) user) async {
     final (email, password) = user;
-    _running = true;
-    notifyListeners();
+
+    if (email.isEmpty || password.isEmpty) {
+      return Result.error(
+        Exception('pls fill in email and password')
+      );
+    }
 
     // TODO: implement auth repo signin
     await Future.delayed(const Duration(seconds: 2));
+    print('sign in {$email} : {$password}'); 
 
-    _running = false;
-    notifyListeners();
-    return;
+    return Result.ok(null);
   }
 
 
-  Future<void> googleSignIn() async {
+  Future<Result<void>> _googleSignIn() async {
     //TODO: implement google sign in
-    _googleRunning = true;
-    notifyListeners();
 
     await Future.delayed(const Duration(seconds: 2));
+    print('google sign in'); 
 
-    _googleRunning = false;
-    notifyListeners();
-    return;
+    return Result.ok(null);
   }
 }

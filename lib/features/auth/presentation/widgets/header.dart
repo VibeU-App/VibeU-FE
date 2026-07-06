@@ -22,6 +22,7 @@ class Header extends StatelessWidget {
       children: [
         if (showBrand)...[
           Image.asset(AppAssets.vibeU, height: 96.0),
+          const SizedBox(height: AppSizes.s16),
         ],
         Text(
           title,
@@ -31,7 +32,7 @@ class Header extends StatelessWidget {
           textAlign: alignCenter ? .center : null,
         ),
 
-        const SizedBox(height: 6.0),
+        const SizedBox(height: AppSizes.s8),
 
         Text(
           subTitle,

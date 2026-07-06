@@ -41,14 +41,14 @@ class VibePrimaryButton extends StatelessWidget {
               icon,
               opacity: 0.0,
             ),
-            const SizedBox.square(dimension: 15.22),
+            const SizedBox.square(dimension: AppSizes.s16),
             Text(
               text,
               style: AppTypography.button.copyWith(
                 color: AppColors.textBody50,
               )
             ),
-            const SizedBox.square(dimension: 15.22),
+            const SizedBox.square(dimension: AppSizes.s16),
             Container(child: running ?
               CircularProgressIndicator(color: AppColors.textBody50)
               : icon

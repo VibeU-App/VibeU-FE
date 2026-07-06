@@ -26,7 +26,7 @@ class SurfaceLowShadowContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface500,
         boxShadow: [AppShadows.low],
-        borderRadius: BorderRadius.circular(AppSizes.r8),
+        borderRadius: const .all(.circular(AppSizes.r8)),
       ),
       child: child,
     );

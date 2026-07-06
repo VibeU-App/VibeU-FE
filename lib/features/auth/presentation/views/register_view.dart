@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:vibeu_fe/config/themes/design_system.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../utils/result.dart';
+
+import 'package:vibeu_fe/routing/routes.dart';
+import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 
@@ -31,16 +35,26 @@ class _RegisterViewState extends State<RegisterView> {
   void initState() {
     super.initState();
     _email = TextEditingController();
+    widget.controller.signUp.addListener(_onSignUp);
+  }
+
+  @override
+  void didUpdateWidget(covariant RegisterView oldWidget) {
+    oldWidget.controller.signUp.removeListener(_onSignUp);
+    widget.controller.signUp.addListener(_onSignUp);
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
     _email.dispose();
+    widget.controller.signUp.removeListener(_onSignUp);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = widget.controller;
     return BackgroundGradient(
       child: Align(
         alignment: .topCenter,
@@ -51,7 +65,7 @@ class _RegisterViewState extends State<RegisterView> {
               subTitle: 'Fill in your email to create a new account',
             ),
 
-            const SizedBox(height: 17.0),
+            const SizedBox(height: AppSizes.s16),
 
             VibeTextField(
               label: 'Email Address',
@@ -63,30 +77,30 @@ class _RegisterViewState extends State<RegisterView> {
               ),
             ),
 
-            const SizedBox(height: 14.0),
+            const SizedBox(height: AppSizes.s16),
 
             TermsAndPolicySection(
-              termsButton: () async { widget.controller.termsOfServices(); },
-              policyButton: () async { widget.controller.privacyPolicy(); },
-              onChanged: (value) { widget.controller.termsComplied = value; }
+              termsButton: () async { controller.termsOfServices(); },
+              policyButton: () async { controller.privacyPolicy(); },
+              onChanged: (value) { controller.termsComplied = value; }
             ),
 
-            const SizedBox(height: 16.0),
+            const SizedBox(height: AppSizes.s16),
 
             ListenableBuilder(
-              listenable: widget.controller,
+              listenable: controller.signUp,
               builder: (_, _) {
                 return VibePrimaryButton(
                   text: 'Sign Up',
                   onPressed: () async {
-                    widget.controller.signUp(_email.value.text);
+                    controller.signUp.execute(_email.value.text);
                   },
-                  running: widget.controller.isRunning,
+                  running: controller.signUp.isRunning,
                 );
               }
             ),
 
-            const SizedBox(height: 16.0),
+            const SizedBox(height: AppSizes.s16),
 
             Align(
               alignment: Alignment.center,
@@ -95,11 +109,29 @@ class _RegisterViewState extends State<RegisterView> {
                 inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
               )
               ..text('Already have an account? ')
-              ..link('Sign in', () async { Navigator.of(context).pop(); })
+              ..link('Sign in', () async { context.go(Routes.login); })
             )
           ]
         )
       )
     );
+  }
+
+  void _onSignUp() {
+    final result = widget.controller.signUp.result;
+    switch(result) {
+      case Ok():
+        widget.controller.signUp.clear();
+        context.go(Routes.login);
+        break;
+      case Error():
+        widget.controller.signUp.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text( result.exception.toString() ),
+          )
+        );
+        break;
+    }
   }
 }

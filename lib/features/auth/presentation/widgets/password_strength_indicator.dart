@@ -44,7 +44,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
               Text(_text, style: AppTypography.bodyStd.copyWith(color: _color))
             ],
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: AppSizes.s8),
           Row(
             key: ValueKey('bars_$strengthLevel'),
             children: List.generate(4, (int index) => Expanded(

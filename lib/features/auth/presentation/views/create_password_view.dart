@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 
-import 'package:vibeu_fe/config/themes/app_colors.dart';
+import '../../../../utils/result.dart';
+import '../../../../routing/routes.dart';
+
+import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 
-import '../controllers/create_password_controller.dart';
+import '../controllers/forgot_password_controller.dart';
 
 import '../widgets/background_gradient.dart';
 import '../widgets/prev_view_button.dart';
@@ -19,7 +23,7 @@ class CreatePasswordView extends StatefulWidget {
     required this.controller,
   });
 
-  final CreatePasswordController controller;
+  final ForgotPasswordController controller;
 
   @override
   State<StatefulWidget> createState() => _CreatePasswordViewState();
@@ -33,11 +37,20 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
   void initState() {
     _newPassword = TextEditingController();
     _confirmPassword = TextEditingController();
+    widget.controller.createPassword.addListener(_createPassword);
     super.initState();
   }
 
   @override
+  void didUpdateWidget(covariant CreatePasswordView oldWidget) {
+    oldWidget.controller.removeListener(_createPassword);
+    widget.controller.createPassword.addListener(_createPassword);
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
+    widget.controller.removeListener(_createPassword);
     _newPassword.dispose();
     _confirmPassword.dispose();
     super.dispose();
@@ -45,30 +58,36 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = widget.controller;
     return BackgroundGradient(
       child: Align(
         alignment: .topCenter,
         child: ListView(
           children: [
             
-            const Align(
+            Align(
               alignment: .centerLeft,
-              child: PrevViewButton()
+              child: PrevViewButton(
+                onPressed: () { controller.page.previousPage(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                ); }
+              )
             ),
 
-            const SizedBox(height: 14.6),
+            const SizedBox(height: AppSizes.s16),
 
             const Header(
               title: 'Create New Password',
               subTitle: 'Your new password must be different from previously used password'
             ),
 
-            const SizedBox(height: 32.0),
+            const SizedBox(height: AppSizes.s32),
 
             VibeTextField(
               label: 'New Password',
               controller: _newPassword,
-              onChanged: widget.controller.newPassword,
+              onChanged: controller.onNewPassword,
               prefixIcon: Icon(
                 Hicons.lock1LightOutline,
                 size: 40.0,
@@ -77,18 +96,18 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
               isPassword: true,
             ),
 
-            const SizedBox(height: 16.0),
+            const SizedBox(height: AppSizes.s16),
 
             ListenableBuilder(
-              listenable: widget.controller,
+              listenable: controller,
               builder: (_, _) {
                 return PasswordStrengthIndicator(
-                    strengthLevel: widget.controller.newPasswordStrength(),
+                    strengthLevel: controller.newPassword.strength(),
                 );
               }
             ),
 
-            const SizedBox(height: 16.0),
+            const SizedBox(height: AppSizes.s16),
 
             VibeTextField(
               label: 'Confirm New Password',
@@ -101,33 +120,34 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
               isPassword: true,
             ),
 
-            const SizedBox(height: 16.0),
+            const SizedBox(height: AppSizes.s16),
 
             ListenableBuilder(
-              listenable: widget.controller,
+              listenable: controller,
               builder: (_, _) {
+                final newPassword = controller.newPassword;
                 return PasswordRequirementsBox(
-                  hasMinLength: widget.controller.hasMinLength,
-                  hasNumber: widget.controller.hasNumber,
-                  hasSpecialChar: widget.controller.hasSpecialChar,
+                  hasMinLength: newPassword.hasMinLength,
+                  hasNumber: newPassword.hasNumber,
+                  hasSpecialChar: newPassword.hasSpecialChar,
                 );
               }
             ),
 
-            const SizedBox(height: 28.0),
+            const SizedBox(height: AppSizes.s24),
 
             ListenableBuilder(
-              listenable: widget.controller,
+              listenable: controller.createPassword,
               builder: (_, _) {
                 return VibePrimaryButton(
                   text: 'Reset Password',
                   onPressed: () async {
-                    widget.controller.createPassword((
+                    controller.createPassword.execute((
                       _newPassword.value.text,
                       _confirmPassword.value.text,
                     ));
                   },
-                  running: widget.controller.isRunning,
+                  running: controller.createPassword.isRunning,
                 );
               }
             )
@@ -135,5 +155,25 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
         )
       )
     );
+  }
+
+  void _createPassword() {
+    final result = widget.controller.createPassword.result;
+    switch(result) {
+      case Ok():
+        widget.controller.createPassword.clear();
+        
+        // idk, maybe go back to login?
+        context.go(Routes.login);
+        break;
+      case Error():
+        widget.controller.createPassword.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text( result.exception.toString() ),
+          )
+        );
+        break;
+    }
   }
 }

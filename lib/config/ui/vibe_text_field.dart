@@ -41,7 +41,7 @@ class _VibeTextFieldState extends State<VibeTextField> {
         children: [
           _IconBox(icon: widget.prefixIcon),
           
-          const SizedBox(width: 8.0),
+          const SizedBox(width: AppSizes.s8),
 
           Expanded(
             child: TextField(

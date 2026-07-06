@@ -1,38 +1,37 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
-class RegisterController extends ChangeNotifier {
+import '../../../../utils/command.dart';
+import '../../../../utils/result.dart';
+
+class RegisterController {
   // TODO: inject auth repo
-  RegisterController();
-
-  bool _running = false;
-  bool get isRunning => _running;
-
-  bool _termsComplied = false;
-  set termsComplied(bool value) {
-    _termsComplied = value;
+  RegisterController() {
+    signUp = Command1<void, String>(_signUp);
   }
 
-  Future<void> signUp(String email) async {
+  late Command1 signUp;
+
+  bool _termsComplied = false;
+
+  set termsComplied(bool value) { _termsComplied = value; }
+
+  Future<Result<void>> _signUp(String email) async {
     // TODO: implement signUp
     if (!_termsComplied) {
-      print('terms not complied');
-      return;
+      return Result.error(
+        Exception('terms not complied!')
+      );
     }
 
     if (email.isEmpty) {
-      print('email empty');
-      return;
+      return Result.error(
+        Exception('empty email field')
+      );
     }
 
-    _running = true;
-    notifyListeners();
-
     await Future.delayed(const Duration(seconds: 2));
-
-    _running = false;
-    notifyListeners();
+    print('sign up: $email');
+    return Result.ok(null);
   }
 
   Future<void> termsOfServices() async {

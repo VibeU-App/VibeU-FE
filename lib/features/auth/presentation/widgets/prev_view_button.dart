@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PrevViewButton extends StatelessWidget {
-  const PrevViewButton({super.key});
+  final VoidCallback onPressed;
+  const PrevViewButton({
+    super.key,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -9,9 +13,7 @@ class PrevViewButton extends StatelessWidget {
       style: ButtonStyle(
         iconSize: .all(40),
       ),
-      onPressed: () {
-        Navigator.of(context).pop();
-      }
+      onPressed: onPressed,
     );
   }
 }
