@@ -46,11 +46,11 @@ class OnboardingPage extends StatelessWidget {
                     padding: const EdgeInsets.only(
                       top: 48,
                       bottom: 40,
-                      left: Spacing.s24,
-                      right: Spacing.s24,
+                      left: AppSizes.s24,
+                      right: AppSizes.s24,
                     ),
                     child: Image.asset(
-                      data.topImagePath,
+                      data.imagePath,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -60,7 +60,7 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: Spacing.s48),
+        const SizedBox(height: AppSizes.s48),
 
         // ── PAGINATION DOTS ──
         PaginationDots(
@@ -68,11 +68,11 @@ class OnboardingPage extends StatelessWidget {
           currentPage: currentPage,
         ),
 
-        const SizedBox(height: Spacing.s24),
+        const SizedBox(height: AppSizes.s24),
 
         // ── TITLE ──
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.s32),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.s32),
           child: Text(
             data.title,
             textAlign: TextAlign.center,
@@ -84,11 +84,11 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: Spacing.s16),
+        const SizedBox(height: AppSizes.s16),
 
         // ── DESCRIPTION ──
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.s32),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.s32),
           child: Text(
             data.description,
             textAlign: TextAlign.center,

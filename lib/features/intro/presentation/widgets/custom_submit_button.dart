@@ -22,9 +22,9 @@ class CustomSubmitButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary500,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: Spacing.s16),
+          padding: const EdgeInsets.symmetric(vertical: AppSizes.s16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Radius.r12),
+            borderRadius: BorderRadius.circular(AppSizes.r12),
           ),
           elevation: 0,
         ),
