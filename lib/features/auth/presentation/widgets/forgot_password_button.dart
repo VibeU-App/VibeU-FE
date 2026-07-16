@@ -16,6 +16,9 @@ class ForgotPasswordButton extends StatelessWidget {
       return Align(
         alignment: Alignment.centerRight,
         child: TextButton(
+          style: TextButton.styleFrom(
+            overlayColor: Colors.transparent,
+          ),
           onPressed: onPressed,
           child: Text(
             'Forgot Password?',
@@ -25,7 +28,7 @@ class ForgotPasswordButton extends StatelessWidget {
               decoration: TextDecoration.underline,
               decorationColor: AppColors.textPrimary500,
               decorationStyle: TextDecorationStyle.solid,
-              // why text not bold enough
+              // still, why text not bold enough?
             ),
           ),
         )

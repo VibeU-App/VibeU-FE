@@ -5,10 +5,14 @@ import 'otp_box.dart';
 
 class OtpInputSection extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode node;
+  final int otpLength;
 
   const OtpInputSection({
     super.key,
     required this.controller,
+    required this.node,
+    this.otpLength = 6,
   });
 
   @override
@@ -17,21 +21,18 @@ class OtpInputSection extends StatefulWidget {
 
 class _OtpInputState extends State<OtpInputSection>{
 
-  static const _otpLength = 6;
-
   late FocusNode _node;
   late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _node = FocusNode();
+    _node = widget.node;
     _controller = widget.controller;
   }
 
   @override
   void dispose() {
-    _node.dispose();
     super.dispose();
   }
 
@@ -41,28 +42,32 @@ class _OtpInputState extends State<OtpInputSection>{
       children: [
         Offstage(
           child: TextField(
-            maxLength: _otpLength,
+            maxLength: widget.otpLength,
             focusNode: _node,
             controller: _controller,
             keyboardType: .number,
             enableInteractiveSelection: false,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(_otpLength),
+              LengthLimitingTextInputFormatter(widget.otpLength),
             ],
+            onChanged: (str) {
+              if (_controller.text.length == widget.otpLength) {
+                _node.unfocus();
+              }
+            },
           ),
         ),
         GestureDetector(
           onTap: () {
             _node.requestFocus();
-            // _moveCursorToEnd();
           },
           child: ListenableBuilder(
             listenable: Listenable.merge([ _controller, _node ]),
             builder: (context, w) {
               return Row(
                 mainAxisAlignment: .spaceBetween,
-                children: List.generate(_otpLength, growable: false,
+                children: List.generate(widget.otpLength, growable: false,
                   (index) => OtpBox(
                     num: _controller.text.length > index ? _controller.text[index] : null,
                     focused: _controller.text.length == index && _node.hasFocus,

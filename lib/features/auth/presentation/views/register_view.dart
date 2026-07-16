@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../utils/result.dart';
+import 'package:vibeu_fe/utils/result.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
@@ -109,7 +109,7 @@ class _RegisterViewState extends State<RegisterView> {
                 inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
               )
               ..text('Already have an account? ')
-              ..link('Sign in', () async { context.go(Routes.login); })
+              ..link('Sign in', () async { context.pop(Routes.login); })
             )
           ]
         )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../utils/command.dart';
-import '../../../../utils/result.dart';
+import 'package:vibeu_fe/utils/command.dart';
+import 'package:vibeu_fe/utils/result.dart';
 
 class ForgotPasswordController extends ChangeNotifier {
   ForgotPasswordController() {

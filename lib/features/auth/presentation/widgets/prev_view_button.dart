@@ -9,9 +9,15 @@ class PrevViewButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackButton(
-      style: ButtonStyle(
-        iconSize: .all(40),
+    return IconButton(
+      padding: .zero,
+      icon: Transform.translate(
+        offset: const Offset(-6, 0),
+        child: const Icon(Icons.arrow_back_rounded),
+      ),
+      iconSize: 40,
+      style: IconButton.styleFrom(
+        overlayColor: Colors.transparent,
       ),
       onPressed: onPressed,
     );

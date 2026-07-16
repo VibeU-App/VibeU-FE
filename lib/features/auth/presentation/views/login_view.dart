@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 
-import '../../../../utils/result.dart';
+import 'package:vibeu_fe/utils/result.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
@@ -99,7 +99,7 @@ class _LoginViewState extends State<LoginView> {
 
           ForgotPasswordButton(
             onPressed: () {
-              context.go(Routes.forgotPassword);
+              context.push(Routes.forgotPassword);
             }
           ),
 
@@ -148,7 +148,7 @@ class _LoginViewState extends State<LoginView> {
           )
           ..text('Don\'t have an account? ')
           ..link('Sign Up', () async {
-            context.go(Routes.register);
+            context.push(Routes.register);
           }),
         ]
       ))

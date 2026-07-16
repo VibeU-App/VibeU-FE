@@ -1,5 +1,5 @@
-import '../../../../utils/command.dart';
-import '../../../../utils/result.dart';
+import 'package:vibeu_fe/utils/command.dart';
+import 'package:vibeu_fe/utils/result.dart';
 
 class LoginController {
   LoginController() {

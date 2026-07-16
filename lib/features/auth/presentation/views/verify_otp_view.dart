@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-import '../../../../utils/result.dart';
+import 'package:vibeu_fe/utils/result.dart';
 
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
@@ -28,13 +28,14 @@ class VerifyOtpView extends StatefulWidget {
 
 class _VerifyOtpViewState extends State<VerifyOtpView> {
   late final TextEditingController _otp;
+  late final FocusNode _otpNode;
+  static const _otpLength = 6;
 
   @override
   void initState() {
     _otp = TextEditingController();
-
-    // subjected to changes
-    _otp.text = widget.controller.otp;
+    _otpNode = FocusNode();
+    _otpNode.addListener(_submitOtp);
 
     widget.controller.submitOtp.addListener(_onSubmitOtp);
     super.initState();
@@ -50,6 +51,8 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
   @override
   void dispose() {
     _otp.dispose();
+    _otpNode.removeListener(_submitOtp);
+    _otpNode.dispose();
     widget.controller.submitOtp.removeListener(_onSubmitOtp);
     super.dispose();
   }
@@ -107,7 +110,11 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
 
             SizedBox(
               height: 40,
-              child: OtpInputSection(controller: _otp)
+              child: OtpInputSection(
+                controller: _otp,
+                node: _otpNode,
+                otpLength: _otpLength,
+              )
             ),
 
             const SizedBox(height: AppSizes.s24),
@@ -125,7 +132,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
               listenable: controller.submitOtp,
               builder: (_, _) {
                 return VibePrimaryButton(
-                  text: 'Sign Up', // fr?
+                  text: 'Sign Up',
                   onPressed: () async {
                     await controller.submitOtp.execute(_otp.value.text);
                   },
@@ -142,6 +149,14 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
         )
       )
     );
+  }
+
+  Future<void> _submitOtp() async {
+    if (_otp.text.length == _otpLength) {
+      await widget.controller.submitOtp.execute(
+        _otp.value.text
+      );
+    }
   }
 
   void _onSubmitOtp() {

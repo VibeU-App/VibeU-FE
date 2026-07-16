@@ -50,6 +50,7 @@ class _VibeTextFieldState extends State<VibeTextField> {
               onChanged: widget.onChanged,
               style: AppTypography.button,
               obscureText: _obscureText,
+              cursorColor: AppColors.textPrimary500,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 label: Text(widget.label),
