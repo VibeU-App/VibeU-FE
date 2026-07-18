@@ -1,0 +1,13 @@
+flutter_native_splash:
+  color: "#FFF1F2"
+  image: assets/images/logo_vibe_native.png
+  
+  android_12:
+    # Trên Android 12+, dùng chính file đã thu nhỏ để không bị cắt
+    image: assets/images/logo_vibe_native.png
+    color: "#FFF1F2"
+    icon_background_color: "#FFF1F2"
+
+  android: true
+  ios: true
+  fullscreen: true

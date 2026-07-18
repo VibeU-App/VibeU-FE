@@ -12,78 +12,96 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // 1. Tạo biến state để điều khiển việc chuyển đổi
-  bool _showFullCombo = false;
+  bool _isZoomed = false; // Trạng thái phóng to logo
+  bool _showText = false; // Trạng thái hiện chữ
 
   @override
   void initState() {
     super.initState();
-    // Native flutter: Giữ Native Splash 1 giây cho app ổn định background
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      if (!mounted) return;
+    _initSplash();
+  }
 
-      // Splash screen: Gỡ Native Splash ra, lộ ra Logo trơn của Flutter
-      FlutterNativeSplash.remove();
+  Future<void> _initSplash() async {
+    // 1. Giữ Native Splash 800ms
+    await Future.delayed(const Duration(milliseconds: 800));
+    if (!mounted) return;
 
-      // Đợi 500ms rồi bắt đầu chạy hiệu ứng Cross-Fade (Fade chéo) biến hình logo
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (!mounted) return;
-        setState(() {
-          _showFullCombo = true; // Kích hoạt đổi ảnh sang cụm đầy đủ
-        });
-      });
+    // 2. Gỡ Native Splash
+    FlutterNativeSplash.remove();
 
-      // Đợi hiện combo đầy đủ xong xuôi, rồi nhảy sang Onboarding liền
-      Future.delayed(const Duration(milliseconds: 3500), () {
-        if (!mounted) return;
-
-        context.go(Routes.onboarding);
-      });
+    // 3. HIỆU ỨNG ZOOM: Phóng to logo lên 134x133
+    setState(() {
+      _isZoomed = true;
     });
+
+    // 4. Đợi logo phóng to xong (khoảng 1s) thì bắt đầu hiện chữ
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (!mounted) return;
+    
+    setState(() {
+      _showText = true;
+    });
+
+    // 5. Đợi hiện chữ xong rồi qua Onboarding
+    await Future.delayed(const Duration(milliseconds: 2500));
+    if (!mounted) return;
+
+    context.go(Routes.onboarding);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background50,
+      backgroundColor: const Color(0xFFFFF1F2),
       body: SafeArea(
         child: Center(
-          child: Stack(
-            alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // 🛑 ẢNH 1: LOGO TRƠN (Chìm xuống và mờ đi)
-              AnimatedScale(
-                scale: _showFullCombo ? 0.8 : 1.0,
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeInOutBack,
-                child: AnimatedOpacity(
-                  opacity: _showFullCombo ? 0.0 : 1.0,
-                  duration: const Duration(milliseconds: 600),
-                  child: Image.asset(
-                    AppAssets.splashNative,
-                    width: 120,
-                    fit: BoxFit.contain,
-                  ),
+              // --- LOGO ANIMATION ---
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 1000),
+                curve: Curves.easeOutBack, // Hiệu ứng có độ nhún nhẹ khi phóng to
+                // Bắt đầu từ size icon nhỏ (khoảng 80), phóng to lên 134, 
+                // sau khi hiện chữ thì thu lại 110 cho cân đối
+                width: _showText ? 110 : (_isZoomed ? 134 : 80), 
+                height: _showText ? 110 : (_isZoomed ? 134 : 80),
+                child: Image.asset(
+                  AppAssets.splashLogo,
+                  fit: BoxFit.contain,
                 ),
               ),
 
-              // 🚀 ẢNH 2: COMBO ĐẦY ĐỦ (Trượt từ dưới lên, nở ra và sáng lên)
-              AnimatedSlide(
-                offset: _showFullCombo ? Offset.zero : const Offset(0, 0.15),
-                duration: const Duration(milliseconds: 1000),
-                curve: Curves.easeOutCubic,
-                child: AnimatedScale(
-                  scale: _showFullCombo ? 1.0 : 0.9,
-                  duration: const Duration(milliseconds: 1000),
+              const SizedBox(height: 16),
+
+              // --- TEXT ANIMATION ---
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 800),
+                opacity: _showText ? 1.0 : 0.0,
+                child: AnimatedSlide(
+                  duration: const Duration(milliseconds: 800),
+                  offset: _showText ? Offset.zero : const Offset(0, 0.5),
                   curve: Curves.easeOutCubic,
-                  child: AnimatedOpacity(
-                    opacity: _showFullCombo ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 800),
-                    child: Image.asset(
-                      AppAssets.splashLogo,
-                      width: 280,
-                      fit: BoxFit.contain,
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'VibeU',
+                        style: AppTypography.displayMed.copyWith(
+                          color: AppColors.primary500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 42,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Match Your Vibe',
+                        style: AppTypography.bodyStd.copyWith(
+                          color: AppColors.secondary500,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

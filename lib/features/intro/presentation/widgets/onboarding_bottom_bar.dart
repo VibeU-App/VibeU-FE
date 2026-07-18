@@ -25,7 +25,7 @@ class OnboardingBottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // SKIP button (text only, hidden on last page)
+          // SKIP button (secondary300)
           AnimatedOpacity(
             duration: const Duration(milliseconds: 300),
             opacity: isLastPage ? 0.0 : 1.0,
@@ -34,15 +34,16 @@ class OnboardingBottomBar extends StatelessWidget {
               child: Text(
                 'SKIP',
                 style: AppTypography.button.copyWith(
-                  color: AppColors.textMuted400,
+                  color: AppColors.secondary300,
                   fontWeight: FontWeight.w700,
+                  fontSize:22,
                   letterSpacing: 1.5,
                 ),
               ),
             ),
           ),
 
-          // Next button: circle FAB on pages 1&2, filled rect on last page
+          // Next button (secondary500)
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 350),
             transitionBuilder: (child, animation) {
@@ -74,14 +75,14 @@ class _NextCircleButton extends StatelessWidget {
         width: 56,
         height: 56,
         decoration: BoxDecoration(
-          color: AppColors.primary500,
+          color: AppColors.secondary500, // Đổi sang secondary500 theo yêu cầu mới
           shape: BoxShape.circle,
           boxShadow: [AppShadows.mid],
         ),
         child: const Icon(
-          Icons.arrow_forward_rounded,
+          Icons.chevron_right_rounded,
           color: Colors.white,
-          size: 24,
+          size: 32,
         ),
       ),
     );

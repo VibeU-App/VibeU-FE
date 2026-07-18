@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
 import '../views/onboarding_view.dart';
 import 'pagination_dots.dart';
 
-class OnboardingPage extends StatelessWidget {
+class OnboardingPage extends StatefulWidget {
   final OnboardingData data;
   final int currentPage;
   final int totalPages;
@@ -16,85 +17,193 @@ class OnboardingPage extends StatelessWidget {
   });
 
   @override
+  State<OnboardingPage> createState() => _OnboardingPageState();
+}
+
+class _OnboardingPageState extends State<OnboardingPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacityAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(OnboardingPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.data != widget.data) {
+      _controller.reset();
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final topSectionHeight = screenHeight * 0.48;
+    final screenSize = MediaQuery.of(context).size;
+    final screenHeight = screenSize.height;
+    final screenWidth = screenSize.width;
+
+    final topSectionHeight = (screenHeight * 0.55).clamp(420.0, 500.0);
+    final curveHeight = (screenHeight * 0.14).clamp(115.0, 145.0);
+
+    double imageScale;
+    Offset imageOffset;
+
+    switch (widget.currentPage) {
+      case 0: // SWIPING
+        imageScale = 1.08;
+        imageOffset = Offset(0, screenHeight * 0.07);
+        break;
+
+      case 1: // MATCHING
+        imageScale = 1.50;
+        imageOffset = Offset(0, -screenHeight * 0.005);
+        break;
+
+      case 2: // CONNECTING
+        imageScale = 0.82;
+        imageOffset = Offset(0, -screenHeight * 0.010);
+        break;
+
+      default:
+        imageScale = 1.0;
+        imageOffset = Offset.zero;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // ── TOP SECTION: curved background + images ──
-        SizedBox(
-          height: topSectionHeight,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Curved background
-              ClipPath(
-                clipper: _CurvedBottomClipper(),
-                child: Container(
+        ClipRect(
+          child: SizedBox(
+            height: topSectionHeight,
+            child: Stack(
+              clipBehavior: Clip.hardEdge,
+              children: [
+                Container(
                   width: double.infinity,
                   height: topSectionHeight,
                   color: AppColors.background300,
                 ),
-              ),
-              // Top image (centered)
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 48,
-                      bottom: 40,
-                      left: AppSizes.s24,
-                      right: AppSizes.s24,
-                    ),
-                    child: Image.asset(
-                      data.imagePath,
-                      fit: BoxFit.contain,
+
+                Positioned.fill(
+                  bottom: screenHeight * 0.035,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Transform.translate(
+                          offset: imageOffset,
+                          child: Transform.scale(
+                            scale: imageScale,
+                            child: Image.asset(
+                              widget.data.imagePath,
+                              width: double.infinity,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
 
-        const SizedBox(height: AppSizes.s48),
-
-        // ── PAGINATION DOTS ──
-        PaginationDots(
-          totalPages: totalPages,
-          currentPage: currentPage,
-        ),
-
-        const SizedBox(height: AppSizes.s24),
-
-        // ── TITLE ──
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.s32),
-          child: Text(
-            data.title,
-            textAlign: TextAlign.center,
-            style: AppTypography.displayLarge.copyWith(
-              color: AppColors.primary500,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 2,
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: -1,
+                  child: CustomPaint(
+                    size: Size(screenWidth, curveHeight),
+                    painter: _CurvePainter(color: AppColors.surface50),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
 
         const SizedBox(height: AppSizes.s16),
 
-        // ── DESCRIPTION ──
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.s32),
-          child: Text(
-            data.description,
-            textAlign: TextAlign.center,
-            style: AppTypography.bodyStd.copyWith(
-              color: AppColors.textMuted500,
-              height: 1.6,
+        FadeTransition(
+          opacity: _opacityAnimation,
+          child: PaginationDots(
+            totalPages: widget.totalPages,
+            currentPage: widget.currentPage,
+          ),
+        ),
+
+        const SizedBox(height: AppSizes.s32),
+
+        Expanded(
+          child: FadeTransition(
+            opacity: _opacityAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.s32,
+                    ),
+                    child: Text(
+                      widget.data.title,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.fredoka(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.4,
+                        height: 1.1,
+                        color: AppColors.primary500,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: AppSizes.s16),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.s32,
+                    ),
+                    child: Text(
+                      widget.data.description,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.bodyStd.copyWith(
+                        color: AppColors.textMuted500,
+                        height: 1.6,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -103,23 +212,39 @@ class OnboardingPage extends StatelessWidget {
   }
 }
 
-/// Custom clipper tạo viền cong úp ngược ở đáy section trên
-class _CurvedBottomClipper extends CustomClipper<Path> {
+class _CurvePainter extends CustomPainter {
+  final Color color;
+
+  _CurvePainter({required this.color});
+
   @override
-  Path getClip(Size size) {
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true;
+
     final path = Path();
-    path.lineTo(0, size.height - 40);
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height + 40,
+
+    // Sửa các con số ở đây để viền hồng cong đẹp hơn
+    path.moveTo(0, size.height * 0.20);
+
+    path.cubicTo(
+      size.width * 0.25,
+      size.height * 1.1,
+      size.width * 0.75,
+      size.height * 1.1,
       size.width,
-      size.height - 40,
+      size.height * 0.20,
     );
-    path.lineTo(size.width, 0);
+
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
     path.close();
-    return path;
+
+    canvas.drawPath(path, paint);
   }
 
   @override
-  bool shouldReclip(_CurvedBottomClipper oldClipper) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
