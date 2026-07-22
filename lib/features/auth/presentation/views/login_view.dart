@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
-
-import 'package:vibeu_fe/utils/result.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
-
-import '../controllers/login_controller.dart';
 
 import '../widgets/vibe_text_span.dart';
 import '../widgets/header.dart';
@@ -18,19 +15,16 @@ import '../widgets/forgot_password_button.dart';
 import '../widgets/social_login_section.dart';
 import '../widgets/social_login_button.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({
-    super.key,
-    required this.controller,
-  });
-  
-  final LoginController controller;
+import '../providers/sign_in_provider.dart';
 
+class LoginView extends ConsumerStatefulWidget {
+  const LoginView({ super.key, });
+  
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -39,19 +33,10 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
     _email = TextEditingController();
     _password = TextEditingController();
-    widget.controller.signIn.addListener(_onSignIn);
-  }
-
-  @override
-  void didUpdateWidget(covariant LoginView oldWidget) {
-    oldWidget.controller.signIn.removeListener(_onSignIn);
-    widget.controller.signIn.addListener(_onSignIn);
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    widget.controller.signIn.removeListener(_onSignIn);
     _email.dispose();
     _password.dispose();
     super.dispose();
@@ -59,7 +44,8 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = widget.controller;
+    final service = ref.read(signInStateProvider.notifier);
+    ref.listen(signInStateProvider, _onSignIn);
     return BackgroundGradient(
       child: Center(child: ListView(
         children: [
@@ -105,18 +91,17 @@ class _LoginViewState extends State<LoginView> {
 
           const SizedBox(height: AppSizes.s24),
 
-          ListenableBuilder(
-            listenable: controller.signIn,
-            builder: (_, _) {
+          Consumer(
+            builder: (_, ref, _) {
               return VibePrimaryButton(
                 text: 'Sign in',
                 onPressed: () async {
-                  await controller.signIn.execute((
+                  await service.signIn((
                     _email.value.text,
                     _password.value.text
                   ));
                 },
-                running: controller.signIn.isRunning,
+                running: ref.watch(signInStateProvider).isLoading,
               );
             }
           ),
@@ -126,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
           SocialLoginSection(socialLoginButtonList: [
             SocialLoginButton(
               onPressed: () async {
-                await controller.googleSignIn.execute();
+                await service.googleSignIn();
               },
               icon: const Image(
                 image: AssetImage(AppAssets.google),
@@ -155,23 +140,16 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  void _onSignIn() {
-    final result = widget.controller.signIn.result;
-    switch(result) {
-      case Ok():
-        widget.controller.signIn.clear();
-        
-        // theres no home page so do nothing
-        // context.go(Routes.home);
-        break;
-      case Error():
-        widget.controller.signIn.clear();
+  void _onSignIn(
+    AsyncValue<dynamic>? previous,
+    AsyncValue<dynamic>? next
+  ) {
+    next?.whenOrNull(
+      error: (exception, _) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text( result.exception.toString() ),
-          )
+          SnackBar(content: Text(exception.toString()))
         );
-        break;
-    }
+      }
+    );
   }
 }

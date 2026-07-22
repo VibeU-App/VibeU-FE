@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 
-import 'package:vibeu_fe/utils/result.dart';
 import 'package:vibeu_fe/routing/routes.dart';
 
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 
-import '../controllers/forgot_password_controller.dart';
+import '../controllers/auth_flow_controller.dart';
+import '../providers/register_provider.dart';
 
 import '../widgets/background_gradient.dart';
 import '../widgets/prev_view_button.dart';
@@ -17,48 +19,33 @@ import '../widgets/header.dart';
 import '../widgets/password_requirement_box.dart';
 import '../widgets/password_strength_indicator.dart';
 
-class CreatePasswordView extends StatefulWidget {
+class CreatePasswordView extends HookConsumerWidget {
   const CreatePasswordView({
     super.key,
     required this.controller,
   });
 
-  final ForgotPasswordController controller;
+  final AuthFlowController controller;
 
-  @override
-  State<StatefulWidget> createState() => _CreatePasswordViewState();
-}
-
-class _CreatePasswordViewState extends State<CreatePasswordView> {
-  late final TextEditingController _newPassword;
-  late final TextEditingController _confirmPassword;
-
-  @override
-  void initState() {
-    _newPassword = TextEditingController();
-    _confirmPassword = TextEditingController();
-    widget.controller.createPassword.addListener(_createPassword);
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant CreatePasswordView oldWidget) {
-    oldWidget.controller.removeListener(_createPassword);
-    widget.controller.createPassword.addListener(_createPassword);
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    widget.controller.removeListener(_createPassword);
-    _newPassword.dispose();
-    _confirmPassword.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = widget.controller;
+  @override 
+  Widget build(BuildContext context, WidgetRef ref) {
+    final newPassword = useTextEditingController();
+    final confirmPassword = useTextEditingController();
+    final register = ref.read(registerStateProvider.notifier);
+    ref.listen(
+      registerStateProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (_) { context.go(Routes.login); },
+          error: (error, _) {
+            return ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString()))
+            );
+          }
+        );
+      }
+    );
+    
     return BackgroundGradient(
       child: Align(
         alignment: .topCenter,
@@ -68,10 +55,12 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
             Align(
               alignment: .centerLeft,
               child: PrevViewButton(
-                onPressed: () { controller.page.previousPage(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                ); }
+                onPressed: () {
+                  controller.page.previousPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut
+                  );
+                }
               )
             ),
 
@@ -86,7 +75,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
             VibeTextField(
               label: 'New Password',
-              controller: _newPassword,
+              controller: newPassword,
               onChanged: controller.onNewPassword,
               prefixIcon: Icon(
                 Hicons.lock1LightOutline,
@@ -100,9 +89,9 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
             ListenableBuilder(
               listenable: controller,
-              builder: (_, _) {
+              builder: ( _, _) {
                 return PasswordStrengthIndicator(
-                    strengthLevel: controller.newPassword.strength(),
+                  strengthLevel: controller.newPassword.strength(),
                 );
               }
             ),
@@ -111,7 +100,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
             VibeTextField(
               label: 'Confirm New Password',
-              controller: _confirmPassword,
+              controller: confirmPassword,
               prefixIcon: Icon(
                 Hicons.lock1LightOutline,
                 size: 40.0,
@@ -124,7 +113,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
             ListenableBuilder(
               listenable: controller,
-              builder: (_, _) {
+              builder: (_,  _) {
                 final newPassword = controller.newPassword;
                 return PasswordRequirementsBox(
                   hasMinLength: newPassword.hasMinLength,
@@ -136,44 +125,23 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
             const SizedBox(height: AppSizes.s24),
 
-            ListenableBuilder(
-              listenable: controller.createPassword,
-              builder: (_, _) {
+            Consumer(
+              builder: (_, _, _) {
                 return VibePrimaryButton(
                   text: 'Reset Password',
                   onPressed: () async {
-                    controller.createPassword.execute((
-                      _newPassword.value.text,
-                      _confirmPassword.value.text,
+                    register.createPassword((
+                      newPassword.text,
+                      confirmPassword.text,
                     ));
                   },
-                  running: controller.createPassword.isRunning,
+                  running: ref.watch(registerStateProvider).isLoading,
                 );
               }
-            )
+            ),
           ]
         )
       )
     );
-  }
-
-  void _createPassword() {
-    final result = widget.controller.createPassword.result;
-    switch(result) {
-      case Ok():
-        widget.controller.createPassword.clear();
-        
-        // idk, maybe go back to login?
-        context.go(Routes.login);
-        break;
-      case Error():
-        widget.controller.createPassword.clear();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text( result.exception.toString() ),
-          )
-        );
-        break;
-    }
   }
 }

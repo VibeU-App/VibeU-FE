@@ -1,60 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:vibeu_fe/utils/result.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 
-import '../controllers/register_controller.dart';
+import '../controllers/auth_flow_controller.dart';
+import '../providers/register_provider.dart';
+import '../providers/terms_of_service_provider.dart';
+import '../providers/privacy_policy_provider.dart';
 
 import '../widgets/background_gradient.dart';
 import '../widgets/header.dart';
 import '../widgets/terms_and_policy_section.dart';
 import '../widgets/vibe_text_span.dart';
 
-class RegisterView extends StatefulWidget {
+class RegisterView extends HookConsumerWidget {
   const RegisterView({
     super.key,
     required this.controller,
   });
 
-  final RegisterController controller;
+  final AuthFlowController controller;
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
-}
-
-class _RegisterViewState extends State<RegisterView> {
-
-  late final TextEditingController _email;
-
-  @override
-  void initState() {
-    super.initState();
-    _email = TextEditingController();
-    widget.controller.signUp.addListener(_onSignUp);
-  }
-
-  @override
-  void didUpdateWidget(covariant RegisterView oldWidget) {
-    oldWidget.controller.signUp.removeListener(_onSignUp);
-    widget.controller.signUp.addListener(_onSignUp);
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    _email.dispose();
-    widget.controller.signUp.removeListener(_onSignUp);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = widget.controller;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final email = useTextEditingController();
+    final signUp = ref.read(registerStateProvider.notifier);
+    final termsComplied = useState(false);
+    ref.listen(
+      registerStateProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (_) { controller.nextPage(); },
+          error: (error, _) {
+            return ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString()))
+            );
+          }
+        );
+      }
+    );
     return BackgroundGradient(
       child: Align(
         alignment: .topCenter,
@@ -69,33 +58,32 @@ class _RegisterViewState extends State<RegisterView> {
 
             VibeTextField(
               label: 'Email Address',
-              controller: _email,
+              controller: email,
               prefixIcon: Icon(
                 Icons.mail_outline,
                 color: AppColors.textMuted500,
-                size: 32
+                size: AppSizes.s32,
               ),
             ),
 
             const SizedBox(height: AppSizes.s16),
 
             TermsAndPolicySection(
-              termsButton: () async { controller.termsOfServices(); },
-              policyButton: () async { controller.privacyPolicy(); },
-              onChanged: (value) { controller.termsComplied = value; }
+              termsButton: () async { ref.watch(termsOfServiceProvider); },
+              policyButton: () async { ref.watch(privacyPolicyProvider); },
+              onChanged: (value) async { termsComplied.value = value; }
             ),
 
             const SizedBox(height: AppSizes.s16),
 
-            ListenableBuilder(
-              listenable: controller.signUp,
-              builder: (_, _) {
+            Consumer(
+              builder: (_, ref, _) {
                 return VibePrimaryButton(
                   text: 'Sign Up',
                   onPressed: () async {
-                    controller.signUp.execute(_email.value.text);
+                    signUp.register(email.value.text);
                   },
-                  running: controller.signUp.isRunning,
+                  running: ref.watch(registerStateProvider).isLoading,
                 );
               }
             ),
@@ -115,23 +103,5 @@ class _RegisterViewState extends State<RegisterView> {
         )
       )
     );
-  }
-
-  void _onSignUp() {
-    final result = widget.controller.signUp.result;
-    switch(result) {
-      case Ok():
-        widget.controller.signUp.clear();
-        context.go(Routes.login);
-        break;
-      case Error():
-        widget.controller.signUp.clear();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text( result.exception.toString() ),
-          )
-        );
-        break;
-    }
   }
 }
