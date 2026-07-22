@@ -65,4 +65,8 @@ class AppTypography {
     fontWeight: FontWeight.w700,
     height: 12 / 11,
   );
+  static const double titleLetterSpacing = 1.4;
+  static const double titleLineHeight = 1.1;
+  static const double buttonLetterSpacing = 1.5;
+  static const double descriptionLineHeight = 1.6;
 }

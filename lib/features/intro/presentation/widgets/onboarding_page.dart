@@ -8,7 +8,14 @@ class OnboardingPage extends StatefulWidget {
   final OnboardingData data;
   final int currentPage;
   final int totalPages;
+  static const double imageBottomRatio = 0.035;
+  static const double headerHeightRatio = 0.55;
+  static const double curveHeightRatio = 0.14;
 
+  // define ratio
+  static const double swipingOffsetRatio = 0.07;
+  static const double matchingOffsetRatio = -0.005;
+  static const double connectingOffsetRatio = -0.01;
   const OnboardingPage({
     super.key,
     required this.data,
@@ -32,7 +39,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.normal,
     );
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -71,8 +78,8 @@ class _OnboardingPageState extends State<OnboardingPage>
     final screenHeight = screenSize.height;
     final screenWidth = screenSize.width;
 
-    final topSectionHeight = (screenHeight * 0.55).clamp(420.0, 500.0);
-    final curveHeight = (screenHeight * 0.14).clamp(115.0, 145.0);
+    final topSectionHeight = (screenHeight * OnboardingPage.headerHeightRatio).clamp(420.0, 500.0);
+    final curveHeight = (screenHeight * OnboardingPage.curveHeightRatio).clamp(115.0, 145.0);
 
     double imageScale;
     Offset imageOffset;
@@ -80,17 +87,17 @@ class _OnboardingPageState extends State<OnboardingPage>
     switch (widget.currentPage) {
       case 0: // SWIPING
         imageScale = 1.08;
-        imageOffset = Offset(0, screenHeight * 0.07);
+        imageOffset = Offset(0, screenHeight * OnboardingPage.swipingOffsetRatio);
         break;
 
       case 1: // MATCHING
         imageScale = 1.50;
-        imageOffset = Offset(0, -screenHeight * 0.005);
+        imageOffset = Offset(0, -screenHeight * OnboardingPage.matchingOffsetRatio);
         break;
 
       case 2: // CONNECTING
         imageScale = 0.82;
-        imageOffset = Offset(0, -screenHeight * 0.010);
+        imageOffset = Offset(0, -screenHeight * OnboardingPage.connectingOffsetRatio);
         break;
 
       default:
@@ -114,7 +121,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                 ),
 
                 Positioned.fill(
-                  bottom: screenHeight * 0.035,
+                  bottom: screenHeight * OnboardingPage.imageBottomRatio,
                   child: FadeTransition(
                     opacity: _opacityAnimation,
                     child: SlideTransition(
@@ -178,10 +185,10 @@ class _OnboardingPageState extends State<OnboardingPage>
                       widget.data.title,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.fredoka(
-                        fontSize: 36,
+                        fontSize: AppSizes.s32 + AppSizes.s4,
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 1.4,
-                        height: 1.1,
+                        letterSpacing: AppTypography.titleLetterSpacing,
+                        height: AppTypography.titleLineHeight,
                         color: AppColors.primary500,
                       ),
                     ),
@@ -198,7 +205,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                       textAlign: TextAlign.center,
                       style: AppTypography.bodyStd.copyWith(
                         color: AppColors.textMuted500,
-                        height: 1.6,
+                        height: AppTypography.descriptionLineHeight,
                       ),
                     ),
                   ),
@@ -214,7 +221,10 @@ class _OnboardingPageState extends State<OnboardingPage>
 
 class _CurvePainter extends CustomPainter {
   final Color color;
-
+  static const double startPointYRatio = 0.20;
+  static const double controlPointXRatio1 = 0.25;
+  static const double controlPointXRatio2 = 0.75;
+  static const double bottomCurveRatio = 1.1;
   _CurvePainter({required this.color});
 
   @override
@@ -227,15 +237,15 @@ class _CurvePainter extends CustomPainter {
     final path = Path();
 
     // Sửa các con số ở đây để viền hồng cong đẹp hơn
-    path.moveTo(0, size.height * 0.20);
+    path.moveTo(0, size.height * startPointYRatio);
 
     path.cubicTo(
-      size.width * 0.25,
-      size.height * 1.1,
-      size.width * 0.75,
-      size.height * 1.1,
+      size.width * controlPointXRatio1,
+      size.height * bottomCurveRatio,
+      size.width * controlPointXRatio2,
+      size.height * bottomCurveRatio,
       size.width,
-      size.height * 0.20,
+      size.height * startPointYRatio,
     );
 
     path.lineTo(size.width, size.height);

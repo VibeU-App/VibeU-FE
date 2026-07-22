@@ -12,6 +12,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  static const double logoSmall = 80.0;
+  static const double logoLarge = 134.0;
+  static const double logoRetract = 110.0;
   bool _isZoomed = false; // Trạng thái phóng to logo
   bool _showText = false; // Trạng thái hiện chữ
 
@@ -23,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initSplash() async {
     // 1. Giữ Native Splash 800ms
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(AppDurations.normal);
     if (!mounted) return;
 
     // 2. Gỡ Native Splash
@@ -35,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     // 4. Đợi logo phóng to xong (khoảng 1s) thì bắt đầu hiện chữ
-    await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(AppDurations.slow);
     if (!mounted) return;
     
     setState(() {
@@ -43,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     // 5. Đợi hiện chữ xong rồi qua Onboarding
-    await Future.delayed(const Duration(milliseconds: 2500));
+    await Future.delayed(AppDurations.splashDelay);
     if (!mounted) return;
 
     context.go(Routes.onboarding);
@@ -52,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF1F2),
+      backgroundColor: AppColors.background500,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -60,26 +63,26 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               // --- LOGO ANIMATION ---
               AnimatedContainer(
-                duration: const Duration(milliseconds: 1000),
+                duration: AppDurations.slow,
                 curve: Curves.easeOutBack, // Hiệu ứng có độ nhún nhẹ khi phóng to
                 // Bắt đầu từ size icon nhỏ (khoảng 80), phóng to lên 134, 
                 // sau khi hiện chữ thì thu lại 110 cho cân đối
-                width: _showText ? 110 : (_isZoomed ? 134 : 80), 
-                height: _showText ? 110 : (_isZoomed ? 134 : 80),
+                width: _showText ? logoRetract : (_isZoomed ? logoLarge : logoSmall),
+                height: _showText ? logoRetract : (_isZoomed ? logoLarge : logoSmall),
                 child: Image.asset(
                   AppAssets.splashLogo,
                   fit: BoxFit.contain,
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSizes.s16),
 
               // --- TEXT ANIMATION ---
               AnimatedOpacity(
-                duration: const Duration(milliseconds: 800),
+                duration: AppDurations.normal,
                 opacity: _showText ? 1.0 : 0.0,
                 child: AnimatedSlide(
-                  duration: const Duration(milliseconds: 800),
+                  duration: AppDurations.normal,
                   offset: _showText ? Offset.zero : const Offset(0, 0.5),
                   curve: Curves.easeOutCubic,
                   child: Column(
@@ -89,16 +92,16 @@ class _SplashScreenState extends State<SplashScreen> {
                         style: AppTypography.displayMed.copyWith(
                           color: AppColors.primary500,
                           fontWeight: FontWeight.bold,
-                          fontSize: 42,
+                          fontSize: AppSizes.s32 + AppSizes.s8,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSizes.s4),
                       Text(
                         'Match Your Vibe',
                         style: AppTypography.bodyStd.copyWith(
                           color: AppColors.secondary500,
                           fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
+                          fontSize: AppSizes.s16 + AppSizes.s4,
                         ),
                       ),
                     ],

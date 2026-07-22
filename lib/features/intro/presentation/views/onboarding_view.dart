@@ -62,7 +62,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   void _goToNext() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
+        duration: AppDurations.medium,
         curve: Curves.easeInOut,
       );
     } else {

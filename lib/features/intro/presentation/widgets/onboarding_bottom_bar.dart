@@ -27,7 +27,7 @@ class OnboardingBottomBar extends StatelessWidget {
         children: [
           // SKIP button (secondary300)
           AnimatedOpacity(
-            duration: const Duration(milliseconds: 300),
+            duration: AppDurations.fast,
             opacity: isLastPage ? 0.0 : 1.0,
             child: TextButton(
               onPressed: isLastPage ? null : onSkip,
@@ -36,8 +36,8 @@ class OnboardingBottomBar extends StatelessWidget {
                 style: AppTypography.button.copyWith(
                   color: AppColors.secondary300,
                   fontWeight: FontWeight.w700,
-                  fontSize:22,
-                  letterSpacing: 1.5,
+                  fontSize:AppSizes.s24,
+                  letterSpacing: AppTypography.buttonLetterSpacing,
                 ),
               ),
             ),
@@ -45,7 +45,7 @@ class OnboardingBottomBar extends StatelessWidget {
 
           // Next button (secondary500)
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 350),
+            duration: AppDurations.fast,
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: animation,
@@ -72,8 +72,8 @@ class _NextCircleButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 56,
-        height: 56,
+        width: AppSizes.s48 + AppSizes.s8,
+        height: AppSizes.s48 + AppSizes.s8,
         decoration: BoxDecoration(
           color: AppColors.secondary500, // Đổi sang secondary500 theo yêu cầu mới
           shape: BoxShape.circle,
@@ -82,7 +82,7 @@ class _NextCircleButton extends StatelessWidget {
         child: const Icon(
           Icons.chevron_right_rounded,
           color: Colors.white,
-          size: 32,
+          size: AppSizes.s32,
         ),
       ),
     );
