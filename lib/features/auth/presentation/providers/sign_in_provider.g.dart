@@ -13,7 +13,7 @@ part of 'sign_in_provider.dart';
 final signInStateProvider = SignInStateProvider._();
 
 final class SignInStateProvider
-    extends $AsyncNotifierProvider<SignInState, void> {
+    extends $AsyncNotifierProvider<SignInState, String> {
   SignInStateProvider._()
     : super(
         from: null,
@@ -33,19 +33,19 @@ final class SignInStateProvider
   SignInState create() => SignInState();
 }
 
-String _$signInStateHash() => r'a2a5335f34eca050522417b19f894ac5732d6761';
+String _$signInStateHash() => r'dd63e73f5eee83b2761eb43e25bbcd0d1daa8d3a';
 
-abstract class _$SignInState extends $AsyncNotifier<void> {
-  FutureOr<void> build();
+abstract class _$SignInState extends $AsyncNotifier<String> {
+  FutureOr<String> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
+              AnyNotifier<AsyncValue<String>, String>,
+              AsyncValue<String>,
               Object?,
               Object?
             >;

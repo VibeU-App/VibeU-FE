@@ -7,6 +7,7 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
+import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../controllers/auth_flow_controller.dart';
 import '../providers/register_provider.dart';
@@ -31,19 +32,12 @@ class RegisterView extends HookConsumerWidget {
     final email = useTextEditingController();
     final signUp = ref.read(registerStateProvider.notifier);
     final termsComplied = useState(false);
-    ref.listen(
+    ref.listenQuick(
       registerStateProvider,
-      (prev, next) {
-        next.whenOrNull(
-          data: (_) { controller.nextPage(); },
-          error: (error, _) {
-            return ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error.toString()))
-            );
-          }
-        );
-      }
+      onData: (_) { controller.nextPage(); },
+      handleError: true,
     );
+
     return BackgroundGradient(
       child: Align(
         alignment: .topCenter,

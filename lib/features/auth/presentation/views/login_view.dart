@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 
@@ -7,6 +8,7 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
+import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../widgets/vibe_text_span.dart';
 import '../widgets/header.dart';
@@ -17,35 +19,20 @@ import '../widgets/social_login_button.dart';
 
 import '../providers/sign_in_provider.dart';
 
-class LoginView extends ConsumerStatefulWidget {
+class LoginView extends HookConsumerWidget {
   const LoginView({ super.key, });
   
   @override
-  ConsumerState<LoginView> createState() => _LoginViewState();
-}
-
-class _LoginViewState extends ConsumerState<LoginView> {
-  late final TextEditingController _email;
-  late final TextEditingController _password;
-
-  @override
-  void initState() {
-    super.initState();
-    _email = TextEditingController();
-    _password = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final email = useTextEditingController();
+    final password = useTextEditingController();
     final service = ref.read(signInStateProvider.notifier);
-    ref.listen(signInStateProvider, _onSignIn);
+    ref.listenQuick(
+      signInStateProvider,
+      onData: (data) { print(data); },
+      handleError: true,
+    );
+
     return BackgroundGradient(
       child: Center(child: ListView(
         children: [
@@ -60,7 +47,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
           VibeTextField(
             label: 'Email Address',
-            controller: _email,
+            controller: email,
             prefixIcon: Icon(
               Icons.mail_outline,
               color: AppColors.textMuted500,
@@ -72,7 +59,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
           VibeTextField(
             label: 'Password',
-            controller: _password,
+            controller: password,
             prefixIcon: Icon(
               Hicons.lock1LightOutline,
               color: AppColors.textMuted500,
@@ -97,8 +84,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 text: 'Sign in',
                 onPressed: () async {
                   await service.signIn((
-                    _email.value.text,
-                    _password.value.text
+                    email.value.text,
+                    password.value.text
                   ));
                 },
                 running: ref.watch(signInStateProvider).isLoading,
@@ -115,7 +102,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
               },
               icon: const Image(
                 image: AssetImage(AppAssets.google),
-                height: 24.47,
+                height: AppSizes.s24,
               ),
               label: 'Continue with Google',
             ),
@@ -137,19 +124,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
           }),
         ]
       ))
-    );
-  }
-
-  void _onSignIn(
-    AsyncValue<dynamic>? previous,
-    AsyncValue<dynamic>? next
-  ) {
-    next?.whenOrNull(
-      error: (exception, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(exception.toString()))
-        );
-      }
     );
   }
 }

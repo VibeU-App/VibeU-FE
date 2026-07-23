@@ -10,6 +10,7 @@ import 'package:vibeu_fe/routing/routes.dart';
 
 import '../controllers/auth_flow_controller.dart';
 import '../providers/email_providers.dart';
+import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../widgets/email_button.dart';
 import '../widgets/prev_view_button.dart';
@@ -29,26 +30,14 @@ class ForgotPasswordView extends HookConsumerWidget {
     final email = useTextEditingController();
     final emailState = ref.watch(emailStateProvider);
     final providers = ref.read(emailStateProvider.notifier);
-    ref.listen(
+    ref.listenQuick(
       emailStateProvider,
-      (prev, next) {
-        next.whenOrNull(
-          data: (s) {
-            // there is a bug here but fix later
-            if (s.isEmpty) return;
-            controller.email = s;
-            controller.page.nextPage(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          },
-          error: (error, _) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error.toString()))
-            );
-          }
-        );
-      }
+      onData: (data) {
+        if (data.isEmpty) return;
+        controller.email = data;
+        controller.nextPage();
+      },
+      handleError: true,
     );
 
     return BackgroundGradient(
@@ -76,7 +65,7 @@ class ForgotPasswordView extends HookConsumerWidget {
               prefixIcon: Icon(
                 Icons.mail_outline,
                 color: AppColors.textMuted500,
-                size: 32.0,
+                size: AppSizes.s32,
               ),
               label: 'Email Address',
             ),

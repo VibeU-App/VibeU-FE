@@ -5,6 +5,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
+import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../controllers/auth_flow_controller.dart';
 import '../providers/otp_provider.dart';
@@ -30,18 +31,10 @@ class VerifyOtpView extends HookConsumerWidget {
     final otpNode = useFocusNode();
     final otpState = ref.watch(otpStateProvider);
     final otp = ref.read(otpStateProvider.notifier);
-    ref.listen(
+    ref.listenQuick(
       otpStateProvider,
-      (prev, next) {
-        next.whenOrNull(
-          data: (_) { controller.nextPage(); },
-          error: (error, _) {
-            return ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error.toString()))
-            );
-          },
-        );
-      }
+      onData: (_) { controller.nextPage(); },
+      handleError: true
     );
     otpNode.addListener(() async {
       if (otpField.text.length == controller.otpLength) {

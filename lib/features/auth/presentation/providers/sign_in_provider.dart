@@ -5,7 +5,7 @@ part 'sign_in_provider.g.dart';
 @riverpod
 class SignInState extends _$SignInState {
   @override
-  FutureOr<void> build() {}
+  Future<String> build() async { return ""; }
 
   Future<void> signIn((String, String) user) async {
     if (state.isLoading) return;
@@ -16,7 +16,7 @@ class SignInState extends _$SignInState {
     // TODO: implement auth repo signin
     await Future.delayed(const Duration(seconds: 2));
     print('sign in {$email} : {$password}'); 
-    state = AsyncData("step dama");
+    state = AsyncValue.data("$email $password");
   }
 
   Future<void> googleSignIn() async {
@@ -27,6 +27,6 @@ class SignInState extends _$SignInState {
 
     await Future.delayed(const Duration(seconds: 2));
     print('google sign in'); 
-    state = AsyncData("step dama");
+    state = AsyncValue.data("google sign in");
   }
 }

@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
-
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
+import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../controllers/auth_flow_controller.dart';
 import '../providers/register_provider.dart';
@@ -32,18 +32,9 @@ class CreatePasswordView extends HookConsumerWidget {
     final newPassword = useTextEditingController();
     final confirmPassword = useTextEditingController();
     final register = ref.read(registerStateProvider.notifier);
-    ref.listen(
-      registerStateProvider,
-      (prev, next) {
-        next.whenOrNull(
-          data: (_) { context.go(Routes.login); },
-          error: (error, _) {
-            return ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error.toString()))
-            );
-          }
-        );
-      }
+    ref.listenQuick(registerStateProvider,
+    onData: (_) { context.go(Routes.login); },
+    handleError: true,
     );
     
     return BackgroundGradient(
