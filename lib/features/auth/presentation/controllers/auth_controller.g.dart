@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'otp_provider.dart';
+part of 'auth_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,42 +9,43 @@ part of 'otp_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(OtpState)
-final otpStateProvider = OtpStateProvider._();
+@ProviderFor(AuthController)
+final authControllerProvider = AuthControllerProvider._();
 
-final class OtpStateProvider extends $AsyncNotifierProvider<OtpState, void> {
-  OtpStateProvider._()
+final class AuthControllerProvider
+    extends $AsyncNotifierProvider<AuthController, AuthState> {
+  AuthControllerProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'otpStateProvider',
+        name: r'authControllerProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$otpStateHash();
+  String debugGetCreateSourceHash() => _$authControllerHash();
 
   @$internal
   @override
-  OtpState create() => OtpState();
+  AuthController create() => AuthController();
 }
 
-String _$otpStateHash() => r'58c5b0ac99ebfa7eed85e24de65013ffd7875073';
+String _$authControllerHash() => r'03f672c3259792916d179e876c81e8586fe5a0bc';
 
-abstract class _$OtpState extends $AsyncNotifier<void> {
-  FutureOr<void> build();
+abstract class _$AuthController extends $AsyncNotifier<AuthState> {
+  FutureOr<AuthState> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final ref = this.ref as $Ref<AsyncValue<AuthState>, AuthState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
+              AnyNotifier<AsyncValue<AuthState>, AuthState>,
+              AsyncValue<AuthState>,
               Object?,
               Object?
             >;
