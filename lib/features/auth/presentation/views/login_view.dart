@@ -10,14 +10,14 @@ import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
-import '../controllers/auth_controller.dart';
-
 import '../widgets/vibe_text_span.dart';
 import '../widgets/header.dart';
 import '../widgets/background_gradient.dart';
 import '../widgets/forgot_password_button.dart';
 import '../widgets/social_login_section.dart';
 import '../widgets/social_login_button.dart';
+
+import '../providers/sign_in_provider.dart';
 
 class LoginView extends HookConsumerWidget {
   const LoginView({ super.key, });
@@ -26,10 +26,10 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
     final password = useTextEditingController();
-    final controller = ref.read(authControllerProvider.notifier);
+    final service = ref.read(signInStateProvider.notifier);
     ref.listenQuick(
-      authControllerProvider,
-      onData: (_) {},
+      signInStateProvider,
+      onData: (data) { print(data); },
       handleError: true,
     );
 
@@ -72,23 +72,23 @@ class LoginView extends HookConsumerWidget {
 
           ForgotPasswordButton(
             onPressed: () {
-              context.go(Routes.forgotPassword);
+              context.push(Routes.forgotPassword);
             }
           ),
 
           const SizedBox(height: AppSizes.s24),
 
           Consumer(
-            builder: (_, _, _) {
+            builder: (_, ref, _) {
               return VibePrimaryButton(
                 text: 'Sign in',
                 onPressed: () async {
-                  controller.signIn(
-                    email.text,
-                    password.text
-                  );
+                  await service.signIn((
+                    email.value.text,
+                    password.value.text
+                  ));
                 },
-                running: ref.watch(authControllerProvider).isLoading,
+                running: ref.watch(signInStateProvider).isLoading,
               );
             }
           ),
@@ -98,7 +98,7 @@ class LoginView extends HookConsumerWidget {
           SocialLoginSection(socialLoginButtonList: [
             SocialLoginButton(
               onPressed: () async {
-                await controller.googleSignIn();
+                await service.googleSignIn();
               },
               icon: const Image(
                 image: AssetImage(AppAssets.google),

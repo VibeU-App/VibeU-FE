@@ -10,7 +10,8 @@ import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
-import '../controllers/auth_controller.dart';
+import '../controllers/auth_flow_controller.dart';
+import '../providers/register_provider.dart';
 
 import '../widgets/background_gradient.dart';
 import '../widgets/prev_view_button.dart';
@@ -19,27 +20,23 @@ import '../widgets/password_requirement_box.dart';
 import '../widgets/password_strength_indicator.dart';
 
 class CreatePasswordView extends HookConsumerWidget {
-  const CreatePasswordView({ super.key, });
+  const CreatePasswordView({
+    super.key,
+    required this.controller,
+  });
+
+  final AuthFlowController controller;
 
   @override 
   Widget build(BuildContext context, WidgetRef ref) {
-    final newPasswordField = useTextEditingController();
-    final confirmPasswordField = useTextEditingController();
-    var password = useState(_NewPassword(''));
-    final controller = ref.read(authControllerProvider.notifier);
-    ref.listenQuick(
-      authControllerProvider,
-      onData: (data) {
-        if (data.goonerSpotted != null) {
-          print('create password spotted a gooner too!');
-          return;
-        }
-        context.go(Routes.login);
-      },
-      handleError: true
+    final newPassword = useTextEditingController();
+    final confirmPassword = useTextEditingController();
+    final register = ref.read(registerStateProvider.notifier);
+    ref.listenQuick(registerStateProvider,
+    onData: (_) { context.go(Routes.login); },
+    handleError: true,
     );
     
-
     return BackgroundGradient(
       child: Align(
         alignment: .topCenter,
@@ -49,7 +46,12 @@ class CreatePasswordView extends HookConsumerWidget {
             Align(
               alignment: .centerLeft,
               child: PrevViewButton(
-                onPressed: () { context.pop(); }
+                onPressed: () {
+                  controller.page.previousPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut
+                  );
+                }
               )
             ),
 
@@ -64,8 +66,8 @@ class CreatePasswordView extends HookConsumerWidget {
 
             VibeTextField(
               label: 'New Password',
-              controller: newPasswordField,
-              onChanged: (s) { password.value = _NewPassword(s); },
+              controller: newPassword,
+              onChanged: controller.onNewPassword,
               prefixIcon: Icon(
                 Hicons.lock1LightOutline,
                 size: 40.0,
@@ -76,11 +78,11 @@ class CreatePasswordView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s16),
 
-            ValueListenableBuilder(
-              valueListenable: password,
-              builder: ( _, p, _) {
+            ListenableBuilder(
+              listenable: controller,
+              builder: ( _, _) {
                 return PasswordStrengthIndicator(
-                  strengthLevel: p.strength(),
+                  strengthLevel: controller.newPassword.strength(),
                 );
               }
             ),
@@ -89,7 +91,7 @@ class CreatePasswordView extends HookConsumerWidget {
 
             VibeTextField(
               label: 'Confirm New Password',
-              controller: confirmPasswordField,
+              controller: confirmPassword,
               prefixIcon: Icon(
                 Hicons.lock1LightOutline,
                 size: 40.0,
@@ -100,13 +102,14 @@ class CreatePasswordView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s16),
 
-            ValueListenableBuilder(
-              valueListenable: password,
-              builder: (_, p, _) {
+            ListenableBuilder(
+              listenable: controller,
+              builder: (_,  _) {
+                final newPassword = controller.newPassword;
                 return PasswordRequirementsBox(
-                  hasMinLength: p.hasMinLength,
-                  hasNumber: p.hasNumber,
-                  hasSpecialChar: p.hasSpecialChar,
+                  hasMinLength: newPassword.hasMinLength,
+                  hasNumber: newPassword.hasNumber,
+                  hasSpecialChar: newPassword.hasSpecialChar,
                 );
               }
             ),
@@ -118,12 +121,12 @@ class CreatePasswordView extends HookConsumerWidget {
                 return VibePrimaryButton(
                   text: 'Reset Password',
                   onPressed: () async {
-                    controller.createPassword(
-                      newPasswordField.text,
-                      confirmPasswordField.text,
-                    );
+                    register.createPassword((
+                      newPassword.text,
+                      confirmPassword.text,
+                    ));
                   },
-                  running: ref.watch(authControllerProvider).isLoading,
+                  running: ref.watch(registerStateProvider).isLoading,
                 );
               }
             ),
@@ -131,28 +134,5 @@ class CreatePasswordView extends HookConsumerWidget {
         )
       )
     );
-  }
-}
-
-class _NewPassword {
-  _NewPassword(this.password)
-  : isNotEmpty = password.isNotEmpty,
-    hasMinLength = password.length >= 8,
-    hasNumber = RegExp(r'\d').hasMatch(password),
-    hasSpecialChar = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
-
-  final String password;
-  final bool isNotEmpty;
-  final bool hasMinLength;
-  final bool hasNumber;
-  final bool hasSpecialChar;
-
-  int strength() {
-    int strength = 0;
-    if (isNotEmpty) strength++;
-    if (hasMinLength) strength++;
-    if (hasNumber) strength++;
-    if (hasSpecialChar) strength++;
-    return strength;
   }
 }

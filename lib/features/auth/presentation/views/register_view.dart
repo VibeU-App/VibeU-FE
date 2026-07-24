@@ -9,7 +9,10 @@ import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
-import '../controllers/auth_controller.dart';
+import '../controllers/auth_flow_controller.dart';
+import '../providers/register_provider.dart';
+import '../providers/terms_of_service_provider.dart';
+import '../providers/privacy_policy_provider.dart';
 
 import '../widgets/background_gradient.dart';
 import '../widgets/header.dart';
@@ -17,16 +20,21 @@ import '../widgets/terms_and_policy_section.dart';
 import '../widgets/vibe_text_span.dart';
 
 class RegisterView extends HookConsumerWidget {
-  const RegisterView({ super.key, });
+  const RegisterView({
+    super.key,
+    required this.controller,
+  });
+
+  final AuthFlowController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
-    final signUp = ref.read(authControllerProvider.notifier);
+    final signUp = ref.read(registerStateProvider.notifier);
     final termsComplied = useState(false);
     ref.listenQuick(
-      authControllerProvider,
-      onData: (_) { context.go(Routes.verifyOtp); },
+      registerStateProvider,
+      onData: (_) { controller.nextPage(); },
       handleError: true,
     );
 
@@ -55,21 +63,21 @@ class RegisterView extends HookConsumerWidget {
             const SizedBox(height: AppSizes.s16),
 
             TermsAndPolicySection(
-              termsButton: () async { signUp.termsOfService(); },
-              policyButton: () async { signUp.privacyPolicy(); },
+              termsButton: () async { ref.watch(termsOfServiceProvider); },
+              policyButton: () async { ref.watch(privacyPolicyProvider); },
               onChanged: (value) async { termsComplied.value = value; }
             ),
 
             const SizedBox(height: AppSizes.s16),
 
             Consumer(
-              builder: (_, _, _) {
+              builder: (_, ref, _) {
                 return VibePrimaryButton(
                   text: 'Sign Up',
                   onPressed: () async {
-                    signUp.register(email.text);
+                    signUp.register(email.value.text);
                   },
-                  running: ref.watch(authControllerProvider).isLoading,
+                  running: ref.watch(registerStateProvider).isLoading,
                 );
               }
             ),
@@ -83,7 +91,7 @@ class RegisterView extends HookConsumerWidget {
                 inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
               )
               ..text('Already have an account? ')
-              ..link('Sign in', () async { context.go(Routes.login); })
+              ..link('Sign in', () async { context.pop(Routes.login); })
             )
           ]
         )

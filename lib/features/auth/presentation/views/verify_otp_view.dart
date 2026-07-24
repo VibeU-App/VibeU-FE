@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
-import '../controllers/auth_controller.dart';
+import '../controllers/auth_flow_controller.dart';
+import '../providers/otp_provider.dart';
 
 import '../widgets/otp_image_container.dart';
 import '../widgets/header.dart';
@@ -19,44 +18,29 @@ import '../widgets/vibe_text_span.dart';
 import '../widgets/background_gradient.dart';
 
 class VerifyOtpView extends HookConsumerWidget {
-  const VerifyOtpView({super.key});
+  const VerifyOtpView({
+    super.key,
+    required this.controller,
+  });
+
+  final AuthFlowController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const otpLength = 6;
-
     final otpField = useTextEditingController();
     final otpNode = useFocusNode();
-
-    final auth = ref.watch(authControllerProvider);
-    final controller = ref.read(authControllerProvider.notifier);
-
-    final email = auth.value?.sendToEmail;
-    final step = auth.value?.step;
-
-    final buttonText = step == .register
-      ? "Sign Up"
-      : "Create New Password";
-
+    final otpState = ref.watch(otpStateProvider);
+    final otp = ref.read(otpStateProvider.notifier);
     ref.listenQuick(
-      authControllerProvider,
-      onData: (data) {
-        context.go(Routes.createPassword);
-      },
-      handleError: true,
+      otpStateProvider,
+      onData: (_) { controller.nextPage(); },
+      handleError: true
     );
-
-    useEffect(() {
-      void listener() async {
-        if (otpField.text.length == otpLength) {
-          await controller.submitOtp(otpField.text);
-        }
+    otpNode.addListener(() async {
+      if (otpField.text.length == controller.otpLength) {
+        await otp.submit(otpField.text);
       }
-      otpField.addListener(listener);
-      return () => otpField.removeListener(listener);
-    }, [otpField, controller]);
-
-
+    });
 
     return BackgroundGradient(
       child: Align(
@@ -66,7 +50,7 @@ class VerifyOtpView extends HookConsumerWidget {
             Align(
               alignment: .centerLeft,
               child: PrevViewButton(
-                onPressed: () { context.pop(); }
+                onPressed: () { controller.previousPage(); }
               ),
             ),
 
@@ -95,7 +79,7 @@ class VerifyOtpView extends HookConsumerWidget {
                 ),
 
                 Text(
-                  email!,
+                  controller.email,
                   style: AppTypography.h3.copyWith(color: AppColors.accent500),
                 ),
               ]
@@ -108,7 +92,7 @@ class VerifyOtpView extends HookConsumerWidget {
               child: OtpInputSection(
                 controller: otpField,
                 node: otpNode,
-                otpLength: otpLength,
+                otpLength: controller.otpLength,
               )
             ),
 
@@ -119,22 +103,30 @@ class VerifyOtpView extends HookConsumerWidget {
               inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
             )
             ..text('Haven\'t received OTP code? ')
-            ..link('Resend', () async { controller.resendOtp(); }),
+            ..link('Resend', () async { otp.resend(); }),
 
             const SizedBox(height: AppSizes.s24),
 
-            VibePrimaryButton(
-              text: buttonText,
-              onPressed: () async {
-                await controller.submitOtp(otpField.text);
+            Consumer(
+              builder: (_, _, _) {
+                final text = controller.flowType == .register
+                ? 'Sign Up'
+                : 'Reset Password';
+
+                return VibePrimaryButton(
+                  text: text,
+                  onPressed: () async {
+                    await otp.submit(otpField.text);
+                  },
+                  icon: const Icon(
+                    AntDesign.arrowright,
+                    color: AppColors.surface500,
+                    size: 28.0,
+                  ),
+                  running: otpState.isLoading,
+                );
               },
-              icon: const Icon(
-                AntDesign.arrowright,
-                color: AppColors.surface500,
-                size: 28.0,
-              ),
-              running: ref.watch(authControllerProvider).isLoading,
-            ),
+            )
          ],
         )
       )

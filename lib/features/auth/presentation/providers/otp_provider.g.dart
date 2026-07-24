@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_controller.dart';
+part of 'otp_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,43 +9,42 @@ part of 'auth_controller.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AuthController)
-final authControllerProvider = AuthControllerProvider._();
+@ProviderFor(OtpState)
+final otpStateProvider = OtpStateProvider._();
 
-final class AuthControllerProvider
-    extends $AsyncNotifierProvider<AuthController, AuthState> {
-  AuthControllerProvider._()
+final class OtpStateProvider extends $AsyncNotifierProvider<OtpState, void> {
+  OtpStateProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'authControllerProvider',
+        name: r'otpStateProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$authControllerHash();
+  String debugGetCreateSourceHash() => _$otpStateHash();
 
   @$internal
   @override
-  AuthController create() => AuthController();
+  OtpState create() => OtpState();
 }
 
-String _$authControllerHash() => r'5f849dff7180d4e64dba734928de44ce86997fec';
+String _$otpStateHash() => r'58c5b0ac99ebfa7eed85e24de65013ffd7875073';
 
-abstract class _$AuthController extends $AsyncNotifier<AuthState> {
-  FutureOr<AuthState> build();
+abstract class _$OtpState extends $AsyncNotifier<void> {
+  FutureOr<void> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<AuthState>, AuthState>;
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<AuthState>, AuthState>,
-              AsyncValue<AuthState>,
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
               Object?,
               Object?
             >;

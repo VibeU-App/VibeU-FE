@@ -7,9 +7,10 @@ import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
 import 'package:vibeu_fe/routing/routes.dart';
-import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
-import '../controllers/auth_controller.dart';
+import '../controllers/auth_flow_controller.dart';
+import '../providers/email_providers.dart';
+import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../widgets/email_button.dart';
 import '../widgets/prev_view_button.dart';
@@ -17,17 +18,24 @@ import '../widgets/background_gradient.dart';
 import '../widgets/header.dart';
 
 class ForgotPasswordView extends HookConsumerWidget {
-  const ForgotPasswordView({ super.key, });
+  const ForgotPasswordView({
+    super.key,
+    required this.controller,
+  });
+
+  final AuthFlowController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('forgot password');
     final email = useTextEditingController();
-    final controller = ref.read(authControllerProvider.notifier);
+    final emailState = ref.watch(emailStateProvider);
+    final providers = ref.read(emailStateProvider.notifier);
     ref.listenQuick(
-      authControllerProvider,
+      emailStateProvider,
       onData: (data) {
-        context.go(Routes.verifyOtp);
+        if (data.isEmpty) return;
+        controller.email = data;
+        controller.nextPage();
       },
       handleError: true,
     );
@@ -69,11 +77,11 @@ class ForgotPasswordView extends HookConsumerWidget {
               children: [
                 EmailButton(
                   text: 'Primary Email',
-                  onPressed: () { controller.getPrimaryEmail(); },
+                  onPressed: () { providers.getPrimaryEmail(); },
                 ),
                 EmailButton(
                   text: 'Recovery Email',
-                  onPressed: () { controller.getRecoveryEmail(); },
+                  onPressed: () { providers.getRecoveryEmail(); },
                 )
               ]
             ),
@@ -85,9 +93,9 @@ class ForgotPasswordView extends HookConsumerWidget {
                 return VibePrimaryButton(
                   text: 'Send OTP Code',
                   onPressed: () async {
-                    await controller.sendToEmail(email.value.text);
+                    await providers.getEmail(email.value.text);
                   },
-                  running: ref.watch(authControllerProvider).isLoading,
+                  running: emailState.isLoading,
                 );
               }
             ),
