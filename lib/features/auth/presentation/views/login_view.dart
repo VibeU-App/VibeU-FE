@@ -8,7 +8,6 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
-import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../controllers/auth_controller.dart';
 
@@ -27,11 +26,14 @@ class LoginView extends HookConsumerWidget {
     final email = useTextEditingController();
     final password = useTextEditingController();
     final controller = ref.read(authControllerProvider.notifier);
-    ref.listenQuick(
-      authControllerProvider,
-      onData: (_) {},
-      handleError: true,
-    );
+    // ref.listen(
+    //   authControllerProvider,
+    //   (prev, next) {
+    //     next.whenOrNull(
+    //       data: (_) {},
+    //     );
+    //   },
+    // );
 
     return BackgroundGradient(
       child: Center(child: ListView(

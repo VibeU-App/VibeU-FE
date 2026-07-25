@@ -7,7 +7,6 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
-import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../controllers/auth_controller.dart';
 
@@ -38,12 +37,13 @@ class VerifyOtpView extends HookConsumerWidget {
       ? "Sign Up"
       : "Create New Password";
 
-    ref.listenQuick(
+    ref.listen(
       authControllerProvider,
-      onData: (data) {
-        context.go(Routes.createPassword);
+      (prev, next) {
+        next.whenOrNull(
+          data: (_) { context.go(Routes.createPassword); }
+        );
       },
-      handleError: true,
     );
 
     useEffect(() {

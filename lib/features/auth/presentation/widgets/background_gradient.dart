@@ -25,7 +25,7 @@ class BackgroundGradient extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: child,
         ),

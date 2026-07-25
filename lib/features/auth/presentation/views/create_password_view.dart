@@ -8,7 +8,6 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/themes/design_system.dart';
 import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
 import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
-import 'package:vibeu_fe/utils/riverpod_extension.dart';
 
 import '../controllers/auth_controller.dart';
 
@@ -27,12 +26,13 @@ class CreatePasswordView extends HookConsumerWidget {
     final confirmPasswordField = useTextEditingController();
     var password = useState(_NewPassword(''));
     final controller = ref.read(authControllerProvider.notifier);
-    ref.listenQuick(
+    ref.listen(
       authControllerProvider,
-      onData: (data) {
-        context.go(Routes.login);
+      (prev, next) {
+        next.whenOrNull(
+          data: (_) { context.go(Routes.login); }
+        );
       },
-      handleError: true
     );
     
 
