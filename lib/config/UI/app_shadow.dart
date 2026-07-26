@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+
 class AppShadows {
-  static List<BoxShadow> low = [
-    BoxShadow(
-      color: Colors.black.withOpacity(0.05),
-      blurRadius: 4,
-      offset: const Offset(0, 2),
-    ),
-  ];
+  static BoxShadow low = BoxShadow(
+    color: AppColors.textPrimary500.withValues(alpha: 0.16),
+    blurRadius: 4,
+    offset: const Offset(0, 2),
+  );
 
-  static List<BoxShadow> mid = [
-    BoxShadow(
-      color: Colors.black.withOpacity(0.08),
-      blurRadius: 8,
-      offset: const Offset(0, 4),
-    ),
-  ];
+  static BoxShadow mid = BoxShadow(
+    color: AppColors.textPrimary500.withValues(alpha: 0.20),
+    blurRadius: 8,
+    spreadRadius: -4,
+    offset: const Offset(0, 8),
+  );
 
-  static List<BoxShadow> high = [
-    BoxShadow(
-      color: Colors.black.withOpacity(0.12),
-      blurRadius: 16,
-      offset: const Offset(0, 8),
-    ),
-  ];
+  static BoxShadow high = BoxShadow(
+    color: AppColors.textPrimary500.withValues(alpha: 0.24),
+    blurRadius: 32,
+    spreadRadius: -8,
+    offset: const Offset(0, 20),
+  );
 }

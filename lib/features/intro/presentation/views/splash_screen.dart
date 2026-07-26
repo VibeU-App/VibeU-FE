@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
-import 'onboarding_view.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:vibeu_fe/routing/routes.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,95 +11,101 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fadeIn;
+class _SplashScreenState extends State<SplashScreen> {
+  static const double logoSmall = 80.0;
+  static const double logoLarge = 134.0;
+  static const double logoRetract = 110.0;
+  bool _isZoomed = false; // Trạng thái phóng to logo
+  bool _showText = false; // Trạng thái hiện chữ
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-    _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _controller.forward();
-
-    // After 2.5s, fade out then navigate to onboarding
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (!mounted) return;
-      _controller.reverse().then((_) {
-        if (!mounted) return;
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => const OnboardingView(),
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 600),
-          ),
-        );
-      });
-    });
+    _initSplash();
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Future<void> _initSplash() async {
+    // 1. Giữ Native Splash 800ms
+    await Future.delayed(AppDurations.normal);
+    if (!mounted) return;
+
+    // 2. Gỡ Native Splash
+    FlutterNativeSplash.remove();
+
+    // 3. HIỆU ỨNG ZOOM: Phóng to logo lên 134x133
+    setState(() {
+      _isZoomed = true;
+    });
+
+    // 4. Đợi logo phóng to xong (khoảng 1s) thì bắt đầu hiện chữ
+    await Future.delayed(AppDurations.slow);
+    if (!mounted) return;
+    
+    setState(() {
+      _showText = true;
+    });
+
+    // 5. Đợi hiện chữ xong rồi qua Onboarding
+    await Future.delayed(AppDurations.splashDelay);
+    if (!mounted) return;
+
+    context.go(Routes.onboarding);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background50,
-      body: FadeTransition(
-        opacity: _fadeIn,
+      backgroundColor: AppColors.background500,
+      body: SafeArea(
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Logo V
-              Container(
-                width: 96,
-                height: 96,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primary500,
-                    width: 3,
-                  ),
-                  color: Colors.transparent,
-                ),
-                child: Center(
-                  child: Text(
-                    'V',
-                    style: AppTypography.displayLarge.copyWith(
-                      color: AppColors.primary500,
-                      fontSize: 48,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+              // --- LOGO ANIMATION ---
+              AnimatedContainer(
+                duration: AppDurations.slow,
+                curve: Curves.easeOutBack, // Hiệu ứng có độ nhún nhẹ khi phóng to
+                // Bắt đầu từ size icon nhỏ (khoảng 80), phóng to lên 134, 
+                // sau khi hiện chữ thì thu lại 110 cho cân đối
+                width: _showText ? logoRetract : (_isZoomed ? logoLarge : logoSmall),
+                height: _showText ? logoRetract : (_isZoomed ? logoLarge : logoSmall),
+                child: Image.asset(
+                  AppAssets.splashLogo,
+                  fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: Spacing.s16),
-              // VibeU
-              Text(
-                'VibeU',
-                style: AppTypography.displayLarge.copyWith(
-                  color: AppColors.textPrimary500,
-                  fontSize: 36,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: Spacing.s4),
-              // Slogan
-              Text(
-                'Match Your Vibe',
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textMuted500,
-                  letterSpacing: 1.2,
+
+              const SizedBox(height: AppSizes.s16),
+
+              // --- TEXT ANIMATION ---
+              AnimatedOpacity(
+                duration: AppDurations.normal,
+                opacity: _showText ? 1.0 : 0.0,
+                child: AnimatedSlide(
+                  duration: AppDurations.normal,
+                  offset: _showText ? Offset.zero : const Offset(0, 0.5),
+                  curve: Curves.easeOutCubic,
+                  child: Column(
+                    children: [
+                      Text(
+                        'VibeU',
+                        style: AppTypography.displayMed.copyWith(
+                          color: AppColors.primary500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppSizes.s32 + AppSizes.s8,
+                        ),
+                      ),
+                      const SizedBox(height: AppSizes.s4),
+                      Text(
+                        'Match Your Vibe',
+                        style: AppTypography.bodyStd.copyWith(
+                          color: AppColors.secondary500,
+                          fontWeight: FontWeight.w600,
+                          fontSize: AppSizes.s16 + AppSizes.s4,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

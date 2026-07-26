@@ -18,14 +18,14 @@ class PaginationDots extends StatelessWidget {
       children: List.generate(totalPages, (index) {
         final isActive = index == currentPage;
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: AppDurations.fast,
           curve: Curves.easeInOut,
-          margin: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          width: isActive ? 24.0 : 8.0,
-          height: 8.0,
+          margin: const EdgeInsets.symmetric(horizontal: AppSizes.s4),
+          width: isActive ? AppSizes.s24 : AppSizes.s8,
+          height: AppSizes.s8,
           decoration: BoxDecoration(
             color: isActive ? AppColors.primary500 : AppColors.textMuted300,
-            borderRadius: BorderRadius.circular(Radius.r999),
+            borderRadius: BorderRadius.circular(AppSizes.r999),
           ),
         );
       }),

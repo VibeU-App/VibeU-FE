@@ -17,34 +17,35 @@ class OnboardingBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-        Spacing.s24,
-        Spacing.s8,
-        Spacing.s24,
-        Spacing.s32,
+        AppSizes.s24,
+        AppSizes.s8,
+        AppSizes.s24,
+        AppSizes.s32,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // SKIP button (text only, hidden on last page)
+          // SKIP button (secondary300)
           AnimatedOpacity(
-            duration: const Duration(milliseconds: 300),
+            duration: AppDurations.fast,
             opacity: isLastPage ? 0.0 : 1.0,
             child: TextButton(
               onPressed: isLastPage ? null : onSkip,
               child: Text(
                 'SKIP',
                 style: AppTypography.button.copyWith(
-                  color: AppColors.textMuted400,
+                  color: AppColors.secondary300,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 1.5,
+                  fontSize:AppSizes.s24,
+                  letterSpacing: AppTypography.buttonLetterSpacing,
                 ),
               ),
             ),
           ),
 
-          // Next button: circle FAB on pages 1&2, filled rect on last page
+          // Next button (secondary500)
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 350),
+            duration: AppDurations.fast,
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: animation,
@@ -71,17 +72,17 @@ class _NextCircleButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 56,
-        height: 56,
+        width: AppSizes.s48 + AppSizes.s8,
+        height: AppSizes.s48 + AppSizes.s8,
         decoration: BoxDecoration(
-          color: AppColors.primary500,
+          color: AppColors.secondary500, // Đổi sang secondary500 theo yêu cầu mới
           shape: BoxShape.circle,
-          boxShadow: AppShadows.mid,
+          boxShadow: [AppShadows.mid],
         ),
         child: const Icon(
-          Icons.arrow_forward_rounded,
+          Icons.chevron_right_rounded,
           color: Colors.white,
-          size: 24,
+          size: AppSizes.s32,
         ),
       ),
     );
@@ -99,13 +100,13 @@ class _GetStartedButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.s24,
-          vertical: Spacing.s16,
+          horizontal: AppSizes.s24,
+          vertical: AppSizes.s16,
         ),
         decoration: BoxDecoration(
           color: AppColors.primary500,
-          borderRadius: BorderRadius.circular(Radius.r12),
-          boxShadow: AppShadows.mid,
+          borderRadius: BorderRadius.circular(AppSizes.r12),
+          boxShadow: [AppShadows.mid],
         ),
         child: Text(
           'Get Started!',

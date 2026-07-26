@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
+import 'package:vibeu_fe/routing/routes.dart';
 import '../widgets/onboarding_page.dart';
-import '../widgets/pagination_dots.dart';
 import '../widgets/onboarding_bottom_bar.dart';
 
 class OnboardingData {
   final String title;
   final String description;
-  final String topImagePath;
-  final String bottomImagePath;
+  final String imagePath;
 
   const OnboardingData({
     required this.title,
     required this.description,
-    required this.topImagePath,
-    required this.bottomImagePath,
+    required this.imagePath,
   });
 }
 
@@ -23,22 +22,19 @@ const List<OnboardingData> _pages = [
     title: 'SWIPING',
     description:
         'Swipe right to like someone, or swipe left to pass. It\'s that simple to find your next connection!',
-    topImagePath: 'assets/images/swiping_onboarding_1.webp',
-    bottomImagePath: 'assets/images/swiping2_onboarding_1.webp',
+    imagePath: AppAssets.onboardingSwiping,
   ),
   OnboardingData(
     title: 'MATCHING',
     description:
         'When the feeling is mutual, a conversation starts. Break the ice and chat with your new connections.',
-    topImagePath: 'assets/images/matching_onboarding_2.webp',
-    bottomImagePath: 'assets/images/matching2_onboarding_2.webp',
+    imagePath: AppAssets.onboardingMatching,
   ),
   OnboardingData(
     title: 'CONNECTING',
     description:
         'Discover people who share your passions and vibe. Meet up in the real world to build lasting friendships and community.',
-    topImagePath: 'assets/images/connecting_onboarding_3.webp',
-    bottomImagePath: 'assets/images/connecting2_onboarding_3.webp',
+    imagePath: AppAssets.onboardingConnecting,
   ),
 ];
 
@@ -66,7 +62,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   void _goToNext() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
+        duration: AppDurations.medium,
         curve: Curves.easeInOut,
       );
     } else {
@@ -75,11 +71,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _navigateToAuth() {
-    // TODO: Replace with actual auth route when partner's feature is ready
-    // Navigator.of(context).pushReplacementNamed('/login');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Navigating to Login...')),
-    );
+    context.go(Routes.login);
   }
 
   @override
@@ -88,32 +80,31 @@ class _OnboardingViewState extends State<OnboardingView> {
 
     return Scaffold(
       backgroundColor: AppColors.surface50,
-      body: Column(
-        children: [
-          // PageView takes most of the screen
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              physics: const BouncingScrollPhysics(),
-              itemCount: _pages.length,
-              itemBuilder: (context, index) {
-                return OnboardingPage(
-                  data: _pages[index],
-                  currentPage: _currentPage,
-                  totalPages: _pages.length,
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                physics: const BouncingScrollPhysics(),
+                itemCount: _pages.length,
+                itemBuilder: (context, index) {
+                  return OnboardingPage(
+                    data: _pages[index],
+                    currentPage: _currentPage,
+                    totalPages: _pages.length,
+                  );
+                },
+              ),
             ),
-          ),
-
-          // Bottom bar: Skip + Next/GetStarted
-          OnboardingBottomBar(
-            isLastPage: isLastPage,
-            onSkip: _navigateToAuth,
-            onNext: _goToNext,
-          ),
-        ],
+            OnboardingBottomBar(
+              isLastPage: isLastPage,
+              onSkip: _navigateToAuth,
+              onNext: _goToNext,
+            ),
+          ],
+        ),
       ),
     );
   }
