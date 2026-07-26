@@ -25,7 +25,6 @@ class CreatePasswordView extends HookConsumerWidget {
     final newPasswordField = useTextEditingController();
     final confirmPasswordField = useTextEditingController();
     var password = useState(_NewPassword(''));
-    final controller = ref.read(authControllerProvider.notifier);
     ref.listen(
       authControllerProvider,
       (prev, next) {
@@ -109,19 +108,15 @@ class CreatePasswordView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s24),
 
-            Consumer(
-              builder: (_, _, _) {
-                return VibePrimaryButton(
-                  text: 'Reset Password',
-                  onPressed: () async {
-                    controller.createPassword(
-                      newPasswordField.text,
-                      confirmPasswordField.text,
-                    );
-                  },
-                  running: ref.watch(authControllerProvider).isLoading,
+            VibePrimaryButton(
+              text: 'Reset Password',
+              onPressed: () async {
+                ref.read(authControllerProvider.notifier).createPassword(
+                  newPasswordField.text,
+                  confirmPasswordField.text,
                 );
-              }
+              },
+              running: ref.watch(authControllerProvider).isLoading,
             ),
           ]
         )

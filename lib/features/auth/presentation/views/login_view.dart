@@ -25,15 +25,6 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
     final password = useTextEditingController();
-    final controller = ref.read(authControllerProvider.notifier);
-    // ref.listen(
-    //   authControllerProvider,
-    //   (prev, next) {
-    //     next.whenOrNull(
-    //       data: (_) {},
-    //     );
-    //   },
-    // );
 
     return BackgroundGradient(
       child: Center(child: ListView(
@@ -80,19 +71,15 @@ class LoginView extends HookConsumerWidget {
 
           const SizedBox(height: AppSizes.s24),
 
-          Consumer(
-            builder: (_, _, _) {
-              return VibePrimaryButton(
-                text: 'Sign in',
-                onPressed: () async {
-                  controller.signIn(
-                    email.text,
-                    password.text
-                  );
-                },
-                running: ref.watch(authControllerProvider).isLoading,
+          VibePrimaryButton(
+            text: 'Sign in',
+            onPressed: () async {
+              ref.read(authControllerProvider.notifier).signIn(
+                email.text,
+                password.text
               );
-            }
+            },
+            running: ref.watch(authControllerProvider).isLoading,
           ),
 
           const SizedBox(height: AppSizes.s24),
@@ -100,7 +87,7 @@ class LoginView extends HookConsumerWidget {
           SocialLoginSection(socialLoginButtonList: [
             SocialLoginButton(
               onPressed: () async {
-                await controller.googleSignIn();
+                await ref.read(authControllerProvider.notifier).googleSignIn();
               },
               icon: const Image(
                 image: AssetImage(AppAssets.google),

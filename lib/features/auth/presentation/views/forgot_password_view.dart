@@ -21,7 +21,6 @@ class ForgotPasswordView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
-    final controller = ref.read(authControllerProvider.notifier);
     ref.listen(
       authControllerProvider,
       (prev, next) {
@@ -68,27 +67,27 @@ class ForgotPasswordView extends HookConsumerWidget {
               children: [
                 EmailButton(
                   text: 'Primary Email',
-                  onPressed: () { controller.getPrimaryEmail(); },
+                  onPressed: () {
+                    ref.read(authControllerProvider.notifier).getPrimaryEmail();
+                  },
                 ),
                 EmailButton(
                   text: 'Recovery Email',
-                  onPressed: () { controller.getRecoveryEmail(); },
+                  onPressed: () {
+                    ref.read(authControllerProvider.notifier).getRecoveryEmail();
+                  },
                 )
               ]
             ),
 
             const SizedBox(height: AppSizes.s16),
 
-            Consumer(
-              builder: (_, _, _) {
-                return VibePrimaryButton(
-                  text: 'Send OTP Code',
-                  onPressed: () async {
-                    await controller.sendToEmail(email.value.text);
-                  },
-                  running: ref.watch(authControllerProvider).isLoading,
-                );
-              }
+            VibePrimaryButton(
+              text: 'Send OTP Code',
+              onPressed: () async {
+                await ref.read(authControllerProvider.notifier).sendToEmail(email.value.text);
+              },
+              running: ref.watch(authControllerProvider).isLoading,
             ),
           ]
         )

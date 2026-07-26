@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vibeu_fe/config/themes/app_colors.dart';
+import 'package:vibeu_fe/config/themes/app_sizes.dart';
 
 class BackgroundGradient extends StatelessWidget {
   final Widget child;
@@ -12,7 +13,7 @@ class BackgroundGradient extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(AppSizes.s24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: <Color>[

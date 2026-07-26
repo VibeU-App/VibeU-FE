@@ -64,16 +64,12 @@ class RegisterView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s16),
 
-            Consumer(
-              builder: (_, _, _) {
-                return VibePrimaryButton(
-                  text: 'Sign Up',
-                  onPressed: () async {
-                    signUp.register(email.text);
-                  },
-                  running: ref.watch(authControllerProvider).isLoading,
-                );
-              }
+            VibePrimaryButton(
+              text: 'Sign Up',
+              onPressed: () async {
+                signUp.register(email.text);
+              },
+              running: ref.watch(authControllerProvider).isLoading,
             ),
 
             const SizedBox(height: AppSizes.s16),
