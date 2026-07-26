@@ -34,7 +34,7 @@ class OtpBox extends StatelessWidget {
 }
 
 class _AnimatedCursor extends StatefulWidget {
-  const _AnimatedCursor({super.key});
+  const _AnimatedCursor();
   
   @override
   State<_AnimatedCursor> createState() => _AnimatedCursorState();

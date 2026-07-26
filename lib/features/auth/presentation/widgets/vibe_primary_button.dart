@@ -35,11 +35,12 @@ class VibePrimaryButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: .center,
           children: [
-            Opacity(child: running ?
-              CircularProgressIndicator(value: 0.0)
-              :
-              icon,
+            Opacity(
               opacity: 0.0,
+              child: running ?
+                CircularProgressIndicator(value: 0.0)
+                :
+                icon,
             ),
             const SizedBox.square(dimension: AppSizes.s16),
             Text(
