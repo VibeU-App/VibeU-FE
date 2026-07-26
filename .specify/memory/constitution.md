@@ -6,15 +6,16 @@
 Strictly follow Feature-based Clean Architecture. Every feature must be isolated and contain exact `data`, `domain`, and `presentation` folders. Do not share models across features unless they are placed in a global `core` directory.
 
 ### 2. The Dependency Rule
-The Domain layer is the center of the application. It must NOT depend on the Data or Presentation layers, nor any third-party packages (except `dart:core` and `equatable`). The Presentation layer must ONLY depend on the Domain layer via BLoC.
+The Domain layer is the center of the application. It must NOT depend on the Data or Presentation layers, nor any third-party packages except `dart:core` and `equatable`. The Presentation layer must depend on Domain through Riverpod-driven state exposure, not direct data access.
 
-### 3. State Management (BLoC)
-Strictly use the `flutter_bloc` package. Every BLoC must have completely separate Event and State classes. Never use `Cubit` unless explicitly requested. States must use `Equatable` to prevent unnecessary UI rebuilds.
+### 3. State Management (Riverpod)
+Strictly use Riverpod for state management. Prefer `Notifier`, `AsyncNotifier`, `StateNotifier`, or `Provider` patterns as appropriate for the feature. Keep state and side effects out of widgets, and expose immutable state objects that the UI can watch and react to.
 
 ### 4. UI and Vibe Coding Boundaries
-The Presentation layer (UI) is "dumb." Widgets must NEVER contain business logic, HTTP requests, or local data transformations. 
-- UI must only dispatch events to the BLoC and use `BlocBuilder` or `BlocListener` to react to state changes.
-- All colors and typography must be referenced from `Theme.of(context)`—no hardcoded hex colors.
+The Presentation layer (UI) is "dumb." Widgets must NEVER contain business logic, HTTP requests, or local data transformations.
+- UI must only trigger Riverpod actions and listen to provider changes or notifications to react to state updates.
+- Use `ref.listen`, `ConsumerWidget`, or `ConsumerStatefulWidget` to respond to state changes and side effects.
+- All colors and typography must be referenced from `Theme.of(context)`; do not hardcode hex colors or text styles.
 - Extract any widget tree exceeding 4 levels of indentation into its own private widget class.
 
 ### 5. Error Handling & Data Flow
