@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/themes/design_system.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 
 class OtpBox extends StatelessWidget {
   final String? num;

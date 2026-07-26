@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/themes/design_system.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 
 class OtpImageContainer extends StatelessWidget {
   const OtpImageContainer({super.key});

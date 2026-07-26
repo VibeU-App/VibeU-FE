@@ -3,13 +3,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:vibeu_fe/config/themes/design_system.dart';
-import 'package:vibeu_fe/config/ui/vibe_text_field.dart';
-import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 import 'package:vibeu_fe/routing/routes.dart';
 
 import '../controllers/auth_controller.dart';
 
+import '../widgets/vibe_text_field.dart';
+import '../widgets/vibe_primary_button.dart';
 import '../widgets/email_button.dart';
 import '../widgets/prev_view_button.dart';
 import '../widgets/background_gradient.dart';

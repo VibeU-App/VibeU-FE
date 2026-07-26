@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/themes/app_typography.dart';
-import 'package:vibeu_fe/config/themes/app_colors.dart';
+import 'package:vibeu_fe/config/UI/app_typography.dart';
+import 'package:vibeu_fe/config/UI/app_colors.dart';
 import 'package:vibeu_fe/features/auth/presentation/widgets/vibe_text_span.dart';
 
 class TermsAndPolicySection extends StatefulWidget {

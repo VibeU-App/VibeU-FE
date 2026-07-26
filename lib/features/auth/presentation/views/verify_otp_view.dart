@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
-import 'package:vibeu_fe/config/themes/design_system.dart';
-import 'package:vibeu_fe/config/ui/vibe_primary_button.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 
 import '../controllers/auth_controller.dart';
 
+import '../widgets/vibe_primary_button.dart';
 import '../widgets/otp_image_container.dart';
 import '../widgets/header.dart';
 import '../widgets/otp_input_section.dart';

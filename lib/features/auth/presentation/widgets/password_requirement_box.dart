@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/themes/design_system.dart';
-import 'package:vibeu_fe/config/ui/surface_low_shadow_container.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
+import 'surface_low_shadow_container.dart';
 
 class PasswordRequirementsBox extends StatelessWidget {
   final bool hasMinLength;

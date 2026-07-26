@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:vibeu_fe/config/themes/design_system.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 import 'social_login_button.dart';
 
 class SocialLoginSection extends StatelessWidget {

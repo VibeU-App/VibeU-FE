@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vibeu_fe/config/themes/app_colors.dart';
-import 'package:vibeu_fe/config/themes/app_sizes.dart';
+import 'package:vibeu_fe/config/UI/app_colors.dart';
+import 'package:vibeu_fe/config/UI/app_sizes.dart';
 
 class BackgroundGradient extends StatelessWidget {
   final Widget child;

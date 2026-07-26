@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../themes/design_system.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 
 class SurfaceLowShadowContainer extends StatelessWidget {
   final Widget child;
