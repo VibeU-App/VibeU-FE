@@ -1,0 +1,61 @@
+name: Build & Release APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          WITH_V: true
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Release APK
+        run: |
+          # Extract semantic version without 'v' prefix
+          BUILD_NAME=$(echo "${{ steps.tag_version.outputs.new_tag }}" | sed 's/^v//')
+          BUILD_NUMBER=${{ github.run_number }}
+          echo "Building APK with Version Name: $BUILD_NAME, Build Number: $BUILD_NUMBER"
+          flutter build apk --release --build-name=$BUILD_NAME --build-number=$BUILD_NUMBER
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          draft: false
+          prerelease: false
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
