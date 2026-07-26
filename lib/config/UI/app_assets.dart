@@ -9,4 +9,8 @@ class AppAssets {
 
   // --- App Icon ---
   static const String appIcon = 'assets/images/logo_vibe_foreground.png';
+
+  static const String google = 'assets/images/google.webp';
+  static const String otp = 'assets/images/otp.webp';
+  static const String vibeU = 'assets/images/vibeu.webp';
 }
