@@ -1,0 +1,91 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:vibeu_fe/routing/routes.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
+
+import '../controllers/auth_controller.dart';
+
+import '../widgets/vibe_primary_button.dart';
+import '../widgets/vibe_text_field.dart';
+import '../widgets/background_gradient.dart';
+import '../widgets/header.dart';
+import '../widgets/terms_and_policy_section.dart';
+import '../widgets/vibe_text_span.dart';
+
+class RegisterView extends HookConsumerWidget {
+  const RegisterView({ super.key, });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final email = useTextEditingController();
+    final signUp = ref.read(authControllerProvider.notifier);
+    final termsComplied = useState(false);
+    ref.listen(
+      authControllerProvider,
+      (prev, next) {
+        next.whenOrNull(
+          data: (_) { context.go(Routes.verifyOtp); }
+        );
+      },
+    );
+
+    return BackgroundGradient(
+      child: Align(
+        alignment: .topCenter,
+        child: ListView(
+          children: [
+            const Header(
+              title: 'Register Now!',
+              subTitle: 'Fill in your email to create a new account',
+            ),
+
+            const SizedBox(height: AppSizes.s16),
+
+            VibeTextField(
+              label: 'Email Address',
+              controller: email,
+              prefixIcon: Icon(
+                Icons.mail_outline,
+                color: AppColors.textMuted500,
+                size: AppSizes.s32,
+              ),
+            ),
+
+            const SizedBox(height: AppSizes.s16),
+
+            TermsAndPolicySection(
+              termsButton: () async { signUp.termsOfService(); },
+              policyButton: () async { signUp.privacyPolicy(); },
+              onChanged: (value) async { termsComplied.value = value; }
+            ),
+
+            const SizedBox(height: AppSizes.s16),
+
+            VibePrimaryButton(
+              text: 'Sign Up',
+              onPressed: () async {
+                signUp.register(email.text);
+              },
+              running: ref.watch(authControllerProvider).isLoading,
+            ),
+
+            const SizedBox(height: AppSizes.s16),
+
+            Align(
+              alignment: Alignment.center,
+              child: VibeTextSpan(
+                defaultStyle: AppTypography.button,
+                inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
+              )
+              ..text('Already have an account? ')
+              ..link('Sign in', () async { context.go(Routes.login); })
+            )
+          ]
+        )
+      )
+    );
+  }
+}
