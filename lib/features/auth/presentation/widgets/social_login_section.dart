@@ -29,7 +29,10 @@ class SocialLoginSection extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20.0),
-          Column(children: socialLoginButtonList),
+          Column(
+            spacing: AppSizes.s16,
+            children: socialLoginButtonList,
+          )
         ]
       );
     }

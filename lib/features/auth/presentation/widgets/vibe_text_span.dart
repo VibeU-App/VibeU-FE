@@ -22,7 +22,7 @@ class VibeTextSpan extends StatefulWidget {
     ));
   }
 
-  void link(String text, Future<void> Function() onTap) {
+  void link(String text, [Future<void> Function()? onTap]) {
     spans.add(TextSpan(
       text: text,
       style: inlineActionStyle,
@@ -42,9 +42,9 @@ class _VibeTextSpanState extends State<VibeTextSpan> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text.rich(TextSpan(
+    return Text.rich(TextSpan(
       style: widget.defaultStyle,
       children: widget.spans,
-    )));
+    ));
   }
 }

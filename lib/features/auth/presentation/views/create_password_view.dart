@@ -8,6 +8,7 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
 
 import '../controllers/auth_controller.dart';
+import '../controllers/auth_state.dart';
 
 import '../widgets/vibe_primary_button.dart';
 import '../widgets/vibe_text_field.dart';
@@ -17,11 +18,36 @@ import '../widgets/header.dart';
 import '../widgets/password_requirement_box.dart';
 import '../widgets/password_strength_indicator.dart';
 
-class CreatePasswordView extends HookConsumerWidget {
+class CreatePasswordView extends StatefulHookConsumerWidget {
   const CreatePasswordView({ super.key, });
 
+  @override
+  ConsumerState<CreatePasswordView> createState() => _CreatePasswordState();
+}
+
+class _CreatePasswordState extends ConsumerState<CreatePasswordView> {
+  late final AuthOperation? operation;
+  late final String subTitle;
+  late final String buttonText;
+  late final VoidCallback callback;
+
+  @override
+  void initState() {
+    super.initState();
+    operation = ref.read(authControllerProvider).value?.operation;
+    if (operation == .register) {
+      buttonText = 'Create Password';
+      subTitle = 'Your new password must fit the required criteria';
+    } else if (operation == .forgotPassword) {
+      buttonText = 'Reset Password';
+      subTitle = 'Your new password must be different from previously used password';
+    } else {
+      buttonText = subTitle = 'operation is null: $operation';
+    }
+  }
+
   @override 
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final newPasswordField = useTextEditingController();
     final confirmPasswordField = useTextEditingController();
     var password = useState(_NewPassword(''));
@@ -29,7 +55,13 @@ class CreatePasswordView extends HookConsumerWidget {
       authControllerProvider,
       (prev, next) {
         next.whenOrNull(
-          data: (_) { context.go(Routes.login); }
+          data: (_) {
+            if (next.value?.operation == .register) {
+              context.go(Routes.profiling);
+            } else {
+              context.go(Routes.login);
+            }
+          }
         );
       },
     );
@@ -50,9 +82,9 @@ class CreatePasswordView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s16),
 
-            const Header(
+            Header(
               title: 'Create New Password',
-              subTitle: 'Your new password must be different from previously used password'
+              subTitle: subTitle,
             ),
 
             const SizedBox(height: AppSizes.s32),
@@ -109,12 +141,24 @@ class CreatePasswordView extends HookConsumerWidget {
             const SizedBox(height: AppSizes.s24),
 
             VibePrimaryButton(
-              text: 'Reset Password',
+              text: buttonText,
               onPressed: () async {
-                ref.read(authControllerProvider.notifier).createPassword(
-                  newPasswordField.text,
-                  confirmPasswordField.text,
-                );
+                final controller = ref.read(authControllerProvider.notifier);
+
+                // should read from User and write new emails to User instead,
+                // once something like that is implemented
+                final email = ref.read(authControllerProvider).value?.sendToEmail;
+
+                // should pass new + confirmed password to a validator class before continuing
+                switch (operation) {
+                  case .register:
+                    controller.register("acb@email", newPasswordField.text);
+                    break;
+                  case .forgotPassword:
+                    controller.createPassword("abc@email", newPasswordField.text);
+                    break;
+                  default: break;
+                }
               },
               running: ref.watch(authControllerProvider).isLoading,
             ),

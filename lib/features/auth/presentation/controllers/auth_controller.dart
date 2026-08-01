@@ -12,7 +12,14 @@ class AuthController extends _$AuthController {
     return AuthState(step: .idle);
   }
 
-  Future<void> signIn( String email,  String password) async {
+  Future<void> signIn(String email,  String password) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      return AuthState(step: .signIn);
+    });
+  }
+
+  Future<void> signInWithEmail(String email) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       return AuthState(step: .signIn);
@@ -26,13 +33,10 @@ class AuthController extends _$AuthController {
     });
   }
 
-  Future<void> register( String email) async {
+  Future<void> register(String email, String password) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      return AuthState(
-        step: .register,
-        sendToEmail: email,
-      );
+      return AuthState(step: .createPassword, operation: .register);
     });
   }
 
@@ -46,25 +50,38 @@ class AuthController extends _$AuthController {
     });
   }
 
-  Future<void> submitOtp(String otp) async {
+  Future<void> submitOtp({
+    required AuthOperation operation,
+    required String email,
+    required String otp,
+  }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      return AuthState(step: .verifyOtp);
+      return AuthState(
+        step: .verifyOtp,
+        operation: operation,
+        sendToEmail: email,
+      );
     });
   }
 
   Future<void> resendOtp() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      return AuthState(step: .resendOtp);
+      return AuthState(step: .idle);
     });
   }
 
-  Future<void> sendToEmail( String email) async {
+  Future<void> sendToEmail({
+    required AuthStep fromStep,
+    required AuthOperation operation,
+    required String email
+  }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       return AuthState(
-        step: .forgotPassword,
+        step: fromStep,
+        operation: operation,
         sendToEmail: email
       );
     });

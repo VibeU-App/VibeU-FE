@@ -7,6 +7,7 @@ import '../features/auth/presentation/views/register_view.dart';
 import '../features/auth/presentation/views/forgot_password_view.dart';
 import '../features/intro/presentation/views/splash_screen.dart';
 import '../features/intro/presentation/views/onboarding_view.dart';
+import '../features/profiling/presentation/views/profiling_view.dart';
 
 import 'routes.dart';
 
@@ -41,5 +42,9 @@ GoRouter router() => GoRouter(
       path: Routes.createPassword,
       builder: (_, _) => const CreatePasswordView(),
     ),
+    GoRoute(
+      path: Routes.profiling,
+      builder: (_, _) => const ProfilingView(),
+    )
   ],
 );

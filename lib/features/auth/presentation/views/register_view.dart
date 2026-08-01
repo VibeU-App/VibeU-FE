@@ -21,13 +21,17 @@ class RegisterView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
-    final signUp = ref.read(authControllerProvider.notifier);
+    final controller = ref.read(authControllerProvider.notifier);
     final termsComplied = useState(false);
     ref.listen(
       authControllerProvider,
       (prev, next) {
         next.whenOrNull(
-          data: (_) { context.go(Routes.verifyOtp); }
+          data: (_) {
+            if (next.value?.step == .register) {
+              context.push(Routes.verifyOtp);
+            }
+          }
         );
       },
     );
@@ -57,8 +61,8 @@ class RegisterView extends HookConsumerWidget {
             const SizedBox(height: AppSizes.s16),
 
             TermsAndPolicySection(
-              termsButton: () async { signUp.termsOfService(); },
-              policyButton: () async { signUp.privacyPolicy(); },
+              termsButton: () async { controller.termsOfService(); },
+              policyButton: () async { controller.privacyPolicy(); },
               onChanged: (value) async { termsComplied.value = value; }
             ),
 
@@ -67,21 +71,24 @@ class RegisterView extends HookConsumerWidget {
             VibePrimaryButton(
               text: 'Sign Up',
               onPressed: () async {
-                signUp.register(email.text);
+                controller.sendToEmail(
+                  fromStep: .register,
+                  operation: .register,
+                  email: email.text
+                );
               },
               running: ref.watch(authControllerProvider).isLoading,
             ),
 
             const SizedBox(height: AppSizes.s16),
 
-            Align(
-              alignment: Alignment.center,
+            Center(
               child: VibeTextSpan(
                 defaultStyle: AppTypography.button,
                 inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
               )
               ..text('Already have an account? ')
-              ..link('Sign in', () async { context.go(Routes.login); })
+              ..link('Sign in', () async { context.pop(); })
             )
           ]
         )

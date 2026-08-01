@@ -49,7 +49,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
             key: ValueKey('bars_$strengthLevel'),
             children: List.generate(4, (int index) => Expanded(
               child: Container(
-                height: 4.0,
+                height: AppSizes.s4,
                 decoration: BoxDecoration(
                   borderRadius: const .all(.circular(AppSizes.r999)),
                   color: strengthLevel > index ? _color : AppColors.surface600,

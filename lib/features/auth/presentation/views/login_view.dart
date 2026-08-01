@@ -25,6 +25,12 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
     final password = useTextEditingController();
+    ref.listen(
+      authControllerProvider,
+      (prev, next) {
+        if (next.value?.step != .signIn) return;
+      }
+    );
 
     return BackgroundGradient(
       child: Center(child: ListView(
@@ -65,7 +71,8 @@ class LoginView extends HookConsumerWidget {
 
           ForgotPasswordButton(
             onPressed: () {
-              context.go(Routes.forgotPassword);
+              ref.read(authControllerProvider).value?.operation = .forgotPassword;
+              context.push(Routes.forgotPassword);
             }
           ),
 
@@ -87,6 +94,17 @@ class LoginView extends HookConsumerWidget {
           SocialLoginSection(socialLoginButtonList: [
             SocialLoginButton(
               onPressed: () async {
+                ref.read(authControllerProvider).value?.operation = .loginPasswordless;
+                await context.push(Routes.forgotPassword);
+              },
+              icon: const Icon(
+                Icons.mail_outline,
+                size: AppSizes.s24,
+              ),
+              label: 'Continue with Email',
+            ),
+            SocialLoginButton(
+              onPressed: () async {
                 await ref.read(authControllerProvider.notifier).googleSignIn();
               },
               icon: const Image(
@@ -99,18 +117,20 @@ class LoginView extends HookConsumerWidget {
 
           const SizedBox(height: AppSizes.s16),
 
-          VibeTextSpan(
-            defaultStyle: AppTypography.button.copyWith(
-              color: AppColors.textMuted500
-            ),
-            inlineActionStyle: TextStyle(
-              color: AppColors.textPrimary500
-            ),
+          Center(
+            child: VibeTextSpan(
+              defaultStyle: AppTypography.button.copyWith(
+                color: AppColors.textMuted500
+              ),
+              inlineActionStyle: TextStyle(
+                color: AppColors.textPrimary500
+              ),
+            )
+            ..text('Don\'t have an account? ')
+            ..link('Sign Up', () async {
+              context.push(Routes.register);
+            }),
           )
-          ..text('Don\'t have an account? ')
-          ..link('Sign Up', () async {
-            context.push(Routes.register);
-          }),
         ]
       ))
     );

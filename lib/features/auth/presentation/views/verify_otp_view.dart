@@ -8,6 +8,7 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
 
 import '../controllers/auth_controller.dart';
+import '../controllers/auth_state.dart';
 
 import '../widgets/vibe_primary_button.dart';
 import '../widgets/otp_image_container.dart';
@@ -17,31 +18,55 @@ import '../widgets/prev_view_button.dart';
 import '../widgets/vibe_text_span.dart';
 import '../widgets/background_gradient.dart';
 
-class VerifyOtpView extends HookConsumerWidget {
+class VerifyOtpView extends StatefulHookConsumerWidget {
   const VerifyOtpView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    const otpLength = 6;
+  ConsumerState<VerifyOtpView> createState() => _VerifyOtpState();
+}
 
+class _VerifyOtpState extends ConsumerState<VerifyOtpView> {
+  late final AuthOperation? operation;
+  late final String buttonText;
+  late final String? email;
+
+  @override
+  void initState() {
+    super.initState();
+    operation = ref.read(authControllerProvider).value?.operation;
+    email = ref.read(authControllerProvider).value?.sendToEmail;
+    switch(operation) {
+      case .register:
+        buttonText = "Sign Up";
+        break;
+      case .forgotPassword:
+        buttonText = "Create New Password";
+        break;
+      case .loginPasswordless:
+        buttonText = "Sign In";
+        break;
+      default: break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const otpLength = 6;
     final otpField = useTextEditingController();
     final otpNode = useFocusNode();
 
-    final auth = ref.watch(authControllerProvider);
     final controller = ref.read(authControllerProvider.notifier);
-
-    final email = auth.value?.sendToEmail;
-    final step = auth.value?.step;
-
-    final buttonText = step == .register
-      ? "Sign Up"
-      : "Create New Password";
 
     ref.listen(
       authControllerProvider,
       (prev, next) {
         next.whenOrNull(
-          data: (_) { context.go(Routes.createPassword); }
+          data: (_) { 
+            if (next.value?.step == .verifyOtp) {
+              context.push(Routes.createPassword);
+              otpField.clear();
+            }
+          }
         );
       },
     );
@@ -49,7 +74,11 @@ class VerifyOtpView extends HookConsumerWidget {
     useEffect(() {
       void listener() async {
         if (otpField.text.length == otpLength) {
-          await controller.submitOtp(otpField.text);
+          await controller.submitOtp(
+            operation: operation!,
+            email: email!,
+            otp: otpField.text
+          );
         }
       }
       otpField.addListener(listener);
@@ -114,19 +143,35 @@ class VerifyOtpView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s24),
 
-            VibeTextSpan(
-              defaultStyle: AppTypography.bodyStd,
-              inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
-            )
-            ..text('Haven\'t received OTP code? ')
-            ..link('Resend', () async { controller.resendOtp(); }),
+            Center(
+              child: VibeTextSpan(
+                defaultStyle: AppTypography.bodyStd,
+                inlineActionStyle: TextStyle(color: AppColors.textPrimary500),
+              )
+              ..text('Haven\'t received OTP code? ')
+              ..link('Resend', () async { controller.resendOtp(); }),
+            ),
 
             const SizedBox(height: AppSizes.s24),
 
             VibePrimaryButton(
               text: buttonText,
               onPressed: () async {
-                await controller.submitOtp(otpField.text);
+                switch (operation) {
+                  case .loginPasswordless:
+                    // the sign in function for Login Passwordless flow will redirect
+                    // users to where? By default, currently it is Routes.login
+                    context.go(Routes.login);
+                    break;
+                  case .forgotPassword:
+                  case .register:
+                    await controller.submitOtp(
+                      operation: operation!,
+                      email: email!,
+                      otp: otpField.text
+                    );
+                  default: break;
+                }
               },
               icon: const Icon(
                 AntDesign.arrowright,
