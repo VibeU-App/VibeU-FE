@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
+
+import '../controllers/profiling_controller.dart';
 
 import '../widgets/header.dart';
 import '../widgets/nickname_field.dart';
@@ -11,6 +14,15 @@ class NicknamePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final nickname = useTextEditingController();
+    useEffect(() {
+      String? cur = ref.read(profilingControllerProvider.notifier).getNickname();
+      if (cur != null) {
+        nickname.text = cur;
+      }
+      return null;
+    }, []);
+
     return Column(
       spacing: AppSizes.s24,
       children: [
@@ -25,13 +37,17 @@ class NicknamePage extends HookConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: const .all(.circular(AppSizes.r999)),
           ),
-          child: const Image(
-            image: AssetImage(AppAssets.otp),
-            height: 132.0,
-          ),
+          child: ref.read(profilingControllerProvider.notifier).getAvatar(),
         ),
 
-        NicknameField(),
+        NicknameField(
+          controller: nickname,
+          onChanged: (name) {
+            ref.read(
+              profilingControllerProvider.notifier
+            ).setNickname(name);
+          },
+        ),
       ]
     );
   }

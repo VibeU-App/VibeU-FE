@@ -64,20 +64,21 @@ class _BirthdayState extends State<BirthdayScrollView> {
           ],
         ),
 
-        Expanded(
-          child: Stack(
-            alignment: .center,
-            children: [
-              Container(
-                height: AppTypography.h2.fontSize! * AppTypography.h2.height!,
-                margin: .symmetric(vertical: AppTypography.h2.height!),
-                decoration: const BoxDecoration(
-                  color: AppColors.surface600,
-                  borderRadius: .all(.circular(AppSizes.r12)),
-                )
-              ),
+        Stack(
+          alignment: .center,
+          children: [
+            Container(
+              height: AppTypography.h2.fontSize! * AppTypography.h2.height!,
+              margin: .symmetric(vertical: AppTypography.h2.height!),
+              decoration: const BoxDecoration(
+                color: AppColors.surface600,
+                borderRadius: .all(.circular(AppSizes.r12)),
+              )
+            ),
 
-              Row(
+            SizedBox(
+              height: 225,
+              child: Row(
                 mainAxisAlignment: .spaceBetween,
                 children: [
                   ValueListenableBuilder(
@@ -117,8 +118,8 @@ class _BirthdayState extends State<BirthdayScrollView> {
                   ),
                 ]
               )
-            ]
-          )
+            )
+          ]
         )
       ]
     );

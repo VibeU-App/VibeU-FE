@@ -9,13 +9,17 @@ import 'tag_template.dart';
 
 class TagListController extends ChangeNotifier {
   TagListController({
+    List<String>? selectedTags,
     this.tagLimit = 10,
     required this._categories,
-  });
+  })
+  : _selectedTags = selectedTags == null
+    ? HashSet<String>()
+    : HashSet.from(selectedTags);
 
   final int tagLimit;
   final List<(String, List<String>)> _categories;
-  final _selectedTags = HashSet<String>();
+  final HashSet<String> _selectedTags;
   int _selectedCategory = 0;
   String get selectedCategory => _categories[_selectedCategory].$1;
   List<String> get selectedTags => _categories[_selectedCategory].$2;
@@ -61,9 +65,8 @@ class _TagListState extends State<TagList> {
   @override
   void initState() {
     super.initState();
-    tagContainer = TagContainerController();
-    tagContainer.setTags(
-      widget.controller._categories[widget.controller._selectedCategory].$2
+    tagContainer = TagContainerController(
+      tags: widget.controller._categories[widget.controller._selectedCategory].$2
     );
   }
 
@@ -116,30 +119,28 @@ class _TagListState extends State<TagList> {
             },
           ),
         ),
-        Expanded(
-          child: TagContainer(
-            key: ValueKey('tag_container_$selectedCategory'),
-            controller: tagContainer,
-            enableBorderStrut: false,
-            tagBuilder: (label) => TagTemplate(
-              label: label,
-              removeable: false,
-              toggle: selectedTags.contains(label),
-              onToggle: (toggle) {
-                if (toggle) {
-                  controller.enable(label);
-                  if (widget.onTagEnabled != null) {
-                    widget.onTagEnabled!(label);
-                  }
-                }
-                else {
-                  controller.disable(label);
-                  if (widget.onTagDisabled != null) {
-                    widget.onTagDisabled!(label);
-                  }
+        TagContainer(
+          key: ValueKey('tag_container_$selectedCategory'),
+          controller: tagContainer,
+          enableBorderStrut: false,
+          tagBuilder: (label) => TagTemplate(
+            label: label,
+            removeable: false,
+            toggle: selectedTags.contains(label),
+            onToggle: (toggle) {
+              if (toggle) {
+                controller.enable(label);
+                if (widget.onTagEnabled != null) {
+                  widget.onTagEnabled!(label);
                 }
               }
-            )
+              else {
+                controller.disable(label);
+                if (widget.onTagDisabled != null) {
+                  widget.onTagDisabled!(label);
+                }
+              }
+            }
           )
         )
       ]

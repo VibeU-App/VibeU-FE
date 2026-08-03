@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
 
-class NicknameField extends HookWidget {
-  const NicknameField({super.key});
+class NicknameField extends StatelessWidget {
+  const NicknameField({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final nickname = useTextEditingController();
-
     return Container(
       height: 59.0,
       decoration: BoxDecoration(
@@ -26,7 +30,8 @@ class NicknameField extends HookWidget {
         children: [
           Expanded(
             child: TextField(
-              controller: nickname,
+              controller: controller,
+              onChanged: onChanged,
               style: AppTypography.h2,
               textAlign: .center,
               decoration: InputDecoration(
@@ -39,7 +44,7 @@ class NicknameField extends HookWidget {
               EvilIcons.close_o,
               color: AppColors.surface800,
             ),
-            onPressed: () { nickname.clear(); }
+            onPressed: () { controller.clear(); }
           )
         ]
       )

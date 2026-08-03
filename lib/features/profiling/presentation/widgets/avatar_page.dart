@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
+import 'package:vibeu_fe/config/dicebear/presets.dart';
 import 'package:vibeu_fe/features/auth/presentation/widgets/vibe_outlined_button.dart';
+
+import '../controllers/profiling_controller.dart';
 
 import '../widgets/refresh_button.dart';
 import '../widgets/header.dart';
 import '../widgets/avatar_grid.dart';
 
-class AvatarPage extends StatefulWidget {
+class AvatarPage extends HookConsumerWidget {
   const AvatarPage({super.key});
 
-  @override
-  State<AvatarPage> createState() => _AvatarPageState();
-}
-
-class _AvatarPageState extends State<AvatarPage> {
-  late final ValueNotifier<bool> refresh;
-  final grid = AvatarGridController();
+  static const contentWidthRatio = 0.76;
 
   @override
-  void initState() {
-    super.initState();
-    refresh = ValueNotifier(false);
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final avatarGrid = useMemoized(() => AvatarGridController());
 
-  @override
-  void dispose() {
-    refresh.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       spacing: AppSizes.s16,
       children: [
@@ -40,56 +30,62 @@ class _AvatarPageState extends State<AvatarPage> {
           subTitle: 'You can’t change after confirming',
         ),
 
-        Row(
-          mainAxisAlignment: .spaceBetween,
-          children: [
-            VibeOutlinedButton(
-              onPressed: () {},
-              text: 'Male',
-              textStyle: AppTypography.h3,
-              icon: const Icon(
-                Icons.male_rounded,
-                size: AppSizes.s24,
+        SizedBox(
+          width: screenWidth * contentWidthRatio,
+          child: Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              VibeOutlinedButton(
+                onPressed: () { avatarGrid.setPreset(malePreset); },
+                text: 'Male',
+                textStyle: AppTypography.h3,
+                icon: const Icon(
+                  Icons.male_rounded,
+                  size: AppSizes.s24,
+                ),
+                colorActivated: AppColors.primary500,
+                shadow: [AppShadows.mid],
               ),
-              colorActivated: AppColors.primary500,
-              shadow: [AppShadows.mid],
-            ),
 
-            VibeOutlinedButton(
-              onPressed: () {},
-              text: 'Female',
-              textStyle: AppTypography.h3,
-              icon: const Icon(
-                Icons.female_rounded,
-                size: AppSizes.s24,
-              ),
-              colorActivated: AppColors.primary500,
-              shadow: [AppShadows.mid],
-            )
-          ]
+              VibeOutlinedButton(
+                onPressed: () { avatarGrid.setPreset(femalePreset); },
+                text: 'Female',
+                textStyle: AppTypography.h3,
+                icon: const Icon(
+                  Icons.female_rounded,
+                  size: AppSizes.s24,
+                ),
+                colorActivated: AppColors.primary500,
+                shadow: [AppShadows.mid],
+              )
+            ]
+          )
         ),
        
-        Expanded(
+        SizedBox.square(
+          dimension: screenWidth * contentWidthRatio,
           child: AvatarGrid(
-            controller: grid,
-            onTap: () {},
-            onRefresh: (value) { refresh.value = value; },
-          ),
+            controller: avatarGrid,
+            onSelectedAvatar: () {
+              ref.read(
+                profilingControllerProvider.notifier
+              ).setAvatar(avatarGrid.selected);
+            }
+          )
         ),
 
         ValueListenableBuilder(
-          valueListenable: refresh,
-          builder: (_, v, _) {
+          valueListenable: avatarGrid.isRefreshing,
+          builder: (_, refresh, _) {
             return RefreshButton(
               text: 'Change',
-              refresh: v,
+              refresh: refresh,
               callback: () {
-                if (refresh.value == true) return;
-                grid.refresh();
+                avatarGrid.refresh();
               }
             );
           }
-        ),
+        )
       ]
     );
   }

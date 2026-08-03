@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
+import 'package:vibeu_fe/features/profiling/presentation/controllers/profiling_controller.dart';
 
 import '../widgets/birthday_info.dart';
 import '../widgets/birthday_scroll_view.dart';
@@ -12,10 +13,11 @@ class BirthdayPage extends HookConsumerWidget {
   const BirthdayPage({super.key});
 
   static const birthdayInfoWidthRatio = 0.58;
+  static const spaceRatio = 0.28;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screen = MediaQuery.sizeOf(context);
     final birthdayController = useMemoized(() => BirthdayInfoController());
     final birthdayText = useTextEditingController();
     return Column(
@@ -25,10 +27,10 @@ class BirthdayPage extends HookConsumerWidget {
           subTitle: "Just display information about your age",
         ),
 
-        const Spacer(),
+        SizedBox(height: screen.height * spaceRatio),
 
         SizedBox(
-          width: screenWidth * birthdayInfoWidthRatio,
+          width: screen.width * birthdayInfoWidthRatio,
           child: BirthdayInfo(
             controller: birthdayText,
             birthday: birthdayController,
@@ -37,15 +39,12 @@ class BirthdayPage extends HookConsumerWidget {
 
         const SizedBox(height: AppSizes.s32),
 
-        Expanded(
-          child: BirthdayScrollView(
-            onBirthdayChanged: (date) {
-              birthdayController.setBirthday(date);
-            },
-          )
+        BirthdayScrollView(
+          onBirthdayChanged: (date) {
+            birthdayController.setBirthday(date);
+            ref.read(profilingControllerProvider.notifier).setBirthday(date);
+          },
         ),
-
-        const SizedBox(height: AppSizes.s48),
       ]
     );
   }
