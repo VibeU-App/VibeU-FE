@@ -35,10 +35,12 @@ class _ForgotPasswordState extends ConsumerState<ForgotPasswordView> {
   @override
   void initState() {
     super.initState();
-    if (widget.operation == .forgotPassword)
+    if (widget.operation == .forgotPassword) {
       title = "Forgot Password ?";
-    else
+    }
+    else {
       title = "Login Passwordless";
+    }
   }
 
   @override

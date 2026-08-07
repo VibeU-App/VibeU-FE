@@ -28,7 +28,7 @@ class AnswerButton extends HookWidget {
         );
       },
       child: GestureDetector(
-        key: ValueKey('answers_${index}_${selected}'),
+        key: ValueKey('answers_${index}_$selected'),
         onTap: onPressed,
         child: Container(
           width: .infinity,

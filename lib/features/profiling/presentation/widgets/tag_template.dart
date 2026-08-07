@@ -28,7 +28,7 @@ class TagTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilledButton.icon(
-      key: ValueKey('tag_${label}_${toggle}'),
+      key: ValueKey('tag_${label}_$toggle'),
       onPressed: () {
         if (enableToggle) {
           if (onToggle != null) {

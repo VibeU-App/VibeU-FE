@@ -216,7 +216,7 @@ class _CategoryButton extends StatelessWidget {
           return FadeTransition(opacity: animation, child: child);
         },
         child: Stack(
-          key: ValueKey('${label}_${toggle}'),
+          key: ValueKey('${label}_$toggle'),
           children: [
             Text(
               label,

@@ -13,7 +13,7 @@ import '../features/profiling/presentation/views/profiling_view.dart';
 import 'routes.dart';
 
 GoRouter router() => GoRouter(
-  initialLocation: Routes.login,
+  initialLocation: Routes.splash,
   routes: [
     GoRoute(
       path: Routes.splash,
