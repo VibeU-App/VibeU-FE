@@ -29,7 +29,7 @@ class _BirthdayState extends State<BirthdayScrollView> {
     final date = DateTime.now();
 
     yearCount = date.year - yearsOffset;
-    dayCount = ValueNotifier<int>(_daysInMonth(monthCount, yearCount));
+    dayCount = ValueNotifier<int>(_daysInMonth(date.month, date.year));
 
     daysController = FixedExtentScrollController(
       initialItem: date.day - 1,
@@ -38,7 +38,7 @@ class _BirthdayState extends State<BirthdayScrollView> {
       initialItem: date.month - 1,
     );
     yearsController = FixedExtentScrollController(
-      initialItem: date.year,
+      initialItem: date.year - yearsOffset - 1,
     );
   }
 

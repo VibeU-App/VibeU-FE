@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:vibeu_fe/features/auth/presentation/controllers/auth_state.dart';
 
 import '../features/auth/presentation/views/create_password_view.dart';
 import '../features/auth/presentation/views/verify_otp_view.dart';
@@ -12,7 +13,7 @@ import '../features/profiling/presentation/views/profiling_view.dart';
 import 'routes.dart';
 
 GoRouter router() => GoRouter(
-  initialLocation: Routes.splash,
+  initialLocation: Routes.login,
   routes: [
     GoRoute(
       path: Routes.splash,
@@ -32,15 +33,24 @@ GoRouter router() => GoRouter(
     ),
     GoRoute(
       path: Routes.forgotPassword,
-      builder: (_, _) => const ForgotPasswordView(),
+      builder: (_, s) {
+        final operation = s.extra! as AuthOperation;
+        return ForgotPasswordView(operation: operation);
+      }
     ),
     GoRoute(
       path: Routes.verifyOtp,
-      builder: (_, _) => const VerifyOtpView(),
+      builder: (_, s) {
+        final operation = s.extra! as AuthOperation;
+        return VerifyOtpView(operation: operation);
+      }
     ),
     GoRoute(
       path: Routes.createPassword,
-      builder: (_, _) => const CreatePasswordView(),
+      builder: (_, s) {
+        final operation = s.extra! as AuthOperation;
+        return CreatePasswordView(operation: operation);
+      }
     ),
     GoRoute(
       path: Routes.profiling,

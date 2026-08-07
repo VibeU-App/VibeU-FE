@@ -46,7 +46,7 @@ class Questionnaire {
   static Question q4() {
     return const Question(
       id: 'q4',
-      title: 'Quietly organize the material, clean the slides, and make sure the foundation is solid.',
+      title: 'If you match with someone on VibeU, what kind of first meet-up sounds most like you?',
       question: 'If you match with someone on VibeU, what kind of first meet-up sounds most like you?',
       answers: [
         .new(id: 'q4_a', answer: 'A slow walk, a small cafe, and a conversation that feels honest instead of performative.'),

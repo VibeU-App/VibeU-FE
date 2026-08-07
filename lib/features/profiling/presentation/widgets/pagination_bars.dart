@@ -33,7 +33,7 @@ class PaginationBars extends StatelessWidget {
                 ),
                 margin: .only(
                   left: index > 0 ? AppSizes.s4 : 0,
-                  right: index < 3 ? AppSizes.s4 : 0,
+                  right: index < totalPage - 1 ? AppSizes.s4 : 0,
                 )
               )
             ))

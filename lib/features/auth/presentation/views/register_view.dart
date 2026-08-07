@@ -7,6 +7,7 @@ import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
 
 import '../controllers/auth_controller.dart';
+import '../controllers/auth_state.dart';
 
 import '../widgets/vibe_primary_button.dart';
 import '../widgets/vibe_text_field.dart';
@@ -29,7 +30,10 @@ class RegisterView extends HookConsumerWidget {
         next.whenOrNull(
           data: (_) {
             if (next.value?.step == .register) {
-              context.push(Routes.verifyOtp);
+              context.push(
+                Routes.verifyOtp,
+                extra: AuthOperation.register
+              );
             }
           }
         );
@@ -73,7 +77,6 @@ class RegisterView extends HookConsumerWidget {
               onPressed: () async {
                 controller.sendToEmail(
                   fromStep: .register,
-                  operation: .register,
                   email: email.text
                 );
               },

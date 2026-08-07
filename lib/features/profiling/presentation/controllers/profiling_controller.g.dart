@@ -42,7 +42,7 @@ final class ProfilingControllerProvider
 }
 
 String _$profilingControllerHash() =>
-    r'024378e16441b97b102d1b70f1f12b65bf57b952';
+    r'ea15ffae9ef8db29fbe0517075de8850f8be347d';
 
 abstract class _$ProfilingController extends $Notifier<ProfilingState> {
   ProfilingState build();
@@ -94,7 +94,7 @@ final class PersonalitySetupProvider
   }
 }
 
-String _$personalitySetupHash() => r'6f9f8786e61a2bf36aaf1325b02ea1e9ae1413e8';
+String _$personalitySetupHash() => r'bdd1d5199c4cc26c6730dde7b228a3c3c0d01a4a';
 
 abstract class _$PersonalitySetup extends $Notifier<QuizAnswers> {
   QuizAnswers build();

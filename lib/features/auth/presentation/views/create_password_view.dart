@@ -19,30 +19,30 @@ import '../widgets/password_requirement_box.dart';
 import '../widgets/password_strength_indicator.dart';
 
 class CreatePasswordView extends StatefulHookConsumerWidget {
-  const CreatePasswordView({ super.key, });
+  const CreatePasswordView({
+    super.key,
+    required this.operation,
+  });
+
+  final AuthOperation operation;
 
   @override
   ConsumerState<CreatePasswordView> createState() => _CreatePasswordState();
 }
 
 class _CreatePasswordState extends ConsumerState<CreatePasswordView> {
-  late final AuthOperation? operation;
   late final String subTitle;
   late final String buttonText;
-  late final VoidCallback callback;
 
   @override
   void initState() {
     super.initState();
-    operation = ref.read(authControllerProvider).value?.operation;
-    if (operation == .register) {
+    if (widget.operation == .register) {
       buttonText = 'Create Password';
       subTitle = 'Your new password must fit the required criteria';
-    } else if (operation == .forgotPassword) {
+    } else {
       buttonText = 'Reset Password';
       subTitle = 'Your new password must be different from previously used password';
-    } else {
-      buttonText = subTitle = 'operation is null: $operation';
     }
   }
 
@@ -56,7 +56,7 @@ class _CreatePasswordState extends ConsumerState<CreatePasswordView> {
       (prev, next) {
         next.whenOrNull(
           data: (_) {
-            if (next.value?.operation == .register) {
+            if (widget.operation == .register) {
               context.go(Routes.profiling);
             } else {
               context.go(Routes.login);
@@ -147,10 +147,10 @@ class _CreatePasswordState extends ConsumerState<CreatePasswordView> {
 
                 // should read from User and write new emails to User instead,
                 // once something like that is implemented
-                final email = ref.read(authControllerProvider).value?.sendToEmail;
+                // final email = ref.read(authControllerProvider).value?.sendToEmail;
 
                 // should pass new + confirmed password to a validator class before continuing
-                switch (operation) {
+                switch (widget.operation) {
                   case .register:
                     controller.register("acb@email", newPasswordField.text);
                     break;

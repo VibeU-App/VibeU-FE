@@ -3,6 +3,7 @@ import 'package:dice_bear/dice_bear.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
 import 'package:vibeu_fe/config/dicebear/presets.dart';
+import 'package:vibeu_fe/config/dicebear/dicebear.dart';
 
 class AvatarGridController {
   AvatarGridController({
@@ -10,16 +11,19 @@ class AvatarGridController {
   });
   
   _AvatarGridState? _state;
+  bool _disposed = false;
   final _selected = ValueNotifier<int>(-1);
   final isRefreshing = ValueNotifier(false);
-  final List<Widget> _avatars = [];
+  final List<(String, Widget)> _avatars = [];
   final int itemCount;
   DiceBearPersonasOptions _preset = malePreset;
-  Widget? get selected => (_selected.value == -1)
+  DiceBearPersonasOptions get preset => _preset;
+  String? get selectedSeed => (_selected.value == -1)
     ? null
-    : _avatars[_selected.value];
+    : _avatars[_selected.value].$1;
 
   void dispose() {
+    _disposed = true;
     _selected.dispose();
     isRefreshing.dispose();
   }
@@ -29,15 +33,17 @@ class AvatarGridController {
     _selected.value = -1;
     isRefreshing.value = true;
     while(_avatars.isNotEmpty) {
+      if (_disposed) return;
       final index = _avatars.length - 1;
-      final removed = _avatars.removeLast();
-      await _state!.buildRemovedItem(removed, index);
+      final avatar = _avatars.removeLast();
+      await _state!.buildRemovedItem(avatar.$2, index);
     }
 
     for (int index = 0; index < itemCount; index++) {
-      final avatar = _randomAvatar;
-      _avatars.add(avatar);
-      await _state!.buildItem(avatar, index);
+      if (_disposed) return;
+      final seed = DateTime.now().microsecondsSinceEpoch.toString();
+      _avatars.add((seed, diceBearAvatar(seed, _preset)));
+      await _state!.buildItem(index);
     }
     isRefreshing.value = false;
   }
@@ -52,17 +58,10 @@ class AvatarGridController {
 
   void _init() {
     for (int i = 0; i < itemCount; i++) {
-      _avatars.add(_randomAvatar);
+      final seed = DateTime.now().microsecondsSinceEpoch.toString();
+      _avatars.add((seed, diceBearAvatar(seed, _preset)));
     }
   }
-
-  Widget get _randomAvatar => DiceBearRequest<DiceBearPersonasOptions>(
-    style: DiceBearStyle.personas,
-    coreOptions: DiceBearCoreOptions(
-      seed: DateTime.now().microsecondsSinceEpoch.toString()
-    ),
-    styleOptions: _preset,
-  ).toImage();
 }
 
 class AvatarGrid extends StatefulWidget {
@@ -125,7 +124,7 @@ class _AvatarGridState extends State<AvatarGrid> {
                   widget.onSelectedAvatar();
                 },
                 animation: animation,
-                icon: controller._avatars[index],
+                icon: controller._avatars[index].$2,
                 iconSize: widget.itemSize,
                 selected: index == selected.value,
               );
@@ -136,14 +135,14 @@ class _AvatarGridState extends State<AvatarGrid> {
     );
   }
 
-  Future<void> buildRemovedItem(Widget item, int index) async {
+  Future<void> buildRemovedItem(Widget icon, int index) async {
     _gridKey.currentState!.removeItem(
       index,
       (_, animation) {
         return _Slot(
           onPressed: () {},
           animation: animation,
-          icon: item,
+          icon: icon,
           iconSize: widget.itemSize,
           selected: index == widget.controller._selected.value,
         );
@@ -153,7 +152,7 @@ class _AvatarGridState extends State<AvatarGrid> {
     await Future.delayed(widget.animationDuration);
   }
 
-  Future<void> buildItem(Widget item, int index) async {
+  Future<void> buildItem(int index) async {
     _gridKey.currentState!.insertItem(
       index,
       duration: widget.animationDuration

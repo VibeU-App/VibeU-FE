@@ -7,5 +7,5 @@ abstract final class Routes {
   static const createPassword = '/create-password';
   static const verifyOtp = '/verify-otp';
   static const profiling = '/profiling';
-  static const questionaire = '/profiling/questionaire';
+  static const questionnaire = '/profiling/questionnaire';
 }

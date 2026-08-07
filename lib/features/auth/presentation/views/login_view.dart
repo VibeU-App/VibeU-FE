@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
+import 'package:vibeu_fe/features/auth/presentation/controllers/auth_state.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
@@ -71,8 +72,10 @@ class LoginView extends HookConsumerWidget {
 
           ForgotPasswordButton(
             onPressed: () {
-              ref.read(authControllerProvider).value?.operation = .forgotPassword;
-              context.push(Routes.forgotPassword);
+              context.push(
+                Routes.forgotPassword,
+                extra: AuthOperation.forgotPassword
+              );
             }
           ),
 
@@ -94,8 +97,10 @@ class LoginView extends HookConsumerWidget {
           SocialLoginSection(socialLoginButtonList: [
             SocialLoginButton(
               onPressed: () async {
-                ref.read(authControllerProvider).value?.operation = .loginPasswordless;
-                await context.push(Routes.forgotPassword);
+                await context.push(
+                  Routes.forgotPassword,
+                  extra: AuthOperation.loginPasswordless
+                );
               },
               icon: const Icon(
                 Icons.mail_outline,

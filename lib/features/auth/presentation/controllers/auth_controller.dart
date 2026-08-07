@@ -36,7 +36,7 @@ class AuthController extends _$AuthController {
   Future<void> register(String email, String password) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      return AuthState(step: .createPassword, operation: .register);
+      return AuthState(step: .register);
     });
   }
 
@@ -51,7 +51,6 @@ class AuthController extends _$AuthController {
   }
 
   Future<void> submitOtp({
-    required AuthOperation operation,
     required String email,
     required String otp,
   }) async {
@@ -59,8 +58,7 @@ class AuthController extends _$AuthController {
     state = await AsyncValue.guard(() async {
       return AuthState(
         step: .verifyOtp,
-        operation: operation,
-        sendToEmail: email,
+        sendToEmail: email
       );
     });
   }
@@ -74,14 +72,12 @@ class AuthController extends _$AuthController {
 
   Future<void> sendToEmail({
     required AuthStep fromStep,
-    required AuthOperation operation,
     required String email
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       return AuthState(
         step: fromStep,
-        operation: operation,
         sendToEmail: email
       );
     });

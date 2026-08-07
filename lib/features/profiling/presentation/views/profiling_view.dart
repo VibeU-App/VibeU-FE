@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
+import 'package:vibeu_fe/routing/routes.dart';
 
 import '../controllers/profiling_controller.dart';
 import 'view_template.dart';
-import 'questionaire_view.dart';
 
 import '../widgets/avatar_page.dart';
 import '../widgets/nickname_page.dart';
@@ -51,11 +52,7 @@ class ProfilingView extends HookConsumerWidget {
       },
 
       lastPageForwardBtn: (_) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const QuestionaireView()
-          )
-        );
+        context.push(Routes.questionnaire);
       },
       forwardBtn: (pageController) {
         pageController.nextPage(

@@ -19,33 +19,35 @@ import '../widgets/vibe_text_span.dart';
 import '../widgets/background_gradient.dart';
 
 class VerifyOtpView extends StatefulHookConsumerWidget {
-  const VerifyOtpView({super.key});
+  const VerifyOtpView({
+    super.key,
+    required this.operation,
+  });
+
+  final AuthOperation operation;
 
   @override
   ConsumerState<VerifyOtpView> createState() => _VerifyOtpState();
 }
 
 class _VerifyOtpState extends ConsumerState<VerifyOtpView> {
-  late final AuthOperation? operation;
   late final String buttonText;
   late final String? email;
 
   @override
   void initState() {
     super.initState();
-    operation = ref.read(authControllerProvider).value?.operation;
     email = ref.read(authControllerProvider).value?.sendToEmail;
-    switch(operation) {
+    switch(widget.operation) {
       case .register:
         buttonText = "Sign Up";
-        break;
-      case .forgotPassword:
-        buttonText = "Create New Password";
         break;
       case .loginPasswordless:
         buttonText = "Sign In";
         break;
-      default: break;
+      case .forgotPassword:
+        buttonText = "Create New Password";
+        break;
     }
   }
 
@@ -63,7 +65,10 @@ class _VerifyOtpState extends ConsumerState<VerifyOtpView> {
         next.whenOrNull(
           data: (_) { 
             if (next.value?.step == .verifyOtp) {
-              context.push(Routes.createPassword);
+              context.push(
+                Routes.createPassword,
+                extra: widget.operation,
+              );
               otpField.clear();
             }
           }
@@ -75,7 +80,6 @@ class _VerifyOtpState extends ConsumerState<VerifyOtpView> {
       void listener() async {
         if (otpField.text.length == otpLength) {
           await controller.submitOtp(
-            operation: operation!,
             email: email!,
             otp: otpField.text
           );
@@ -157,7 +161,7 @@ class _VerifyOtpState extends ConsumerState<VerifyOtpView> {
             VibePrimaryButton(
               text: buttonText,
               onPressed: () async {
-                switch (operation) {
+                switch (widget.operation) {
                   case .loginPasswordless:
                     // the sign in function for Login Passwordless flow will redirect
                     // users to where? By default, currently it is Routes.login
@@ -166,11 +170,9 @@ class _VerifyOtpState extends ConsumerState<VerifyOtpView> {
                   case .forgotPassword:
                   case .register:
                     await controller.submitOtp(
-                      operation: operation!,
                       email: email!,
                       otp: otpField.text
                     );
-                  default: break;
                 }
               },
               icon: const Icon(

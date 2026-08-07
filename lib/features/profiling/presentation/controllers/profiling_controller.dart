@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter/material.dart';
 
 import 'profiling_state.dart';
 import 'quiz_answers.dart';
@@ -13,8 +12,8 @@ class ProfilingController extends _$ProfilingController {
     return const ProfilingState(profile: Profile());
   }
 
-  void setAvatar(Widget? avatar) {
-    state = ProfilingState(profile: state.profile.copyWith(avatar: avatar));
+  void setAvatar(String? seed, Gender gender) {
+    state = ProfilingState(profile: state.profile.copyWith(avatar: seed, gender: gender));
   }
 
   void setNickname(String? nickname) {
@@ -29,7 +28,11 @@ class ProfilingController extends _$ProfilingController {
     state = ProfilingState(profile: state.profile.copyWith(tags: tags));
   }
 
-  Widget? getAvatar() {
+  Gender? getGender() {
+    return state.profile.gender;
+  }
+
+  String? getAvatarSeed() {
     return state.profile.avatar;
   }
 
@@ -67,5 +70,6 @@ class PersonalitySetup extends _$PersonalitySetup {
   }
 
   Future<void> finalize() async {
+    state.toJson();
   }
 }

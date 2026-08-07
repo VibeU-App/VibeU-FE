@@ -16,15 +16,6 @@ class QuizAnswers {
   });
 
   Map<String, dynamic> toJson() => _$QuizAnswersToJson(this);
-}
-
-@JsonSerializable()
-class AnswerId {
-  final String questionId;
-  final String answerId;
-
-  const AnswerId({
-    required this.questionId,
-    required this.answerId,
-  });
+  
+  factory QuizAnswers.fromJson(Map<String, dynamic> json) => _$QuizAnswersFromJson(json);
 }

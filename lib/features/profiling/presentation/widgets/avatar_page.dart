@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
@@ -7,20 +6,38 @@ import 'package:vibeu_fe/config/dicebear/presets.dart';
 import 'package:vibeu_fe/features/auth/presentation/widgets/vibe_outlined_button.dart';
 
 import '../controllers/profiling_controller.dart';
+import '../controllers/profiling_state.dart';
 
 import '../widgets/refresh_button.dart';
 import '../widgets/header.dart';
 import '../widgets/avatar_grid.dart';
 
-class AvatarPage extends HookConsumerWidget {
+class AvatarPage extends ConsumerStatefulWidget {
   const AvatarPage({super.key});
 
+  @override
+  ConsumerState<AvatarPage> createState() => _AvatarPageState();
+}
+
+class _AvatarPageState extends ConsumerState<AvatarPage> {
   static const contentWidthRatio = 0.76;
+  late final AvatarGridController avatarGrid;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final avatarGrid = useMemoized(() => AvatarGridController());
+  void initState() {
+    super.initState();
+    avatarGrid = AvatarGridController();
+  }
+
+  @override
+  void dispose() {
+    avatarGrid.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     return Column(
       spacing: AppSizes.s16,
@@ -36,7 +53,10 @@ class AvatarPage extends HookConsumerWidget {
             mainAxisAlignment: .spaceBetween,
             children: [
               VibeOutlinedButton(
-                onPressed: () { avatarGrid.setPreset(malePreset); },
+                onPressed: () {
+                  avatarGrid.setPreset(malePreset);
+                  avatarGrid.refresh();
+                },
                 text: 'Male',
                 textStyle: AppTypography.h3,
                 icon: const Icon(
@@ -48,7 +68,10 @@ class AvatarPage extends HookConsumerWidget {
               ),
 
               VibeOutlinedButton(
-                onPressed: () { avatarGrid.setPreset(femalePreset); },
+                onPressed: () {
+                  avatarGrid.setPreset(femalePreset);
+                  avatarGrid.refresh();
+                },
                 text: 'Female',
                 textStyle: AppTypography.h3,
                 icon: const Icon(
@@ -67,9 +90,12 @@ class AvatarPage extends HookConsumerWidget {
           child: AvatarGrid(
             controller: avatarGrid,
             onSelectedAvatar: () {
+              final Gender gender = avatarGrid.preset == malePreset
+                ? .male
+                : .female;
               ref.read(
                 profilingControllerProvider.notifier
-              ).setAvatar(avatarGrid.selected);
+              ).setAvatar(avatarGrid.selectedSeed, gender);
             }
           )
         ),

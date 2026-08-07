@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+enum Gender {
+  male, female
+}
 
 class ProfilingState {
   final Profile profile;
@@ -14,24 +17,28 @@ class ProfilingState {
 class Profile {
   const Profile({
     this.avatar,
+    this.gender,
     this.nickname,
     this.birthday,
     this.tags,
   });
 
-  final Widget? avatar;
+  final String? avatar;
+  final Gender? gender;
   final String? nickname;
   final DateTime? birthday;
   final List<String>? tags;
 
   Profile copyWith({
-    Widget? avatar,
+    String? avatar,
+    Gender? gender,
     String? nickname,
     DateTime? birthday,
     List<String>? tags,
   }) {
     return Profile(
       avatar: avatar ?? this.avatar,
+      gender: gender ?? this.gender,
       nickname: nickname ?? this.nickname,
       birthday: birthday ?? this.birthday,
       tags: tags ?? this.tags,

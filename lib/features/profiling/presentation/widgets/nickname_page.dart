@@ -3,6 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
+import 'package:vibeu_fe/config/dicebear/presets.dart';
+import 'package:vibeu_fe/config/dicebear/dicebear.dart';
 
 import '../controllers/profiling_controller.dart';
 
@@ -15,6 +17,8 @@ class NicknamePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final nickname = useTextEditingController();
+    final provider = ref.read(profilingControllerProvider.notifier);
+    final avatarSeed = provider.getAvatarSeed();
     useEffect(() {
       String? cur = ref.read(profilingControllerProvider.notifier).getNickname();
       if (cur != null) {
@@ -37,7 +41,12 @@ class NicknamePage extends HookConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: const .all(.circular(AppSizes.r999)),
           ),
-          child: ref.read(profilingControllerProvider.notifier).getAvatar(),
+          child: avatarSeed != null
+            ? diceBearAvatar(
+                provider.getAvatarSeed()!,
+                provider.getGender() == .male ? malePreset : femalePreset
+              )
+            : null,
         ),
 
         NicknameField(

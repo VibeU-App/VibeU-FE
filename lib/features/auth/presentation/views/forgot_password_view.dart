@@ -17,24 +17,27 @@ import '../widgets/background_gradient.dart';
 import '../widgets/header.dart';
 
 class ForgotPasswordView extends StatefulHookConsumerWidget {
-  const ForgotPasswordView({ super.key, });
+  const ForgotPasswordView({
+    super.key,
+    required this.operation,
+  });
+
+  final AuthOperation operation;
 
   @override
   ConsumerState<ForgotPasswordView> createState() => _ForgotPasswordState();
 }
 
 class _ForgotPasswordState extends ConsumerState<ForgotPasswordView> {
-  late final AuthOperation? operation;
   late final String title;
   late final VoidCallback callback;
 
   @override
   void initState() {
     super.initState();
-    operation = ref.read(authControllerProvider).value?.operation;
-    if (operation == .forgotPassword)
+    if (widget.operation == .forgotPassword)
       title = "Forgot Password ?";
-    else if (operation == .loginPasswordless)
+    else
       title = "Login Passwordless";
   }
 
@@ -48,7 +51,10 @@ class _ForgotPasswordState extends ConsumerState<ForgotPasswordView> {
           data: (_) {
             if (next.value?.step == .forgotPassword ||
                 next.value?.step == .signInPasswordless) {
-              context.push(Routes.verifyOtp);
+              context.push(
+                Routes.verifyOtp,
+                extra: widget.operation
+              );
             }
           }
         );
@@ -88,7 +94,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPasswordView> {
             const SizedBox(height: AppSizes.s24),
 
             Offstage(
-              offstage: operation == .loginPasswordless,
+              offstage: widget.operation == .loginPasswordless,
               child: Row(
                 mainAxisAlignment: .spaceBetween,
                 children: [
@@ -117,7 +123,6 @@ class _ForgotPasswordState extends ConsumerState<ForgotPasswordView> {
               onPressed: () async {
                 await ref.read(authControllerProvider.notifier).sendToEmail(
                   fromStep: .forgotPassword,
-                  operation: operation!,
                   email: email.value.text
                 );
               },

@@ -4,23 +4,31 @@ enum AuthStep {
   signInPasswordless,
   register,
   verifyOtp,
-  resendOtp,
   forgotPassword,
   createPassword,
 }
+class AuthState {
+  final AuthStep step;
+  final String sendToEmail;
+
+  AuthState({
+    required this.step,
+    this.sendToEmail = '',
+  });
+
+  AuthState copyWith({
+    AuthStep? step,
+    String? sendToEmail,
+  }) {
+    return AuthState(
+      step: step ?? this.step,
+      sendToEmail: sendToEmail ?? this.sendToEmail,
+    );
+  }
+}
+
 enum AuthOperation {
   register,
   forgotPassword,
   loginPasswordless,
-}
-class AuthState {
-  AuthStep step;
-  AuthOperation? operation;
-  String sendToEmail;
-
-  AuthState({
-    required this.step,
-    this.operation,
-    this.sendToEmail = '',
-  });
 }

@@ -44,7 +44,10 @@ class NicknameField extends StatelessWidget {
               EvilIcons.close_o,
               color: AppColors.surface800,
             ),
-            onPressed: () { controller.clear(); }
+            onPressed: () {
+              onChanged('');
+              controller.clear();
+            }
           )
         ]
       )
