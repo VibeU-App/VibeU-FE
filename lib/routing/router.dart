@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:vibeu_fe/features/auth/presentation/controllers/auth_state.dart';
+import 'package:vibeu_fe/features/profiling/presentation/views/questionaire_view.dart';
 
 import '../features/auth/presentation/views/create_password_view.dart';
 import '../features/auth/presentation/views/verify_otp_view.dart';
@@ -33,28 +34,53 @@ GoRouter router() => GoRouter(
     ),
     GoRoute(
       path: Routes.forgotPassword,
+      redirect: (_, s) {
+        if (s.extra is! AuthOperation) {
+          return Routes.login;
+        }
+        return null;
+      },
       builder: (_, s) {
-        final operation = s.extra! as AuthOperation;
-        return ForgotPasswordView(operation: operation);
+        return ForgotPasswordView(
+          operation: s.extra as AuthOperation
+        );
       }
     ),
     GoRoute(
       path: Routes.verifyOtp,
+      redirect: (_, s) {
+        if (s.extra is! AuthOperation) {
+          return Routes.login;
+        }
+        return null;
+      },
       builder: (_, s) {
-        final operation = s.extra! as AuthOperation;
-        return VerifyOtpView(operation: operation);
+        return VerifyOtpView(
+          operation: s.extra as AuthOperation
+        );
       }
     ),
     GoRoute(
       path: Routes.createPassword,
+      redirect: (_, s) {
+        if (s.extra is! AuthOperation) {
+          return Routes.login;
+        }
+        return null;
+      },
       builder: (_, s) {
-        final operation = s.extra! as AuthOperation;
-        return CreatePasswordView(operation: operation);
+        return CreatePasswordView(
+          operation: s.extra as AuthOperation
+        );
       }
     ),
     GoRoute(
       path: Routes.profiling,
       builder: (_, _) => const ProfilingView(),
+    ),
+    GoRoute(
+      path: Routes.questionnaire,
+      builder: (_, _) => const QuestionaireView(),
     )
   ],
 );

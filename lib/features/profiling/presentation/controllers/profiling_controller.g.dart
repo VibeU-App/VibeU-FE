@@ -94,7 +94,7 @@ final class PersonalitySetupProvider
   }
 }
 
-String _$personalitySetupHash() => r'bdd1d5199c4cc26c6730dde7b228a3c3c0d01a4a';
+String _$personalitySetupHash() => r'6f9f8786e61a2bf36aaf1325b02ea1e9ae1413e8';
 
 abstract class _$PersonalitySetup extends $Notifier<QuizAnswers> {
   QuizAnswers build();

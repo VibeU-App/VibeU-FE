@@ -70,6 +70,6 @@ class PersonalitySetup extends _$PersonalitySetup {
   }
 
   Future<void> finalize() async {
-    state.toJson();
+    // TODO implement finalize()
   }
 }
