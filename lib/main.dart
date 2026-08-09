@@ -6,7 +6,7 @@ import 'package:vibeu_fe/routing/router.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(
     ProviderScope(
       child: const MyApp()

@@ -84,18 +84,18 @@ class _OnboardingPageState extends State<OnboardingPage>
     double imageScale;
     Offset imageOffset;
 
-    switch (widget.currentPage) {
-      case 0: // SWIPING
+    switch (widget.data.title) {
+      case 'SWIPING':
         imageScale = 1.08;
         imageOffset = Offset(0, screenHeight * OnboardingPage.swipingOffsetRatio);
         break;
 
-      case 1: // MATCHING
+      case 'MATCHING':
         imageScale = 1.50;
         imageOffset = Offset(0, -screenHeight * OnboardingPage.matchingOffsetRatio);
         break;
 
-      case 2: // CONNECTING
+      case 'CONNECTING':
         imageScale = 0.82;
         imageOffset = Offset(0, -screenHeight * OnboardingPage.connectingOffsetRatio);
         break;
