@@ -189,7 +189,7 @@ class UpdateTagsView extends HookConsumerWidget {
                                 }
                               },
                               child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
+                                duration: AppDurations.quick,
                                 curve: Curves.easeInOut,
                                 padding: const EdgeInsets.symmetric(horizontal: AppSizes.s16 - AppSizes.s4, vertical: AppSizes.s8),
                                 decoration: BoxDecoration(

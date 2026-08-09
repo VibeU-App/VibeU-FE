@@ -7,6 +7,7 @@ import 'package:vibeu_fe/features/auth/presentation/widgets/background_gradient.
 import '../controllers/me_controller.dart';
 import '../widgets/bouncy_button.dart';
 import '../widgets/entrance_fader.dart';
+import '../widgets/about_me_bottom_sheet.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -66,7 +67,7 @@ class MeView extends HookConsumerWidget {
                           children: [
                             // Avatar
                             EntranceFader(
-                              delay: const Duration(milliseconds: 100),
+                              delay: AppDurations.superFast,
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () => context.push('/me/edit-profile/update-avatar'),
@@ -145,25 +146,25 @@ class MeView extends HookConsumerWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSizes.s12),
 
                     // Add tag button
                     Center(
                       child: BouncyButton(
                         onPressed: () => context.push('/me/edit-profile/update-tags'),
                         child: Container(
-                          width: 18,
-                          height: 18,
+                          width: AppSizes.s20,
+                          height: AppSizes.s20,
                           decoration: const BoxDecoration(
                             color: AppColors.surface600,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.add, color: AppColors.textBody900, size: 12),
+                          child: const Icon(Icons.add, color: AppColors.textBody900, size: AppSizes.s12),
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSizes.s12),
 
                     // Stats buttons
                     Center(
@@ -171,7 +172,7 @@ class MeView extends HookConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           _StatButton(label: '0 swiped', color: AppColors.primary500),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: AppSizes.s16),
                           _StatButton(label: '1 matched', color: AppColors.primary500),
                         ],
                       ),
@@ -261,14 +262,14 @@ class MeView extends HookConsumerWidget {
 
                     // Feed (Staggered Entrance with multiple mock posts)
                     ...List.generate(3, (index) => EntranceFader(
-                      delay: Duration(milliseconds: 100 * (index + 1)),
+                      delay: AppDurations.superFast * (index + 1),
                       child: const Padding(
                         padding: EdgeInsets.only(bottom: AppSizes.s16),
                         child: _PostCard(),
                       ),
                     )),
 
-                    const SizedBox(height: 100),
+                    const SizedBox(height: AppSizes.s64 + AppSizes.s32),
                   ]),
                 ),
               ),
@@ -286,53 +287,15 @@ class MeView extends HookConsumerWidget {
     return const _GooeyFloatingNavBar();
   }
 
-  void _showEditBioBottomSheet(BuildContext context, WidgetRef ref) {
-    final controller = TextEditingController(text: ref.read(meControllerProvider).bio);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 24,
-          right: 24,
-          top: 24,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('About me', style: AppTypography.h2.copyWith(color: AppColors.textBody900)),
-                TextButton(
-                  onPressed: () {
-                    ref.read(meControllerProvider.notifier).updateBio(controller.text);
-                    Navigator.pop(context);
-                  },
-                  child: Text('Save', style: AppTypography.h3.copyWith(color: AppColors.primary500)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Tell everyone something about you!',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
+  Future<void> _showEditBioBottomSheet(BuildContext context, WidgetRef ref) async {
+    final currentState = ref.read(meControllerProvider);
+    final result = await showAboutMeBottomSheet(
+      context,
+      initialValue: currentState.bio,
     );
+    if (result != null) {
+      ref.read(meControllerProvider.notifier).updateBio(result);
+    }
   }
 }
 
@@ -368,7 +331,7 @@ class _GooeyFloatingNavBar extends HookConsumerWidget {
             children: [
               // Liquid indicator
               AnimatedPositioned(
-                duration: const Duration(milliseconds: 600),
+                duration: AppDurations.moderate,
                 curve: Curves.elasticOut,
                 left: (itemWidth * selectedIndex.value) + (itemWidth - indicatorSize) / 2,
                 top: (70 - 2 - indicatorSize) / 2, // 70 height - 2 borders
@@ -461,7 +424,7 @@ class _NavBarItem extends StatelessWidget {
         height: 70, // match nav bar height
         child: Center(
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: AppDurations.fast,
             transitionBuilder: (child, animation) {
               return ScaleTransition(
                 scale: animation,
@@ -492,7 +455,7 @@ class _TagChip extends StatelessWidget {
     return BouncyButton(
       onPressed: () {}, // empty callback to trigger bounce effect on tap
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.s16, vertical: AppSizes.s8),
         decoration: BoxDecoration(
           color: isHighlight ? AppColors.accent500 : AppColors.surface600,
           borderRadius: BorderRadius.circular(AppSizes.r999),
@@ -517,7 +480,7 @@ class _StatButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.s16, vertical: AppSizes.s8),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(AppSizes.r999),
@@ -539,14 +502,10 @@ class _PostCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface500,
-        border: Border.all(color: const Color(0xFF000000), width: 1),
+        border: Border.all(color: AppColors.textBody900, width: 1),
         borderRadius: BorderRadius.circular(AppSizes.r12),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x29881337),
-            offset: Offset(0, 2),
-            blurRadius: 4,
-          ),
+        boxShadow: [
+          AppShadows.low,
         ],
       ),
       child: Column(
@@ -554,7 +513,7 @@ class _PostCard extends StatelessWidget {
         children: [
           // Header: timestamp + more options
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            padding: const EdgeInsets.fromLTRB(AppSizes.s16, AppSizes.s16, AppSizes.s16, 0),
             child: Row(
               children: [
                 Expanded(
@@ -563,14 +522,14 @@ class _PostCard extends StatelessWidget {
                     style: AppTypography.overline.copyWith(color: AppColors.textBody900),
                   ),
                 ),
-                const Icon(Icons.more_horiz, size: 20, color: AppColors.textBody900),
+                const Icon(Icons.more_horiz, size: AppSizes.s20, color: AppColors.textBody900),
               ],
             ),
           ),
 
           // Content text
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            padding: const EdgeInsets.fromLTRB(AppSizes.s16, AppSizes.s12, AppSizes.s16, 0),
             child: Text(
               'Nội dung ở đây',
               style: AppTypography.bodyStd.copyWith(color: AppColors.textBody900),
@@ -579,13 +538,13 @@ class _PostCard extends StatelessWidget {
 
           // Image area (grey box)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            padding: const EdgeInsets.fromLTRB(AppSizes.s16, AppSizes.s12, AppSizes.s16, 0),
             child: Container(
-              height: AppSizes.s64 + AppSizes.s64 - AppSizes.s8 ,
+              height: AppSizes.s64 + AppSizes.s64 - AppSizes.s8,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.surface600,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppSizes.r4),
               ),
               alignment: Alignment.center,
               child: Text(
@@ -597,13 +556,13 @@ class _PostCard extends StatelessWidget {
 
           // Reaction row
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            padding: const EdgeInsets.all(AppSizes.s16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 1),
-                const Icon(Icons.chat_bubble_outline, size: 20, color: AppColors.textBody900),
-                const SizedBox(width: 8),
+                const Icon(Icons.chat_bubble_outline, size: AppSizes.s20, color: AppColors.textBody900),
+                const SizedBox(width: AppSizes.s8),
                 Text(
                   '0',
                   style: AppTypography.bodyStd.copyWith(color: AppColors.textBody900),
@@ -613,8 +572,8 @@ class _PostCard extends StatelessWidget {
                   onPressed: () {},
                   child: Row(
                     children: [
-                      const Icon(Icons.favorite_border, size: 20, color: AppColors.textBody900),
-                      const SizedBox(width: 8),
+                      const Icon(Icons.favorite_border, size: AppSizes.s20, color: AppColors.textBody900),
+                      const SizedBox(width: AppSizes.s8),
                       Text(
                         '0',
                         style: AppTypography.bodyStd.copyWith(color: AppColors.textBody900),

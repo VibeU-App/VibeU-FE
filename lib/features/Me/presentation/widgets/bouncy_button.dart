@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 
 class BouncyButton extends StatefulWidget {
   final Widget child;
@@ -11,7 +12,7 @@ class BouncyButton extends StatefulWidget {
     required this.child,
     this.onPressed,
     this.scaleFactor = 0.90,
-    this.duration = const Duration(milliseconds: 100),
+    this.duration = AppDurations.superFast,
   });
 
   @override

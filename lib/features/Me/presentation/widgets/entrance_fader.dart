@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vibeu_fe/config/UI/design_system.dart';
 
 class EntranceFader extends StatefulWidget {
   final Widget child;
@@ -9,8 +10,8 @@ class EntranceFader extends StatefulWidget {
   const EntranceFader({
     super.key,
     required this.child,
-    this.delay = const Duration(milliseconds: 0),
-    this.duration = const Duration(milliseconds: 400),
+    this.delay = Duration.zero,
+    this.duration = AppDurations.medium,
     this.offset = const Offset(0.0, 32.0),
   });
 
