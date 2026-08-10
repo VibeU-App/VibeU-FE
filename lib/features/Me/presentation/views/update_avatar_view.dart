@@ -119,6 +119,7 @@ class UpdateAvatarView extends HookConsumerWidget {
                       ),
                     );
                   });
+                  selectedSeed.value = avatarSeeds.value.first;
                 },
                 icon: Icon(
                   Icons.refresh_rounded,
@@ -158,7 +159,7 @@ class UpdateAvatarView extends HookConsumerWidget {
                       borderRadius: BorderRadius.circular(AppSizes.r8),
                     ),
                     elevation: 1,
-                    shadowColor: AppColors.textBody900.withOpacity(0.26),
+                    shadowColor: AppColors.textBody900.withValues(alpha: 0.26),
                   ),
                   // save-01 icon (Figma: left of "Save" label)
                   icon: const Icon(Icons.save_rounded, color: AppColors.surface50),

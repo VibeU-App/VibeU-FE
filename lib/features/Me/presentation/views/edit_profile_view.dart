@@ -77,14 +77,15 @@ class EditProfileView extends HookConsumerWidget {
               ),
               _buildEditItem(
                 label: 'Nickname',
-                value: nicknameController.text,
+                value: state.nickname,
                 onTap: () async {
                   final result = await showNicknameBottomSheet(
                     context,
-                    initialValue: nicknameController.text,
+                    initialValue: state.nickname,
                   );
                   if (result != null) {
                     nicknameController.text = result;
+                    ref.read(meControllerProvider.notifier).updateNickname(result);
                   }
                 },
               ),

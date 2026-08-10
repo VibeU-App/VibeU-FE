@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
 import 'package:vibeu_fe/features/auth/presentation/widgets/background_gradient.dart';
 import 'package:vibeu_fe/features/Me/presentation/controllers/me_controller.dart';
+
 import 'package:vibeu_fe/features/Me/presentation/widgets/bouncy_button.dart';
 
 class UpdateTagsView extends HookConsumerWidget {
@@ -12,9 +13,9 @@ class UpdateTagsView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Current selected tags state (in real app, initialize from meController state)
-    final selectedTags = useState<List<String>>(['Eccentric', 'Introverted', 'Rational']);
-    final hasTags = selectedTags.value.isNotEmpty;
+    // Current selected tags state (initialize from meController state)
+    final initialTags = ref.read(meControllerProvider).tags.map((t) => t.label).toList();
+    final selectedTags = useState<List<String>>(initialTags);
 
     final categories = [
       'Personality',
@@ -59,7 +60,10 @@ class UpdateTagsView extends HookConsumerWidget {
             child: Center(
               child: BouncyButton(
                 onPressed: () {
-                  // In real app, save to controller here
+                  final newTags = selectedTags.value
+                      .map((label) => VibeTag(label: label, type: TagType.other))
+                      .toList();
+                  ref.read(meControllerProvider.notifier).updateTags(newTags);
                   context.pop();
                 },
                 child: Container(
@@ -124,7 +128,7 @@ class UpdateTagsView extends HookConsumerWidget {
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: AppSizes.s16),
                         itemCount: categories.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: AppSizes.s24 - AppSizes.s4),
+                        separatorBuilder: (context, index) => const SizedBox(width: AppSizes.s24 - AppSizes.s4),
                         itemBuilder: (context, index) {
                           final cat = categories[index];
                           final isSelected = selectedCategory.value == cat;

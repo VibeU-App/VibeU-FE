@@ -73,10 +73,13 @@ class MeView extends HookConsumerWidget {
                                   onTap: () => context.push('/me/edit-profile/update-avatar'),
                                   child: Hero(
                                     tag: 'avatar_hero',
-                                    child: CircleAvatar(
-                                      radius: avatarSize / 2,
-                                      backgroundImage: const NetworkImage(
-                                        'https://api.dicebear.com/9.x/avataaars/png?seed=abc123',
+                                    child: Consumer(
+                                      builder: (context, ref, _) => CircleAvatar(
+                                        radius: avatarSize / 2,
+                                        backgroundImage: NetworkImage(
+                                          'https://api.dicebear.com/9.x/avataaars/png?seed='
+                                          '${ref.watch(meControllerProvider).avatarSeed}',
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -86,9 +89,11 @@ class MeView extends HookConsumerWidget {
                             const SizedBox(height: AppSizes.s16 - AppSizes.s4),
                             // Nickname
                             Center(
-                              child: Text(
-                                'abc123',
-                                style: AppTypography.h2.copyWith(color: AppColors.textPrimary500),
+                              child: Consumer(
+                                builder: (context, ref, _) => Text(
+                                  ref.watch(meControllerProvider).nickname,
+                                  style: AppTypography.h2.copyWith(color: AppColors.textPrimary500),
+                                ),
                               ),
                             ),
                             const SizedBox(height: AppSizes.s4),
@@ -320,7 +325,7 @@ class _GooeyFloatingNavBar extends HookConsumerWidget {
         color: AppColors.surface50,
         borderRadius: BorderRadius.circular(35),
         border: Border.all(color: AppColors.textBody900, width: 1),
-        boxShadow: [BoxShadow(color: AppColors.textBody900.withOpacity(0.12), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: AppColors.textBody900.withValues(alpha: 0.12), blurRadius: 10)],
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -339,7 +344,7 @@ class _GooeyFloatingNavBar extends HookConsumerWidget {
                   width: indicatorSize,
                   height: indicatorSize,
                   decoration: BoxDecoration(
-                    color: AppColors.primary500.withOpacity(0.15),
+                    color: AppColors.primary500.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
                 ),

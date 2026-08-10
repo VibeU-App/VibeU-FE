@@ -101,4 +101,5 @@ class MeController extends _$MeController {
   void updateBio(String newBio) => state = state.copyWith(bio: newBio);
   void updateAvatar(String newSeed) => state = state.copyWith(avatarSeed: newSeed);
   void updateDob(DateTime newDob) => state = state.copyWith(dob: newDob);
+  void updateTags(List<VibeTag> newTags) => state = state.copyWith(tags: newTags);
 }

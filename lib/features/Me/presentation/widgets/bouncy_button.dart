@@ -66,14 +66,25 @@ class _BouncyButtonState extends State<BouncyButton> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: _onTapDown,
-      onTapCancel: _onTapCancel,
-      onTap: _onTap,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: widget.child,
+    return FocusableActionDetector(
+      mouseCursor: widget.onPressed != null ? SystemMouseCursors.click : MouseCursor.defer,
+      actions: {
+        ActivateIntent: CallbackAction<ActivateIntent>(
+          onInvoke: (ActivateIntent intent) {
+            _onTap();
+            return null;
+          },
+        ),
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: _onTapDown,
+        onTapCancel: _onTapCancel,
+        onTap: _onTap,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: widget.child,
+        ),
       ),
     );
   }
