@@ -72,6 +72,26 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
     }
   }
 
+  void _clampToCurrentDate() {
+    final now = DateTime.now();
+    if (_selectedYear == now.year) {
+      bool changed = false;
+      if (_selectedMonth > now.month) {
+        _selectedMonth = now.month;
+        _monthController.jumpToItem(_selectedMonth - 1);
+        changed = true;
+      }
+      if (_selectedMonth == now.month && _selectedDay > now.day) {
+        _selectedDay = now.day;
+        _dayController.jumpToItem(_selectedDay - 1);
+        changed = true;
+      }
+      if (changed) {
+        setState(() {});
+      }
+    }
+  }
+
   int _getDaysInMonth(int year, int month) {
     return DateTime(year, month + 1, 0).day;
   }
@@ -93,7 +113,11 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final age = DateTime.now().year - _selectedYear;
+    final now = DateTime.now();
+    var age = now.year - _selectedYear;
+    final hadBirthday = now.month > _selectedMonth ||
+        (now.month == _selectedMonth && now.day >= _selectedDay);
+    if (!hadBirthday) age -= 1;
     final zodiac = _getZodiacSign(_selectedDay, _selectedMonth);
 
     return Container(
@@ -237,6 +261,7 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
                             setState(() {
                               _selectedDay = index + 1;
                             });
+                            _clampToCurrentDate();
                             _checkChanged();
                           },
                           childDelegate: ListWheelChildBuilderDelegate(
@@ -273,6 +298,7 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
                                 _dayController.jumpToItem(_selectedDay - 1);
                               }
                             });
+                            _clampToCurrentDate();
                             _checkChanged();
                           },
                           childDelegate: ListWheelChildBuilderDelegate(
@@ -309,6 +335,7 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
                                 _dayController.jumpToItem(_selectedDay - 1);
                               }
                             });
+                            _clampToCurrentDate();
                             _checkChanged();
                           },
                           childDelegate: ListWheelChildBuilderDelegate(

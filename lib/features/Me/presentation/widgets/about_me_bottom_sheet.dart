@@ -32,7 +32,7 @@ class _AboutMeBottomSheetState extends State<_AboutMeBottomSheet> {
   late final TextEditingController _controller;
 
   /// True khi có ít nhất 1 ký tự → nút Save đỏ
-  bool get _canSave => _controller.text.isNotEmpty;
+  bool get _canSave => _controller.text.trim().isNotEmpty;
 
   @override
   void initState() {

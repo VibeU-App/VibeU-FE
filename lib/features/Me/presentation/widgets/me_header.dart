@@ -21,8 +21,16 @@ class MeHeader extends StatelessWidget {
         CircleAvatar(
           radius: 50,
           backgroundColor: AppColors.background300,
-          child: SvgPicture.network(
-            'https://api.dicebear.com/9.x/avataaars/svg?seed=$avatarSeed',
+          child: ClipOval(
+            child: SvgPicture.network(
+              'https://api.dicebear.com/9.x/avataaars/svg?seed=$avatarSeed',
+              width: 100,
+              height: 100,
+              placeholderBuilder: (context) => const Padding(
+                padding: EdgeInsets.all(32.0),
+                child: CircularProgressIndicator(color: AppColors.primary500),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: AppSizes.s8),
