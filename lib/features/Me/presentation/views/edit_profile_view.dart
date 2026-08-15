@@ -14,15 +14,18 @@ class EditProfileView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(meControllerProvider);
+    final nickname = ref.watch(meControllerProvider.select((s) => s.nickname));
+    final bio = ref.watch(meControllerProvider.select((s) => s.bio));
+    final dob = ref.watch(meControllerProvider.select((s) => s.dob));
+    final avatarSeed = ref.watch(meControllerProvider.select((s) => s.avatarSeed));
 
     // Hooks to track changes for the Save button color
-    final nicknameController = useTextEditingController(text: state.nickname);
-    final bioController = useTextEditingController(text: state.bio);
+    final nicknameController = useTextEditingController(text: nickname);
+    final bioController = useTextEditingController(text: bio);
 
     // DOB state (Simplified for UI demonstration)
-    final dobText = state.dob != null
-        ? '${state.dob!.day.toString().padLeft(2, '0')}-${state.dob!.month.toString().padLeft(2, '0')}-${state.dob!.year}'
+    final dobText = dob != null
+        ? '${dob.day.toString().padLeft(2, '0')}-${dob.month.toString().padLeft(2, '0')}-${dob.year}'
         : '07-07-2006';
 
     // Listen to changes to update UI (Save button color)
@@ -30,8 +33,8 @@ class EditProfileView extends HookConsumerWidget {
 
     useEffect(() {
       void listener() {
-        hasChanges.value = nicknameController.text != state.nickname ||
-            bioController.text != state.bio;
+        hasChanges.value = nicknameController.text != nickname ||
+            bioController.text != bio;
       }
 
       nicknameController.addListener(listener);
@@ -40,7 +43,7 @@ class EditProfileView extends HookConsumerWidget {
         nicknameController.removeListener(listener);
         bioController.removeListener(listener);
       };
-    }, [nicknameController, bioController, state]);
+    }, [nicknameController, bioController, nickname, bio]);
 
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +72,7 @@ class EditProfileView extends HookConsumerWidget {
                   child: CircleAvatar(
                     radius: AppSizes.r20,
                     backgroundImage: NetworkImage(
-                      'https://api.dicebear.com/9.x/avataaars/png?seed=${state.avatarSeed}',
+                      'https://api.dicebear.com/9.x/avataaars/png?seed=$avatarSeed',
                     ),
                   ),
                 ),
@@ -77,11 +80,11 @@ class EditProfileView extends HookConsumerWidget {
               ),
               _buildEditItem(
                 label: 'Nickname',
-                value: state.nickname,
+                value: nickname,
                 onTap: () async {
                   final result = await showNicknameBottomSheet(
                     context,
-                    initialValue: state.nickname,
+                    initialValue: nickname,
                   );
                   if (result != null) {
                     nicknameController.text = result;
@@ -101,7 +104,7 @@ class EditProfileView extends HookConsumerWidget {
                 onTap: () async {
                   final result = await showDobBottomSheet(
                     context,
-                    initialDate: state.dob,
+                    initialDate: dob,
                   );
                   if (result != null) {
                     ref.read(meControllerProvider.notifier).updateDob(result);

@@ -78,12 +78,20 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
       bool changed = false;
       if (_selectedMonth > now.month) {
         _selectedMonth = now.month;
-        _monthController.jumpToItem(_selectedMonth - 1);
+        _monthController.animateToItem(
+          _selectedMonth - 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
         changed = true;
       }
       if (_selectedMonth == now.month && _selectedDay > now.day) {
         _selectedDay = now.day;
-        _dayController.jumpToItem(_selectedDay - 1);
+        _dayController.animateToItem(
+          _selectedDay - 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
         changed = true;
       }
       if (changed) {
@@ -295,7 +303,11 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
                               final daysInMonth = _getDaysInMonth(_selectedYear, _selectedMonth);
                               if (_selectedDay > daysInMonth) {
                                 _selectedDay = daysInMonth;
-                                _dayController.jumpToItem(_selectedDay - 1);
+                                _dayController.animateToItem(
+                                  _selectedDay - 1,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOutCubic,
+                                );
                               }
                             });
                             _clampToCurrentDate();
@@ -332,7 +344,11 @@ class _DobBottomSheetState extends State<_DobBottomSheet> {
                               final daysInMonth = _getDaysInMonth(_selectedYear, _selectedMonth);
                               if (_selectedDay > daysInMonth) {
                                 _selectedDay = daysInMonth;
-                                _dayController.jumpToItem(_selectedDay - 1);
+                                _dayController.animateToItem(
+                                  _selectedDay - 1,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOutCubic,
+                                );
                               }
                             });
                             _clampToCurrentDate();
