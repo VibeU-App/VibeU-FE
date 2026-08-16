@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
-import 'package:vibeu_fe/config/dicebear/presets.dart';
 import 'package:vibeu_fe/features/auth/presentation/widgets/vibe_outlined_button.dart';
 
 import '../controllers/profiling_controller.dart';
-import '../controllers/profiling_state.dart';
 
 import '../widgets/refresh_button.dart';
 import '../widgets/header.dart';
@@ -54,8 +52,7 @@ class _AvatarPageState extends ConsumerState<AvatarPage> {
             children: [
               VibeOutlinedButton(
                 onPressed: () {
-                  avatarGrid.setPreset(malePreset);
-                  avatarGrid.refresh();
+                  avatarGrid.selectGender(.male);
                 },
                 text: 'Male',
                 textStyle: AppTypography.h3,
@@ -69,8 +66,7 @@ class _AvatarPageState extends ConsumerState<AvatarPage> {
 
               VibeOutlinedButton(
                 onPressed: () {
-                  avatarGrid.setPreset(femalePreset);
-                  avatarGrid.refresh();
+                  avatarGrid.selectGender(.female);
                 },
                 text: 'Female',
                 textStyle: AppTypography.h3,
@@ -89,13 +85,10 @@ class _AvatarPageState extends ConsumerState<AvatarPage> {
           dimension: screenWidth * contentWidthRatio,
           child: AvatarGrid(
             controller: avatarGrid,
-            onSelectedAvatar: () {
-              final Gender gender = avatarGrid.preset == malePreset
-                ? .male
-                : .female;
+            onSelectedAvatar: (avatar) {
               ref.read(
                 profilingControllerProvider.notifier
-              ).setAvatar(avatarGrid.selectedSeed, gender);
+              ).setAvatar(avatar?.seed, avatar?.gender);
             }
           )
         ),

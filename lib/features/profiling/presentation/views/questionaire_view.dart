@@ -15,7 +15,6 @@ class QuestionaireView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(personalitySetupProvider);
     final questionnaire = useMemoized(() => Questionnaire.all);
 
     return ViewTemplate(
@@ -23,13 +22,16 @@ class QuestionaireView extends HookConsumerWidget {
       childrenDelegate: SliverChildBuilderDelegate(
         (_, index) {
           final question = questionnaire[index]();
-          final provider = ref.read(personalitySetupProvider.notifier);
-          final currentAnswer = provider.getAnswer(question.id);
+          final currentAnswer = ref.watch(personalitySetupProvider.select((state) {
+            return state.answers[question.id];
+          }));
           return QuestionPage(
             data: question,
             selected: question.answers.indexWhere((a) => a.id == currentAnswer),
             onSelected: (id) {
-              provider.setAnswer(question.id, id);
+              ref.read(
+                personalitySetupProvider.notifier
+              ).setAnswer(question.id, id);
             }
           );
         }

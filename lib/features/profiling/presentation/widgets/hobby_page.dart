@@ -26,7 +26,7 @@ class HobbyPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screen = MediaQuery.sizeOf(context);
     final tagContainer = useMemoized(() => TagContainerController(
-      tags: ref.read(profilingControllerProvider.notifier).getTags() ?? []
+      tags: ref.read(profilingControllerProvider).profile.tags ?? []
     ));
     final tagList = useMemoized(() => TagListController(
       categories: categories,

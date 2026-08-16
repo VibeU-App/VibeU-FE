@@ -3,12 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
-import 'package:vibeu_fe/config/dicebear/presets.dart';
-import 'package:vibeu_fe/config/dicebear/dicebear.dart';
 
 import '../controllers/profiling_controller.dart';
 
 import '../widgets/header.dart';
+import '../widgets/avatar_slot.dart';
 import '../widgets/nickname_field.dart';
 
 class NicknamePage extends HookConsumerWidget {
@@ -17,13 +16,22 @@ class NicknamePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final nickname = useTextEditingController();
-    final provider = ref.read(profilingControllerProvider.notifier);
-    final avatarSeed = provider.getAvatarSeed();
+    final (seed, gender) = ref.watch(profilingControllerProvider.select((state) {
+      final avatar =  state.profile.avatar;
+      final gender = state.profile.gender;
+      debugPrint('seed is $avatar, gender is $gender');
+      return (avatar, gender);
+    }));
+    final animation = useAnimationController(
+      duration: const Duration(milliseconds: 500),
+    );
+
     useEffect(() {
-      String? cur = ref.read(profilingControllerProvider.notifier).getNickname();
+      String? cur = ref.read(profilingControllerProvider).profile.nickname;
       if (cur != null) {
         nickname.text = cur;
       }
+      animation.forward();
       return null;
     }, []);
 
@@ -41,12 +49,13 @@ class NicknamePage extends HookConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: const .all(.circular(AppSizes.r999)),
           ),
-          child: avatarSeed != null
-            ? diceBearAvatar(
-                provider.getAvatarSeed()!,
-                provider.getGender() == .male ? malePreset : femalePreset
-              )
-            : null,
+          child: AvatarSlot(
+            onPressed: () {},
+            animation: animation,
+            avatar: Avatar(gender: gender, seed: seed),
+            iconSize: 75.0,
+            selected: false
+          )
         ),
 
         NicknameField(

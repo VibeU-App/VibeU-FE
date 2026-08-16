@@ -20,7 +20,7 @@ final class ProfilingControllerProvider
         argument: null,
         retry: null,
         name: r'profilingControllerProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -42,7 +42,7 @@ final class ProfilingControllerProvider
 }
 
 String _$profilingControllerHash() =>
-    r'ea15ffae9ef8db29fbe0517075de8850f8be347d';
+    r'71f7601eab38d8dc1409d8027c36f26afb18d87d';
 
 abstract class _$ProfilingController extends $Notifier<ProfilingState> {
   ProfilingState build();

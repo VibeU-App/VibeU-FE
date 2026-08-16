@@ -5,14 +5,14 @@ import 'quiz_answers.dart';
 
 part 'profiling_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ProfilingController extends _$ProfilingController {
   @override
   ProfilingState build() {
     return const ProfilingState(profile: Profile());
   }
 
-  void setAvatar(String? seed, Gender gender) {
+  void setAvatar(String? seed, Gender? gender) {
     state = ProfilingState(profile: state.profile.copyWith(avatar: seed, gender: gender));
   }
 
@@ -28,27 +28,11 @@ class ProfilingController extends _$ProfilingController {
     state = ProfilingState(profile: state.profile.copyWith(tags: tags));
   }
 
-  Gender? getGender() {
-    return state.profile.gender;
-  }
-
-  String? getAvatarSeed() {
-    return state.profile.avatar;
-  }
-
-  String? getNickname() {
-    return state.profile.nickname;
-  }
-
-  List<String>? getTags() {
-    return state.profile.tags;
-  }
-
   Future<void> fetchCategories() async {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PersonalitySetup extends _$PersonalitySetup {
   @override
   QuizAnswers build() {
@@ -63,10 +47,6 @@ class PersonalitySetup extends _$PersonalitySetup {
       },
       submission: state.submission,
     );
-  }
-
-  String? getAnswer(String questionId) {
-    return state.answers[questionId];
   }
 
   Future<void> finalize() async {

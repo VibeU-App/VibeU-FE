@@ -25,14 +25,14 @@ class TagListController extends ChangeNotifier {
   List<String> get selectedTags => _categories[_selectedCategory].$2;
 
   void enable(String tag) {
-    if (_selectedTags.length >= tagLimit) return;
     _selectedTags.add(tag);
     notifyListeners();
   }
 
   void disable(String tag) {
-    _selectedTags.remove(tag);
-    notifyListeners();
+    if (_selectedTags.remove(tag)) {
+      notifyListeners();
+    }
   }
 
   void switchCategory(String category) {
@@ -73,7 +73,6 @@ class _TagListState extends State<TagList> {
   @override
   void dispose() {
     tagContainer.dispose();
-    widget.controller.dispose();
     super.dispose();
   }
 
@@ -129,6 +128,7 @@ class _TagListState extends State<TagList> {
             toggle: selectedTags.contains(label),
             onToggle: (toggle) {
               if (toggle) {
+                if (controller._selectedTags.length >= controller.tagLimit) return;
                 controller.enable(label);
                 if (widget.onTagEnabled != null) {
                   widget.onTagEnabled!(label);

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:vibeu_fe/features/auth/presentation/controllers/auth_state.dart';
-import 'package:vibeu_fe/features/profiling/presentation/views/questionaire_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../features/auth/presentation/controllers/auth_state.dart';
 
 import '../features/auth/presentation/views/create_password_view.dart';
 import '../features/auth/presentation/views/verify_otp_view.dart';
@@ -10,6 +11,7 @@ import '../features/auth/presentation/views/forgot_password_view.dart';
 import '../features/intro/presentation/views/splash_screen.dart';
 import '../features/intro/presentation/views/onboarding_view.dart';
 import '../features/profiling/presentation/views/profiling_view.dart';
+import '../features/profiling/presentation/views/questionaire_view.dart';
 
 import 'routes.dart';
 
@@ -76,7 +78,9 @@ GoRouter router() => GoRouter(
     ),
     GoRoute(
       path: Routes.profiling,
-      builder: (_, _) => const ProfilingView(),
+      builder: (_, _) => const ProviderScope(
+        child: ProfilingView(),
+      )
     ),
     GoRoute(
       path: Routes.questionnaire,
