@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:vibeu_fe/config/questionnaire.dart';
 
 import '../controllers/profiling_controller.dart';
 
 import 'view_template.dart';
 import '../widgets/question_page.dart';
 
-class QuestionaireView extends HookConsumerWidget {
+// for the sole purpose of being a dummy model
+import '../controllers/question_view_model.dart';
+
+class QuestionaireView extends ConsumerWidget {
   const QuestionaireView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questionnaire = useMemoized(() => Questionnaire.all);
-
     return ViewTemplate(
-      pageCount: questionnaire.length,
+      pageCount: 4, //
       childrenDelegate: SliverChildBuilderDelegate(
         (_, index) {
-          final question = questionnaire[index]();
+          final question = Question(
+            id: "q$index",
+            title: "question$index",
+            question: "description$index",
+            answers: List.generate(4, (i) {
+              return Answer(id: "q${index}_$i", answer: "answer_$i");
+            }, growable: false),
+          );
           final currentAnswer = ref.watch(personalitySetupProvider.select((state) {
             return state.answers[question.id];
           }));

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:vibeu_fe/config/UI/design_system.dart';
-import 'package:vibeu_fe/config/questionnaire.dart';
 
+import '../controllers/question_view_model.dart';
 import '../widgets/answer_button.dart';
 
 class QuestionPage extends HookWidget {

@@ -16,12 +16,11 @@ class NicknamePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final nickname = useTextEditingController();
-    final (seed, gender) = ref.watch(profilingControllerProvider.select((state) {
-      final avatar =  state.profile.avatar;
-      final gender = state.profile.gender;
-      debugPrint('seed is $avatar, gender is $gender');
-      return (avatar, gender);
-    }));
+    final (seed, gender) = ref.watch(
+      profilingControllerProvider.select((state) {
+        return (state.profile.avatar, state.profile.gender);
+      })
+    );
     final animation = useAnimationController(
       duration: const Duration(milliseconds: 500),
     );

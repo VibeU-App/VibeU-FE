@@ -28,6 +28,8 @@ class ProfilingController extends _$ProfilingController {
     state = ProfilingState(profile: state.profile.copyWith(tags: tags));
   }
 
+  // either define here or use some repo provider that also prob (de)serialize
+  // the json payload
   Future<void> fetchCategories() async {
   }
 }
@@ -47,6 +49,11 @@ class PersonalitySetup extends _$PersonalitySetup {
       },
       submission: state.submission,
     );
+  }
+
+  // either define here or use some repo provider that also prob (de)serialize
+  // the json payload
+  Future<void> fetchQuestionnaire() async {
   }
 
   Future<void> finalize() async {
