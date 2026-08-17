@@ -7,25 +7,58 @@ import 'package:vibeu_fe/config/UI/design_system.dart';
 import 'package:vibeu_fe/routing/routes.dart';
 
 import '../controllers/auth_controller.dart';
+import '../controllers/auth_state.dart';
 
 import '../widgets/vibe_text_field.dart';
 import '../widgets/vibe_primary_button.dart';
-import '../widgets/email_button.dart';
+import '../widgets/vibe_outlined_button.dart';
 import '../widgets/prev_view_button.dart';
 import '../widgets/background_gradient.dart';
 import '../widgets/header.dart';
 
-class ForgotPasswordView extends HookConsumerWidget {
-  const ForgotPasswordView({ super.key, });
+class ForgotPasswordView extends StatefulHookConsumerWidget {
+  const ForgotPasswordView({
+    super.key,
+    required this.operation,
+  });
+
+  final AuthOperation operation;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ForgotPasswordView> createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends ConsumerState<ForgotPasswordView> {
+  late final String title;
+  late final VoidCallback callback;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.operation == .forgotPassword) {
+      title = "Forgot Password ?";
+    }
+    else {
+      title = "Login Passwordless";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final email = useTextEditingController();
     ref.listen(
       authControllerProvider,
       (prev, next) {
         next.whenOrNull(
-          data: (_) { context.go(Routes.verifyOtp); }
+          data: (_) {
+            if (next.value?.step == .forgotPassword ||
+                next.value?.step == .signInPasswordless) {
+              context.push(
+                Routes.verifyOtp,
+                extra: widget.operation
+              );
+            }
+          }
         );
       },
     );
@@ -38,13 +71,13 @@ class ForgotPasswordView extends HookConsumerWidget {
 
             Align(
               alignment: .centerLeft,
-              child: PrevViewButton(onPressed: () { context.go(Routes.login); })
+              child: PrevViewButton(onPressed: () { context.pop(); })
             ),
 
             const SizedBox(height: AppSizes.s24),
 
-            const Header(
-              title: 'Forgot Password ?',
+            Header(
+              title: title,
               subTitle: 'Fill in your email to receive OTP code',
             ),
 
@@ -62,22 +95,27 @@ class ForgotPasswordView extends HookConsumerWidget {
 
             const SizedBox(height: AppSizes.s24),
 
-            Row(
-              mainAxisAlignment: .spaceBetween,
-              children: [
-                EmailButton(
-                  text: 'Primary Email',
-                  onPressed: () {
-                    ref.read(authControllerProvider.notifier).getPrimaryEmail();
-                  },
-                ),
-                EmailButton(
-                  text: 'Recovery Email',
-                  onPressed: () {
-                    ref.read(authControllerProvider.notifier).getRecoveryEmail();
-                  },
-                )
-              ]
+            Offstage(
+              offstage: widget.operation == .loginPasswordless,
+              child: Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  VibeOutlinedButton(
+                    text: 'Primary Email',
+                    textStyle: AppTypography.button,
+                    onPressed: () {
+                      ref.read(authControllerProvider.notifier).getPrimaryEmail();
+                    },
+                  ),
+                  VibeOutlinedButton(
+                    text: 'Recovery Email',
+                    textStyle: AppTypography.button,
+                    onPressed: () {
+                      ref.read(authControllerProvider.notifier).getRecoveryEmail();
+                    },
+                  )
+                ]
+              ),
             ),
 
             const SizedBox(height: AppSizes.s16),
@@ -85,7 +123,10 @@ class ForgotPasswordView extends HookConsumerWidget {
             VibePrimaryButton(
               text: 'Send OTP Code',
               onPressed: () async {
-                await ref.read(authControllerProvider.notifier).sendToEmail(email.value.text);
+                await ref.read(authControllerProvider.notifier).sendToEmail(
+                  fromStep: .forgotPassword,
+                  email: email.value.text
+                );
               },
               running: ref.watch(authControllerProvider).isLoading,
             ),

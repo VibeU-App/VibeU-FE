@@ -18,7 +18,7 @@ class SocialLoginButton extends StatelessWidget {
     Widget build(BuildContext context) {
       return Container(
         width: double.infinity,
-        height: 48.0,
+        height: AppSizes.s48,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(AppSizes.r8)),
         ),

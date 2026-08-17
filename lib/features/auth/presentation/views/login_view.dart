@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
+import 'package:vibeu_fe/features/auth/presentation/controllers/auth_state.dart';
 
 import 'package:vibeu_fe/routing/routes.dart';
 import 'package:vibeu_fe/config/UI/design_system.dart';
@@ -25,6 +26,12 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email = useTextEditingController();
     final password = useTextEditingController();
+    ref.listen(
+      authControllerProvider,
+      (prev, next) {
+        if (next.value?.step != .signIn) return;
+      }
+    );
 
     return BackgroundGradient(
       child: Center(child: ListView(
@@ -65,7 +72,10 @@ class LoginView extends HookConsumerWidget {
 
           ForgotPasswordButton(
             onPressed: () {
-              context.go(Routes.forgotPassword);
+              context.push(
+                Routes.forgotPassword,
+                extra: AuthOperation.forgotPassword
+              );
             }
           ),
 
@@ -87,6 +97,19 @@ class LoginView extends HookConsumerWidget {
           SocialLoginSection(socialLoginButtonList: [
             SocialLoginButton(
               onPressed: () async {
+                await context.push(
+                  Routes.forgotPassword,
+                  extra: AuthOperation.loginPasswordless
+                );
+              },
+              icon: const Icon(
+                Icons.mail_outline,
+                size: AppSizes.s24,
+              ),
+              label: 'Continue with Email',
+            ),
+            SocialLoginButton(
+              onPressed: () async {
                 await ref.read(authControllerProvider.notifier).googleSignIn();
               },
               icon: const Image(
@@ -99,18 +122,20 @@ class LoginView extends HookConsumerWidget {
 
           const SizedBox(height: AppSizes.s16),
 
-          VibeTextSpan(
-            defaultStyle: AppTypography.button.copyWith(
-              color: AppColors.textMuted500
-            ),
-            inlineActionStyle: TextStyle(
-              color: AppColors.textPrimary500
-            ),
+          Center(
+            child: VibeTextSpan(
+              defaultStyle: AppTypography.button.copyWith(
+                color: AppColors.textMuted500
+              ),
+              inlineActionStyle: TextStyle(
+                color: AppColors.textPrimary500
+              ),
+            )
+            ..text('Don\'t have an account? ')
+            ..link('Sign Up', () async {
+              context.push(Routes.register);
+            }),
           )
-          ..text('Don\'t have an account? ')
-          ..link('Sign Up', () async {
-            context.push(Routes.register);
-          }),
         ]
       ))
     );
