@@ -41,7 +41,7 @@ final class MeControllerProvider
   }
 }
 
-String _$meControllerHash() => r'1570b3b89d2a4251c99cbe806f61da2d69a00a67';
+String _$meControllerHash() => r'e25066ec9618361e557e7400a8cb98bc9497c08e';
 
 abstract class _$MeController extends $Notifier<MeState> {
   MeState build();

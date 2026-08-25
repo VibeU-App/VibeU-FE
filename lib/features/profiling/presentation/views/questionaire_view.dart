@@ -56,6 +56,7 @@ class QuestionaireView extends ConsumerWidget {
 
       lastPageForwardBtn: (_) {
         ref.read(personalitySetupProvider.notifier).finalize();
+        context.go('/me');
       },
       forwardBtn: (pageController) {
         pageController.nextPage(

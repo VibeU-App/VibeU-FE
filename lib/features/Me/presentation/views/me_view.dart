@@ -32,12 +32,13 @@ class MeView extends HookConsumerWidget {
 
     return Scaffold(
       body: BackgroundGradient(
+        padding: EdgeInsets.zero,
         child: SafeArea(
           child: CustomScrollView(
             controller: scrollController,
             slivers: [
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.s24),
+                padding: const EdgeInsets.only(left: AppSizes.s24, right: AppSizes.s24, top: AppSizes.s24),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Top Bar: Settings

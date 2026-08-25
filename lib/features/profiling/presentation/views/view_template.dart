@@ -99,6 +99,7 @@ class ViewTemplate extends HookConsumerWidget {
                   Expanded(
                     child: PageView.custom(
                       controller: pageController,
+                      physics: const NeverScrollableScrollPhysics(),
                       onPageChanged: (index) { currentPage.value = index; },
                       childrenDelegate: childrenDelegate,
                     )

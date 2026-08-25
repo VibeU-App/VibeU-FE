@@ -42,7 +42,7 @@ final class ProfilingControllerProvider
 }
 
 String _$profilingControllerHash() =>
-    r'71f7601eab38d8dc1409d8027c36f26afb18d87d';
+    r'6074a975fd4eb685ca58b83c5407e2eeab1c7b32';
 
 abstract class _$ProfilingController extends $Notifier<ProfilingState> {
   ProfilingState build();
@@ -73,7 +73,7 @@ final class PersonalitySetupProvider
         argument: null,
         retry: null,
         name: r'personalitySetupProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -94,7 +94,7 @@ final class PersonalitySetupProvider
   }
 }
 
-String _$personalitySetupHash() => r'6f9f8786e61a2bf36aaf1325b02ea1e9ae1413e8';
+String _$personalitySetupHash() => r'5b0538052be86508e1d9546c944f8c769fcec401';
 
 abstract class _$PersonalitySetup extends $Notifier<QuizAnswers> {
   QuizAnswers build();
