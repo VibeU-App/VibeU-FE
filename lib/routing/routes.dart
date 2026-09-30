@@ -14,6 +14,16 @@ abstract final class Routes {
   static const updateTags = 'update-tags'; // sub-route
   static const updateAvatar = 'update-avatar'; // sub-route
 
+  // Full paths for navigation
+  static const meSettings = '/me/settings';
+  static const meEditProfile = '/me/edit-profile';
+  static const meUpdateTags = '/me/edit-profile/update-tags';
+  static const meUpdateAvatar = '/me/edit-profile/update-avatar';
+
   static const profiling = '/profiling';
   static const questionnaire = '/profiling/questionnaire';
+
+  static const createPost = '/create-post';
+  static const postComments = '/post-comments';
+  static const newsfeed = '/newsfeed';
 }

@@ -8,6 +8,7 @@ import '../widgets/nickname_bottom_sheet.dart';
 import '../widgets/dob_bottom_sheet.dart';
 import '../widgets/about_me_bottom_sheet.dart';
 import '../controllers/me_controller.dart';
+import 'package:vibeu_fe/routing/routes.dart';
 
 class EditProfileView extends HookConsumerWidget {
   const EditProfileView({super.key});
@@ -76,7 +77,7 @@ class EditProfileView extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                onTap: () => context.push('/me/edit-profile/update-avatar'),
+                onTap: () => context.push(Routes.meUpdateAvatar),
               ),
               _buildEditItem(
                 label: 'Nickname',
@@ -118,7 +119,7 @@ class EditProfileView extends HookConsumerWidget {
               ),
               _buildEditItem(
                 label: 'Hobby',
-                onTap: () => context.push('/me/edit-profile/update-tags'),
+                onTap: () => context.push(Routes.meUpdateTags),
               ),
               _buildEditItem(
                 label: 'About me',

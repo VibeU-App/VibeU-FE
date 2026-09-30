@@ -13,7 +13,6 @@ import '../features/auth/presentation/views/forgot_password_view.dart';
 import '../features/profiling/presentation/views/profiling_view.dart';
 import '../features/profiling/presentation/views/questionaire_view.dart';
 
-import '../features/Me/presentation/views/me_view.dart';
 import '../features/Me/presentation/views/settings_view.dart';
 import '../features/Me/presentation/views/edit_profile_view.dart';
 import '../features/Me/presentation/views/update_tags_view.dart';
@@ -21,10 +20,15 @@ import '../features/Me/presentation/views/update_avatar_view.dart';
 
 import '../features/auth/presentation/controllers/auth_state.dart';
 
+import '../features/posts/presentation/views/create_post_view.dart';
+import '../features/posts/presentation/views/post_comments_view.dart';
+import '../features/main/presentation/views/main_navigation_view.dart';
+import '../features/Me/presentation/controllers/me_state.dart';
+
 import 'routes.dart';
 
 GoRouter router() => GoRouter(
-  initialLocation: Routes.splash,
+  initialLocation: Routes.me,
   routes: [
     GoRoute(
       path: Routes.splash,
@@ -96,7 +100,7 @@ GoRouter router() => GoRouter(
     ),
     GoRoute(
       path: Routes.me,
-      builder: (_, _) => const MeView(),
+      builder: (_, _) => const MainNavigationView(initialIndex: 4),
       routes: [
         GoRoute(
           path: Routes.settings,
@@ -117,6 +121,27 @@ GoRouter router() => GoRouter(
           ]
         ),
       ]
+    ),
+    GoRoute(
+      path: Routes.newsfeed,
+      builder: (_, _) => const MainNavigationView(initialIndex: 1),
+    ),
+    GoRoute(
+      path: Routes.createPost,
+      builder: (_, _) => const CreatePostView(),
+    ),
+    GoRoute(
+      path: Routes.postComments,
+      redirect: (_, s) {
+        if (s.extra is! UserPost) {
+          return Routes.newsfeed;
+        }
+        return null;
+      },
+      builder: (_, s) {
+        final post = s.extra as UserPost;
+        return PostCommentsView(post: post);
+      },
     ),
   ]
 );
