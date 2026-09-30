@@ -7,6 +7,7 @@ import '../widgets/setting_item_tile.dart';
 import '../controllers/me_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
+import 'package:vibeu_fe/routing/routes.dart';
 class SettingsView extends HookConsumerWidget {
   const SettingsView({super.key});
 
@@ -41,7 +42,7 @@ class SettingsView extends HookConsumerWidget {
               const SizedBox(height: AppSizes.s8),
               // Profile Row — leading SizedBox(s32) đồng bộ với SettingItemTile
               InkWell(
-                onTap: () => context.push('/me/edit-profile'),
+                onTap: () => context.push(Routes.meEditProfile),
                 borderRadius: BorderRadius.circular(AppSizes.r8),
                 child: Padding(
                   // padding đồng nhất với SettingItemTile
